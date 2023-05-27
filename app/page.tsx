@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { supabase } from "~/clients/supabaseClient";
-import { BiTimeFive, BiPlay } from "react-icons/bi";
 
 export default async function Home() {
   const { data: tags } = await supabase.from("tags").select();

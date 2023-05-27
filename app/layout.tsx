@@ -1,4 +1,3 @@
-import "normalize.css";
 import "./global.css";
 import { HiMenuAlt2 } from "react-icons/hi";
 import Link from "next/link";

@@ -16,7 +16,7 @@ export function Player() {
         alt={track.name}
       />
       <div className="flex-1">
-        <h1 className="font-bold">{track.name}</h1>
+        <h1 className="font-bold text-lg">{track.name}</h1>
         <p className="line-clamp-2">{track.trackTitle}</p>
       </div>
       <div>

@@ -40,7 +40,7 @@ export function RadioItem({
       <div className="flex flex-1 p-4 gap-4">
         <div className="flex flex-col flex-1 gap-2 justify-between">
           <div>
-            <h2 className="line-clamp-1 font-bold text-lg ">{item.name}</h2>
+            <h2 className="line-clamp-1 font-bold text-lg">{item.name}</h2>
             <p className="line-clamp-3">{item.trackTitle}</p>
           </div>
           <div className="flex flex-row gap-4">
