@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { BiHeadphone, BiPlay, BiPause, BiLoader } from "react-icons/bi";
-import { BsWhatsapp, BsTelegram } from "react-icons/bs";
-import { TelegramShareButton, WhatsappShareButton } from "react-share";
+import { BsShare } from "react-icons/bs";
+import { RWebShare } from "react-web-share";
 
 export type RadioItemProps = {
   isActive: boolean;
@@ -28,8 +28,10 @@ export function RadioItem({
 }: RadioItemProps) {
   const isLive = item.status === "LIVE";
   const backgroundColor = isActive ? "bg-secondary" : "bg-base-100";
-  const detailUrl = `https://al-faidah.com/radio/${item.idAlias}`;
+
+  const shareUrl = `https://al-faidah.com/radio/${item.idAlias}`;
   const shareDescription = `Yuk simak kajian: ${item.trackTitle} di ${item.name}`;
+
   return (
     <div
       className={`${backgroundColor} shadow-sm flex flex-1 flex-col rounded-md overflow-hidden`}
@@ -77,16 +79,18 @@ export function RadioItem({
       >
         <div className="flex flex-row gap-2 items-center">
           <span>Bagikan:</span>
-          <WhatsappShareButton url={detailUrl} title={shareDescription}>
-            <button className={`btn btn-ghost p-2`}>
-              <BsWhatsapp size={24} />
+          <RWebShare
+            data={{
+              title: item.name,
+              text: shareDescription,
+              url: shareUrl,
+            }}
+            sites={["whatsapp", "telegram", "mail", "copy"]}
+          >
+            <button className={`btn btn-ghost btn-circle`}>
+              <BsShare size={24} />
             </button>
-          </WhatsappShareButton>
-          <TelegramShareButton url={detailUrl} title={shareDescription}>
-            <button className={`btn btn-ghost p-2`}>
-              <BsTelegram size={24} />
-            </button>
-          </TelegramShareButton>
+          </RWebShare>
         </div>
         <button
           onClick={isActive ? onStop : onPlay}

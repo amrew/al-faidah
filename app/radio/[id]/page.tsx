@@ -1,7 +1,6 @@
 import { getRadio, getTracks } from "../service";
 import { RadioList } from "../radio-list";
 import Image from "next/image";
-import Link from "next/link";
 import { BiLink } from "react-icons/bi";
 
 export default async function Detail({ params }: { params: { id: string } }) {
@@ -10,7 +9,6 @@ export default async function Detail({ params }: { params: { id: string } }) {
     getRadio(params.id),
   ]);
   const track = radios.find((item) => item.id_radet === params.id);
-  console.log(detail);
   return (
     <main className="flex flex-col p-4 gap-4">
       <div className="flex flex-row gap-2">
