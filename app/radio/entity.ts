@@ -28,4 +28,5 @@ export type RadioInfo = {
   pembimbing: string;
   about: string;
   imgnya: string;
+  prop: string;
 };

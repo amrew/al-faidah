@@ -8,6 +8,7 @@ import { useAudioContext } from "../audio-context";
 
 export type RadioListProps = {
   items: TrackInfo[];
+  filterShown?: boolean;
 };
 
 const teachers = [
@@ -83,6 +84,7 @@ const search = (radios: TrackInfo[] | SearchResult[], keyword: string) => {
 };
 
 export function RadioList(props: RadioListProps) {
+  const { filterShown = true } = props;
   const { track, play, stop, isLoading } = useAudioContext();
 
   const [{ keyword, sortBy, teacher }, setFilter] = useState<{
@@ -121,40 +123,42 @@ export function RadioList(props: RadioListProps) {
 
   return (
     <div>
-      <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
-        <input
-          type="text"
-          placeholder="Cari..."
-          className="input input-bordered"
-          value={keyword}
-          onChange={(event) => setKeyword(event.target.value)}
-        />
-        <select
-          className="select"
-          onChange={(event) => setSortBy(event.target.value)}
-        >
-          <option disabled selected>
-            Urutkan
-          </option>
-          <option value="">Default</option>
-          <option value="most">Pendengar Terbanyak</option>
-          <option value="less">Pendengar Tersedikit</option>
-        </select>
-        <select
-          className="select"
-          onChange={(event) => setTeacher(event.target.value)}
-        >
-          <option disabled selected>
-            Pilih Ustadz
-          </option>
-          <option value="">Semua</option>
-          {teachers.map((teacher) => (
-            <option key={teacher.keyword} value={teacher.keyword}>
-              {teacher.name}
+      {filterShown ? (
+        <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
+          <input
+            type="text"
+            placeholder="Cari..."
+            className="input input-bordered"
+            value={keyword}
+            onChange={(event) => setKeyword(event.target.value)}
+          />
+          <select
+            className="select"
+            onChange={(event) => setSortBy(event.target.value)}
+          >
+            <option disabled selected>
+              Urutkan
             </option>
-          ))}
-        </select>
-      </div>
+            <option value="">Default</option>
+            <option value="most">Pendengar Terbanyak</option>
+            <option value="less">Pendengar Tersedikit</option>
+          </select>
+          <select
+            className="select"
+            onChange={(event) => setTeacher(event.target.value)}
+          >
+            <option disabled selected>
+              Pilih Ustadz
+            </option>
+            <option value="">Semua</option>
+            {teachers.map((teacher) => (
+              <option key={teacher.keyword} value={teacher.keyword}>
+                {teacher.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      ) : null}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {results?.map((item) => (
           <RadioItem
@@ -163,6 +167,7 @@ export function RadioList(props: RadioListProps) {
             isLoading={isLoading}
             item={{
               id: item.uid_rad,
+              idAlias: item.id_radet,
               logoUrl: item.logo,
               name: item.nama,
               trackTitle: item.judul,

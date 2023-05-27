@@ -12,6 +12,6 @@ export async function getTracks() {
 
 export async function getRadio(id: string) {
   const result = await fetch(`${API_URL}/jupuk.php?ambil=radet&id_radet=${id}`);
-  const data: RadioInfo = await result.json();
-  return data;
+  const data: RadioInfo[] = await result.json();
+  return data.length > 0 ? data[0] : undefined;
 }

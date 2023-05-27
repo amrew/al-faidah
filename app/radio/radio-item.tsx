@@ -13,6 +13,7 @@ export type RadioItemProps = {
   isLoading: boolean;
   item: {
     id: string;
+    idAlias: string;
     logoUrl: string;
     name: string;
     trackTitle: string;
@@ -22,6 +23,8 @@ export type RadioItemProps = {
   onPlay: () => void;
   onStop: () => void;
 };
+
+const canShare = navigator.canShare?.();
 
 export function RadioItem({
   item,
@@ -81,9 +84,21 @@ export function RadioItem({
           <button className={`btn btn-outline btn-square`}>
             <BiBookmark size={24} />
           </button>
-          <button className="btn btn-outline btn-square">
-            <BiShareAlt size={24} />
-          </button>
+          {canShare ? (
+            <button
+              className="btn btn-outline btn-square"
+              onClick={async () => {
+                const shareData = {
+                  title: item.name,
+                  text: `Yuk simak kajian: ${item.trackTitle} di Radio ${item.name}`,
+                  url: `https://al-faidah.com/radio/${item.idAlias}`,
+                };
+                await navigator.share(shareData);
+              }}
+            >
+              <BiShareAlt size={24} />
+            </button>
+          ) : null}
         </div>
         <button
           onClick={isActive ? onStop : onPlay}
