@@ -1,12 +1,7 @@
 import Image from "next/image";
-import {
-  BiHeadphone,
-  BiPlay,
-  BiPause,
-  BiBookmark,
-  BiShareAlt,
-  BiLoader,
-} from "react-icons/bi";
+import { BiHeadphone, BiPlay, BiPause, BiLoader } from "react-icons/bi";
+import { BsWhatsapp, BsTelegram } from "react-icons/bs";
+import { TelegramShareButton, WhatsappShareButton } from "react-share";
 
 export type RadioItemProps = {
   isActive: boolean;
@@ -24,8 +19,6 @@ export type RadioItemProps = {
   onStop: () => void;
 };
 
-const canShare = navigator.canShare?.();
-
 export function RadioItem({
   item,
   isActive,
@@ -35,6 +28,8 @@ export function RadioItem({
 }: RadioItemProps) {
   const isLive = item.status === "LIVE";
   const backgroundColor = isActive ? "bg-secondary" : "bg-base-100";
+  const detailUrl = `https://al-faidah.com/radio/${item.idAlias}`;
+  const shareDescription = `Yuk simak kajian: ${item.trackTitle} di ${item.name}`;
   return (
     <div
       className={`${backgroundColor} shadow-sm flex flex-1 flex-col rounded-md overflow-hidden`}
@@ -80,25 +75,18 @@ export function RadioItem({
           isActive ? "border-t-secondary-focus" : "border-t-gray-200"
         }`}
       >
-        <div className="flex flex-row gap-2">
-          <button className={`btn btn-outline btn-square`}>
-            <BiBookmark size={24} />
-          </button>
-          {canShare ? (
-            <button
-              className="btn btn-outline btn-square"
-              onClick={async () => {
-                const shareData = {
-                  title: item.name,
-                  text: `Yuk simak kajian: ${item.trackTitle} di Radio ${item.name}`,
-                  url: `https://al-faidah.com/radio/${item.idAlias}`,
-                };
-                await navigator.share(shareData);
-              }}
-            >
-              <BiShareAlt size={24} />
+        <div className="flex flex-row gap-2 items-center">
+          <span>Bagikan:</span>
+          <WhatsappShareButton url={detailUrl} title={shareDescription}>
+            <button className={`btn btn-ghost p-2`}>
+              <BsWhatsapp size={24} />
             </button>
-          ) : null}
+          </WhatsappShareButton>
+          <TelegramShareButton url={detailUrl} title={shareDescription}>
+            <button className={`btn btn-ghost p-2`}>
+              <BsTelegram size={24} />
+            </button>
+          </TelegramShareButton>
         </div>
         <button
           onClick={isActive ? onStop : onPlay}
