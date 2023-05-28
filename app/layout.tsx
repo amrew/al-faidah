@@ -1,6 +1,7 @@
 import "./global.css";
 import { HiMenuAlt2 } from "react-icons/hi";
 import Link from "next/link";
+import { Analytics } from "@vercel/analytics/react";
 import { AudioProvider } from "./audio-context";
 import { Player } from "./player";
 import { SideMenu } from "./sidemenu";
@@ -90,6 +91,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             {/*  */}
           </div>
         </div>
+        <Analytics />
       </body>
     </html>
   );
