@@ -20,7 +20,8 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
     "react-use": "^17.4.0",
-    "react-web-share": "^2.0.2"
+    "react-web-share": "^2.0.2",
+    "universal-cookie": "^4.0.4"
   },
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",

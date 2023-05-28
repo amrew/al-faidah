@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { AudioProvider } from "./audio-context";
 import { Player } from "./player";
 import { SideMenu } from "./sidemenu";
+import { cookies } from "next/headers";
 
 export const metadata = {
   title: "Al Faidah",
@@ -16,8 +17,10 @@ type RootLayoutProps = {
 };
 
 export default function RootLayout({ children }: RootLayoutProps) {
+  const cookieStore = cookies();
+  const theme = cookieStore.get("theme");
   return (
-    <html lang="en" data-theme="cupcake">
+    <html lang="en" data-theme={theme?.value || "cupcake"}>
       <head>
         <link
           rel="apple-touch-icon"
@@ -44,7 +47,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <input id="drawer-1" type="checkbox" className="drawer-toggle" />
             <AudioProvider>
               <div className="drawer-content flex flex-col">
-                <header className="navbar border-b border-solid border-gray-200 gap-2 bg-base-100">
+                <header className="navbar border-b border-solid gap-2 bg-base-100 border-b-base-300">
                   <div className="flex-none">
                     <label
                       htmlFor="drawer-1"
@@ -64,7 +67,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                   </div>
                   <div className="flex-none gap-2 mr-2 ml-2">
                     <a className="btn-ghost btn normal-case btn-sm">Masuk</a>
-                    <a className="btn-secondary btn normal-case text-white btn-sm">
+                    <a className="btn-accent btn normal-case text-white btn-sm">
                       Daftar
                     </a>
                   </div>
@@ -75,7 +78,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 <Player />
               </div>
             </AudioProvider>
-            <div className="drawer-side border-r border-gray-200">
+            <div className="drawer-side border-r border-base-300">
               <label htmlFor="drawer-1" className="drawer-overlay"></label>
               <div className="bg-base-100 w-56">
                 <div className="p-4">

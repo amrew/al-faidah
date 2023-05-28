@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { BiHeadphone, BiPlay, BiPause, BiLoader } from "react-icons/bi";
+import { BiHeadphone, BiPlay, BiStop, BiLoader } from "react-icons/bi";
 import { BsShare } from "react-icons/bs";
 import { RWebShare } from "react-web-share";
 
@@ -28,25 +28,28 @@ export function RadioItem({
 }: RadioItemProps) {
   const isLive = item.status === "LIVE";
   const backgroundColor = isActive ? "bg-secondary" : "bg-base-100";
+  const textColor = isActive ? "text-base-100" : "text-base-content";
 
   const shareUrl = `https://al-faidah.com/radio/${item.idAlias}`;
   const shareDescription = `Yuk simak kajian: ${item.trackTitle} di ${item.name}`;
 
   return (
     <div
-      className={`${backgroundColor} shadow-sm flex flex-1 flex-col rounded-md overflow-hidden`}
+      className={`${backgroundColor} shadow-md flex flex-1 flex-col rounded-md overflow-hidden`}
       key={item.id}
     >
       <div className="flex flex-1 p-4 gap-4">
         <div className="flex flex-col flex-1 gap-2 justify-between">
           <div>
-            <h2 className="line-clamp-1 font-bold text-lg">{item.name}</h2>
-            <p className="line-clamp-3">{item.trackTitle}</p>
+            <h2 className={`line-clamp-1 font-bold text-lg ${textColor}`}>
+              {item.name}
+            </h2>
+            <p className={`line-clamp-3 ${textColor}`}>{item.trackTitle}</p>
           </div>
           <div className="flex flex-row gap-4">
             <div
               className={`badge badge-outline flex flex-row items-center gap-2 ${
-                isActive ? "bg-white" : ""
+                isActive ? "bg-white text-gray-600" : ""
               }`}
             >
               <BiHeadphone /> {item.listenerCount}
@@ -54,7 +57,9 @@ export function RadioItem({
             <div
               className={`badge ${
                 !isLive ? "badge-outline" : "badge-error"
-              } flex flex-row items-center gap-2 ${isActive ? "bg-white" : ""}`}
+              } flex flex-row items-center gap-2 ${
+                isActive ? "bg-white text-gray-600" : ""
+              }`}
             >
               {isLive ? "Live" : "Online"}
             </div>
@@ -73,8 +78,8 @@ export function RadioItem({
         </div>
       </div>
       <div
-        className={`bg-gray-100 p-2 flex justify-between border-t ${
-          isActive ? "border-t-secondary-focus" : "border-t-gray-200"
+        className={`bg-base-100 p-2 flex justify-between border-t ${
+          isActive ? "border-t-secondary-focus" : "border-t-base-300"
         }`}
       >
         <div className="flex flex-row gap-2 items-center">
@@ -101,7 +106,7 @@ export function RadioItem({
           {isActive && isLoading ? (
             <BiLoader size={24} color="white" className="animate-spin" />
           ) : isActive ? (
-            <BiPause size={24} color="white" />
+            <BiStop size={24} color="white" />
           ) : (
             <BiPlay size={24} color="white" />
           )}

@@ -9,4 +9,7 @@ module.exports = {
     require("@tailwindcss/aspect-ratio"),
     require("daisyui"),
   ],
+  daisyui: {
+    themes: ["cupcake", "pastel", "corporate", "lofi", "dracula"],
+  },
 };

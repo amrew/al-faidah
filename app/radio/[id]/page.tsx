@@ -12,7 +12,7 @@ export default async function Detail({ params }: { params: { id: string } }) {
   return (
     <main className="flex flex-col p-4 gap-4">
       <div className="flex flex-row gap-2">
-        <div className="flex flex-col sm:flex-row rounded-md overflow-hidden shadow-sm">
+        <div className="flex flex-col sm:flex-row rounded-md overflow-hidden shadow-md">
           {detail && detail.imgnya && detail.imgnya !== "belum ada" ? (
             <Image
               src={detail.imgnya}

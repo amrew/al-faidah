@@ -8,8 +8,6 @@ html, body {
 
 .playing {
   background: rgba(255,255,255,.1);
-  width: 2.5rem;
-  height: 3rem;
   border-radius: .3rem;
   display: flex;
   justify-content: space-between;
