@@ -28,7 +28,12 @@ export const useAudioContext = () => {
   return useContext(AudioContext);
 };
 
-export const AudioProvider = (props: PropsWithChildren) => {
+type AudioProviderProps = {
+  proxyUrl?: string;
+};
+
+export const AudioProvider = (props: PropsWithChildren<AudioProviderProps>) => {
+  const { proxyUrl = "" } = props;
   const [track, setTrack] = useState<AudioTrack>();
   const [isLoading, setLoading] = useState(false);
   const prevTrack = usePrevious(track);
@@ -41,7 +46,7 @@ export const AudioProvider = (props: PropsWithChildren) => {
       const [ip, port] = parsed[1].split(":");
 
       const sound = new Howl({
-        src: [`/radio/url/${ip}/${port}`],
+        src: [`${proxyUrl}/radio/${ip}/${port}`],
         html5: true,
         onload: () => {
           setLoading(false);

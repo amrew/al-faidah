@@ -6,6 +6,7 @@ import { AudioProvider } from "./audio-context";
 import { Player } from "./player";
 import { SideMenu } from "./sidemenu";
 import { cookies } from "next/headers";
+import { get } from "@vercel/edge-config";
 
 export const metadata = {
   title: "Al Faidah",
@@ -16,9 +17,10 @@ type RootLayoutProps = {
   children: React.ReactNode;
 };
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default async function RootLayout({ children }: RootLayoutProps) {
   const cookieStore = cookies();
   const theme = cookieStore.get("theme");
+  const proxyUrl = await get<string>("proxyUrl");
   return (
     <html lang="en" data-theme={theme?.value || "cupcake"}>
       <head>
@@ -45,7 +47,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <div className="flex h-full flex-1 flex-col">
           <div className="drawer drawer-mobile">
             <input id="drawer-1" type="checkbox" className="drawer-toggle" />
-            <AudioProvider>
+            <AudioProvider proxyUrl={proxyUrl}>
               <div className="drawer-content flex flex-col">
                 <header className="navbar border-b border-solid gap-2 bg-base-100 border-b-base-300">
                   <div className="flex-none">
