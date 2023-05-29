@@ -7,84 +7,17 @@ import MiniSearch, { SearchResult } from "minisearch";
 import { useAudioContext } from "../audio-context";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 
+type FilterOption = {
+  name: string;
+  keyword: string;
+};
+
 export type RadioListProps = {
   items: TrackInfo[];
   filterShown?: boolean;
+  teachers?: FilterOption[];
+  topics?: FilterOption[];
 };
-
-const teachers = [
-  {
-    name: "Abu Hamzah Yusuf",
-    keyword: "hamzah yusuf",
-  },
-  {
-    name: "Muhammad bin Umar Assewed",
-    keyword: "umar",
-  },
-  {
-    name: "Muhammad Rijal",
-    keyword: "rijal",
-  },
-  {
-    name: "Abu Hamzah Shodiqun",
-    keyword: "shodiqun",
-  },
-  {
-    name: "Saiful Bahri",
-    keyword: "saiful bahri",
-  },
-  {
-    name: "Afifuddin As-Sidawi",
-    keyword: "afifuddin",
-  },
-  {
-    name: "Usamah bin Faishal Mahri",
-    keyword: "usamah mahri",
-  },
-  {
-    name: "Abu Nasim Mukhtar",
-    keyword: "nasim mukhtar",
-  },
-];
-
-const topics = [
-  {
-    name: "Adab",
-    keyword: "adab",
-  },
-  {
-    name: "Akhlak",
-    keyword: "akhlak",
-  },
-  {
-    name: "Tajwid",
-    keyword: "tajwid",
-  },
-  {
-    name: "Sholat",
-    keyword: "sholat",
-  },
-  {
-    name: "Pendidikan anak",
-    keyword: "tarbiyah anak buah hati",
-  },
-  {
-    name: "Amal",
-    keyword: "harta amal timbangan infaq",
-  },
-  {
-    name: "Hadist",
-    keyword: "hadist sunnah",
-  },
-  {
-    name: "Kisah",
-    keyword: "kisah",
-  },
-  {
-    name: "Pemerintah",
-    keyword: "pemerintah",
-  },
-];
 
 const sortRadios = (
   radios: TrackInfo[] | SearchResult[],
@@ -131,7 +64,7 @@ const defaultFilter = {
 };
 
 export function RadioList(props: RadioListProps) {
-  const { filterShown = true } = props;
+  const { filterShown = true, teachers = [], topics = [] } = props;
   const { track, play, stop, isLoading } = useAudioContext();
 
   const [{ keyword, sortBy, teacher, topic }, setFilter] = useState<{
