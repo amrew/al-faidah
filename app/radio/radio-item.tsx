@@ -2,19 +2,12 @@ import Image from "next/image";
 import { BiHeadphone, BiPlay, BiStop, BiLoader } from "react-icons/bi";
 import { BsShare } from "react-icons/bs";
 import { RWebShare } from "react-web-share";
+import { TrackInfo } from "./entity";
 
 export type RadioItemProps = {
   isActive: boolean;
   isLoading: boolean;
-  item: {
-    id: string;
-    idAlias: string;
-    logoUrl: string;
-    name: string;
-    trackTitle: string;
-    listenerCount: number;
-    status: string;
-  };
+  item: TrackInfo;
   onPlay: () => void;
   onStop: () => void;
 };
@@ -30,7 +23,7 @@ export function RadioItem({
   const backgroundColor = isActive ? "bg-secondary" : "bg-base-100";
   const textColor = isActive ? "text-base-100" : "text-base-content";
 
-  const shareUrl = `https://al-faidah.com/radio/${item.idAlias}`;
+  const shareUrl = `https://al-faidah.com/radio/${item.serial}`;
   const shareDescription = `Yuk simak kajian: ${item.trackTitle} di ${item.name}`;
 
   return (
@@ -38,13 +31,19 @@ export function RadioItem({
       className={`${backgroundColor} shadow-md flex flex-1 flex-col rounded-md overflow-hidden`}
       key={item.id}
     >
+      <div
+        className={`bg-base-100 p-2 flex justify-between border-b ${
+          isActive ? "border-b-secondary-focus" : "border-b-base-300"
+        }`}
+      >
+        <h2 className={`line-clamp-1 font-bold text-sm`}>{item.name}</h2>
+      </div>
       <div className="flex flex-1 p-4 gap-4">
         <div className="flex flex-col flex-1 gap-2 justify-between">
           <div>
-            <h2 className={`line-clamp-1 font-bold text-lg ${textColor}`}>
-              {item.name}
-            </h2>
-            <p className={`line-clamp-3 ${textColor}`}>{item.trackTitle}</p>
+            <p className={`line-clamp-4 text-lg ${textColor}`}>
+              {item.trackTitle}
+            </p>
           </div>
           <div className="flex flex-row gap-4">
             <div

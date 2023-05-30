@@ -8,7 +8,7 @@ export default async function Detail({ params }: { params: { id: string } }) {
     getTracks(),
     getRadio(params.id),
   ]);
-  const track = radios.find((item) => item.id_radet === params.id);
+  const track = radios.find((item) => item.serial === params.id);
   return (
     <main className="flex flex-col p-4 gap-4">
       <div className="flex flex-row gap-2">

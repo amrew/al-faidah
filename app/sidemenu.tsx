@@ -9,7 +9,7 @@ import { clientCookies } from "~/clients/cookies";
 
 export function SideMenu() {
   const pathname = usePathname();
-  const focusClassName = "font-bold text-accent-focus";
+  const focusClassName = "font-bold text-primary-focus";
   const isWide = useMedia("(min-width: 1024px)", false);
   const drawerRef = useRef<any>();
 
@@ -24,7 +24,7 @@ export function SideMenu() {
   };
 
   const changeTheme = (
-    theme: "cupcake" | "pastel" | "corporate" | "lofi" | "dracula"
+    theme: "cupcake" | "pastel" | "corporate" | "lofi" | "dracula" | "autumn"
   ) => {
     clientCookies.set("theme", theme);
     document.documentElement.setAttribute("data-theme", theme);
@@ -68,6 +68,10 @@ export function SideMenu() {
           <button
             className="w-3 h-3 bg-black"
             onClick={() => changeTheme("lofi")}
+          />
+          <button
+            className="w-3 h-3 bg-red-700"
+            onClick={() => changeTheme("autumn")}
           />
         </div>
       </div>

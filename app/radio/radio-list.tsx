@@ -25,11 +25,11 @@ const sortRadios = (
 ) => {
   if (sortBy === "most") {
     return [...radios].sort((a, b) =>
-      Number(a.pendengar) > Number(b.pendengar) ? -1 : 1
+      a.listenerCount > b.listenerCount ? -1 : 1
     );
   } else if (sortBy === "less") {
     return [...radios].sort((a, b) =>
-      Number(a.pendengar) < Number(b.pendengar) ? -1 : 1
+      a.listenerCount < b.listenerCount ? -1 : 1
     );
   } else {
     return radios;
@@ -164,24 +164,25 @@ export function RadioList(props: RadioListProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {results?.map((item) => (
           <RadioItem
-            key={item.uid_rad}
-            isActive={track?.url === item.url}
+            key={item.id}
+            isActive={track?.url === item.trackUrl}
             isLoading={isLoading}
             item={{
-              id: item.uid_rad,
-              idAlias: item.id_radet,
-              logoUrl: item.logo,
-              name: item.nama,
-              trackTitle: item.judul,
-              listenerCount: Number(item.pendengar),
+              id: item.id,
+              serial: item.serial,
+              logoUrl: item.logoUrl,
+              name: item.name,
+              trackTitle: item.trackTitle,
+              listenerCount: item.listenerCount,
               status: item.status,
+              trackUrl: item.trackUrl,
             }}
             onPlay={() =>
               play({
-                name: item.nama,
-                url: item.url,
-                trackTitle: item.judul,
-                logoUrl: item.logo,
+                name: item.name,
+                url: item.trackUrl,
+                trackTitle: item.trackTitle,
+                logoUrl: item.logoUrl,
               })
             }
             onStop={() => stop()}

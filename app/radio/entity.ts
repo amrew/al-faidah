@@ -1,4 +1,4 @@
-export type TrackInfo = {
+export type RawTrackInfo = {
   uid_rad: string;
   uid_ref: string;
   id_radet: string;
@@ -14,6 +14,17 @@ export type TrackInfo = {
   prop: string;
   neg: string;
   alias: string;
+};
+
+export type TrackInfo = {
+  id: string;
+  serial: string;
+  name: string;
+  logoUrl: string;
+  listenerCount: number;
+  status: string;
+  trackTitle: string;
+  trackUrl: string;
 };
 
 export type RadioInfo = {

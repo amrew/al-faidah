@@ -10,6 +10,6 @@ module.exports = {
     require("daisyui"),
   ],
   daisyui: {
-    themes: ["cupcake", "pastel", "corporate", "lofi", "dracula"],
+    themes: ["cupcake", "pastel", "corporate", "lofi", "dracula", "autumn"],
   },
 };

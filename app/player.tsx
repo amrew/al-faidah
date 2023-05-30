@@ -119,7 +119,7 @@ export function Player() {
 
   return track ? (
     <>
-      <div className="p-4 border-t border-t-accent-focus bg-accent flex flex-1 flex-row gap-4 items-center">
+      <div className="p-4 border-t border-t-secondary-focus bg-secondary flex flex-1 flex-row gap-4 items-center">
         <Image
           src={track.logoUrl}
           width={64}
