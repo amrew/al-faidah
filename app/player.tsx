@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useAudioContext } from "./audio-context";
 import { BiStop, BiLoader, BiTimer } from "react-icons/bi";
 import { useEffect, useState } from "react";
+import { PlayingAnimation } from "./playing-animation";
 
 function CountDownView(props: { countDown: number; onEnd: () => void }) {
   const [countDown, setCountDown] = useState<number>(props.countDown);
@@ -145,15 +146,7 @@ export function Player() {
             <BiTimer size={20} color="white" />
           </label>
         )}
-        <div>
-          {!isLoading ? (
-            <div className="playing w-4 h-6">
-              <span className="playing-bar playing-bar1"></span>
-              <span className="playing-bar playing-bar2"></span>
-              <span className="playing-bar playing-bar3"></span>
-            </div>
-          ) : null}
-        </div>
+        <div>{!isLoading ? <PlayingAnimation /> : null}</div>
         <div>
           <button className="btn btn-accent-content" onClick={stop}>
             {isLoading ? (

@@ -1,13 +1,15 @@
 import { get } from "@vercel/edge-config";
-import { RadioInfo, RawTrackInfo, TrackInfo } from "./entity";
+import { RadioInfo, TrackInfo } from "./entity";
+import { sortRadios } from "../utils";
 
 const RII_URL = process.env.RII_URL;
 const SYARIAH_URL = process.env.SYARIAH_URL;
 
-export async function getTracks(
-  params: { type?: "rii" | "syariah" } = {}
-): Promise<TrackInfo[]> {
-  const { type = "rii" } = params;
+export async function getTracks(params?: {
+  type?: "rii" | "syariah";
+  sortBy?: "most" | "less" | "default";
+}) {
+  const { type = "rii", sortBy = "default" } = params || {};
   const url =
     type === "syariah"
       ? `${SYARIAH_URL}/rsy/list/v2jsyariah.php?listradio=syariah`
@@ -20,9 +22,9 @@ export async function getTracks(
     get<string>("proxyUrl"),
   ]);
 
-  const data: RawTrackInfo[] = await result.json();
+  const data = await result.json();
 
-  return data.map((item) => {
+  const tracks: TrackInfo[] = data.map((item: any) => {
     const parsed = item.url.split("//");
     const [ip, port] = parsed[1].split(":");
     return {
@@ -36,6 +38,8 @@ export async function getTracks(
       trackUrl: `${proxyUrl}/radio/${ip}/${port}`,
     };
   });
+
+  return sortRadios(tracks, sortBy);
 }
 
 export async function getRadio(id: string) {

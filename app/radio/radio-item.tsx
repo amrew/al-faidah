@@ -1,88 +1,84 @@
+"use client";
+
 import Image from "next/image";
 import { BiHeadphone, BiPlay, BiStop, BiLoader } from "react-icons/bi";
 import { BsShare } from "react-icons/bs";
+import { ImEmbed2 } from "react-icons/im";
 import { RWebShare } from "react-web-share";
 import { TrackInfo } from "./entity";
+import { useAudioContext } from "../audio-context";
+import { APP_URL } from "../utils";
+import { EmbedModal } from "./embed-modal";
 
 export type RadioItemProps = {
-  isActive: boolean;
-  isLoading: boolean;
   item: TrackInfo;
-  onPlay: () => void;
-  onStop: () => void;
+  embed?: boolean;
 };
 
-export function RadioItem({
-  item,
-  isActive,
-  onPlay,
-  onStop,
-  isLoading,
-}: RadioItemProps) {
+export function RadioItem({ item, embed }: RadioItemProps) {
+  const { track, play, stop, isLoading } = useAudioContext();
+  const isActive = track?.url === item.trackUrl;
   const isLive = item.status === "LIVE";
-  const backgroundColor = isActive ? "bg-secondary" : "bg-base-100";
-  const textColor = isActive ? "text-base-100" : "text-base-content";
 
-  const shareUrl = `https://al-faidah.com/radio/${item.serial}`;
+  const shareUrl = `${APP_URL}/radio/${item.serial}`;
   const shareDescription = `Yuk simak kajian: ${item.trackTitle} di ${item.name}`;
+
+  const onStop = () => stop();
+  const onPlay = () =>
+    play({
+      name: item.name,
+      url: item.trackUrl,
+      trackTitle: item.trackTitle,
+      logoUrl: item.logoUrl,
+    });
 
   return (
     <div
-      className={`${backgroundColor} shadow-md flex flex-1 flex-col rounded-md overflow-hidden`}
+      className={`flex flex-1 flex-col border-base-300 rounded-md bg-base-100 ${
+        embed ? "h-full justify-between border-4" : "border"
+      }`}
       key={item.id}
     >
-      <div
-        className={`bg-base-100 p-2 flex justify-between border-b ${
-          isActive ? "border-b-secondary-focus" : "border-b-base-300"
-        }`}
-      >
-        <h2 className={`line-clamp-1 font-bold text-sm`}>{item.name}</h2>
-      </div>
-      <div className="flex flex-1 p-4 gap-4">
-        <div className="flex flex-col flex-1 gap-2 justify-between">
+      <div className={`px-4 py-3 flex justify-between`}>
+        <div className="flex flex-row gap-3">
+          <Image
+            src={item.logoUrl}
+            alt={item.name}
+            className="w-10 h-10 rounded-md"
+            width={80}
+            height={80}
+          />
           <div>
-            <p className={`line-clamp-4 text-lg ${textColor}`}>
-              {item.trackTitle}
-            </p>
-          </div>
-          <div className="flex flex-row gap-4">
-            <div
-              className={`badge badge-outline flex flex-row items-center gap-2 ${
-                isActive ? "bg-white text-gray-600" : ""
-              }`}
-            >
-              <BiHeadphone /> {item.listenerCount}
-            </div>
-            <div
-              className={`badge ${
-                !isLive ? "badge-outline" : "badge-error"
-              } flex flex-row items-center gap-2 ${
-                isActive ? "bg-white text-gray-600" : ""
-              }`}
-            >
-              {isLive ? "Live" : "Online"}
+            <h2 className={`line-clamp-1 font-bold text-md`}>{item.name}</h2>
+            <div className={`flex flex-row items-center gap-1`}>
+              <BiHeadphone size={16} className="text-gray-500" />{" "}
+              <span className="text-sm text-gray-500">
+                {item.listenerCount}
+              </span>
             </div>
           </div>
-        </div>
-        <div className="w-12 md:w-16 self-center">
-          <figure>
-            <Image
-              src={item.logoUrl}
-              alt={item.name}
-              className="w-12 h-12 md:w-16 md:h-16 rounded-md"
-              width={64}
-              height={64}
-            />
-          </figure>
+          {isLive ? (
+            <div className="mt-px">
+              <span className="badge-error badge text-white">Live</span>
+            </div>
+          ) : null}
         </div>
       </div>
-      <div
-        className={`bg-base-100 p-2 flex justify-between border-t ${
-          isActive ? "border-t-secondary-focus" : "border-t-base-300"
-        }`}
-      >
+      <div className="px-4 flex-1">
+        <p className={`line-clamp-2 text-md text-base-content`}>
+          {item.trackTitle}
+        </p>
+      </div>
+      <div className={`px-4 py-3 flex justify-between`}>
         <div className="flex flex-row gap-2 items-center">
-          <span>Bagikan:</span>
+          {!embed ? (
+            <label
+              htmlFor={`embed-modal-${item.id}`}
+              className={`btn btn-ghost btn-sm btn-circle`}
+            >
+              <ImEmbed2 size={16} />
+            </label>
+          ) : null}
           <RWebShare
             data={{
               title: item.name,
@@ -91,16 +87,14 @@ export function RadioItem({
             }}
             sites={["whatsapp", "telegram", "mail", "copy"]}
           >
-            <button className={`btn btn-ghost btn-circle`}>
-              <BsShare size={24} />
+            <button className={`btn btn-ghost btn-sm btn-circle`}>
+              <BsShare size={16} />
             </button>
           </RWebShare>
         </div>
         <button
           onClick={isActive ? onStop : onPlay}
-          className={`btn ${
-            isActive ? "btn-secondary" : "btn-primary"
-          } btn-square`}
+          className={`btn ${isActive ? "btn-secondary" : "btn-primary"} w-16`}
         >
           {isActive && isLoading ? (
             <BiLoader size={24} color="white" className="animate-spin" />
@@ -111,6 +105,9 @@ export function RadioItem({
           )}
         </button>
       </div>
+      {!embed ? (
+        <EmbedModal id={`embed-modal-${item.id}`} track={item} />
+      ) : null}
     </div>
   );
 }

@@ -2,8 +2,13 @@ import { getRadio, getTracks } from "../service";
 import { RadioList } from "../radio-list";
 import Image from "next/image";
 import { BiLink } from "react-icons/bi";
+import { RadioItem } from "../radio-item";
 
-export default async function Detail({ params }: { params: { id: string } }) {
+export default async function RadioDetail({
+  params,
+}: {
+  params: { id: string };
+}) {
   const [radios, detail] = await Promise.all([
     getTracks(),
     getRadio(params.id),
@@ -11,6 +16,7 @@ export default async function Detail({ params }: { params: { id: string } }) {
   const track = radios.find((item) => item.serial === params.id);
   return (
     <main className="flex flex-col p-4 gap-4">
+      {track ? <RadioItem item={track} /> : null}
       <div className="flex flex-row gap-2">
         <div className="flex flex-col sm:flex-row rounded-md overflow-hidden shadow-md">
           {detail && detail.imgnya && detail.imgnya !== "belum ada" ? (
@@ -69,9 +75,6 @@ export default async function Detail({ params }: { params: { id: string } }) {
             </div>
           </div>
         </div>
-      </div>
-      <div>
-        {track ? <RadioList items={[track]} filterShown={false} /> : null}
       </div>
     </main>
   );

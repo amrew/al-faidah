@@ -1,21 +1,3 @@
-export type RawTrackInfo = {
-  uid_rad: string;
-  uid_ref: string;
-  id_radet: string;
-  sc_rad: string;
-  nama: string;
-  status: string;
-  info: string;
-  pendengar: string;
-  judul: string;
-  logo: string;
-  url: string;
-  kab: string;
-  prop: string;
-  neg: string;
-  alias: string;
-};
-
 export type TrackInfo = {
   id: string;
   serial: string;
@@ -26,6 +8,8 @@ export type TrackInfo = {
   trackTitle: string;
   trackUrl: string;
 };
+
+export type SortBy = "most" | "less" | "default";
 
 export type RadioInfo = {
   nama_rad: string;

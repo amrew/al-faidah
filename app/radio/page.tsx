@@ -13,7 +13,7 @@ export default async function Home({
     get<{ name: string; keyword: string }[]>("topics"),
   ]);
   return (
-    <main className="flex flex-col p-4">
+    <main className="flex flex-col p-4 sm:p-8">
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-bold">Radio</h1>
         <RadioList items={radios} teachers={teachers} topics={topics} />

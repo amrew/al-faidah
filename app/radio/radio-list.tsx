@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { TrackInfo } from "./entity";
+import { SortBy, TrackInfo } from "./entity";
 import { RadioItem } from "./radio-item";
 import MiniSearch, { SearchResult } from "minisearch";
-import { useAudioContext } from "../audio-context";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
+import { sortRadios } from "../utils";
 
 type FilterOption = {
   name: string;
@@ -19,36 +19,20 @@ export type RadioListProps = {
   topics?: FilterOption[];
 };
 
-const sortRadios = (
-  radios: TrackInfo[] | SearchResult[],
-  sortBy: string | undefined
-) => {
-  if (sortBy === "most") {
-    return [...radios].sort((a, b) =>
-      a.listenerCount > b.listenerCount ? -1 : 1
-    );
-  } else if (sortBy === "less") {
-    return [...radios].sort((a, b) =>
-      a.listenerCount < b.listenerCount ? -1 : 1
-    );
-  } else {
-    return radios;
-  }
-};
-
 const search = (radios: TrackInfo[] | SearchResult[], keyword: string) => {
   const miniSearch = new MiniSearch({
-    fields: ["nama", "judul"],
+    fields: ["name", "trackTitle"],
     storeFields: [
-      "uid_rad",
-      "nama",
-      "judul",
-      "logo",
-      "pendengar",
+      "id",
+      "serial",
+      "name",
+      "logoUrl",
+      "listenerCount",
       "status",
-      "url",
+      "trackTitle",
+      "trackUrl",
     ],
-    idField: "uid_rad",
+    idField: "id",
   });
 
   miniSearch.addAll(radios);
@@ -58,18 +42,17 @@ const search = (radios: TrackInfo[] | SearchResult[], keyword: string) => {
 
 const defaultFilter = {
   keyword: "",
-  sortBy: "",
+  sortBy: "default" as SortBy,
   teacher: "",
   topic: "",
 };
 
 export function RadioList(props: RadioListProps) {
   const { filterShown = true, teachers = [], topics = [] } = props;
-  const { track, play, stop, isLoading } = useAudioContext();
 
   const [{ keyword, sortBy, teacher, topic }, setFilter] = useState<{
     keyword: string;
-    sortBy: string;
+    sortBy: SortBy;
     teacher: string;
     topic: string;
   }>(defaultFilter);
@@ -78,7 +61,15 @@ export function RadioList(props: RadioListProps) {
     setFilter((prev) => ({ ...prev, keyword }));
   };
   const setSortBy = (sortBy: string) => {
-    setFilter((prev) => ({ ...prev, sortBy }));
+    setFilter((prev) => {
+      if (sortBy === "most") {
+        return { ...prev, sortBy: "most" };
+      } else if (sortBy === "less") {
+        return { ...prev, sortBy: "less" };
+      } else {
+        return { ...prev, sortBy: "default" };
+      }
+    });
   };
   const setTeacher = (teacher: string) => {
     setFilter((prev) => ({ ...prev, teacher }));
@@ -106,7 +97,7 @@ export function RadioList(props: RadioListProps) {
       radios = search(radios, teacher);
     }
 
-    return sortRadios(radios, sortBy);
+    return sortRadios(radios as TrackInfo[], sortBy);
   }, [props.items, keyword, sortBy, teacher, topic]);
 
   return (
@@ -163,30 +154,7 @@ export function RadioList(props: RadioListProps) {
       ) : null}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {results?.map((item) => (
-          <RadioItem
-            key={item.id}
-            isActive={track?.url === item.trackUrl}
-            isLoading={isLoading}
-            item={{
-              id: item.id,
-              serial: item.serial,
-              logoUrl: item.logoUrl,
-              name: item.name,
-              trackTitle: item.trackTitle,
-              listenerCount: item.listenerCount,
-              status: item.status,
-              trackUrl: item.trackUrl,
-            }}
-            onPlay={() =>
-              play({
-                name: item.name,
-                url: item.trackUrl,
-                trackTitle: item.trackTitle,
-                logoUrl: item.logoUrl,
-              })
-            }
-            onStop={() => stop()}
-          />
+          <RadioItem key={item.id} item={item} />
         ))}
       </div>
     </div>
