@@ -94,7 +94,7 @@ export function RadioItem({ item, embed }: RadioItemProps) {
           </RWebShare>
         </div>
         <div className="flex flex-row gap-2 items-center">
-          {!isLoading && embed ? (
+          {!isLoading && embed && isActive ? (
             <PlayingAnimation className="bg-accent" />
           ) : null}
           <button
