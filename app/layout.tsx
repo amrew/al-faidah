@@ -1,6 +1,6 @@
 import "./global.css";
 import { Analytics } from "@vercel/analytics/react";
-import { AudioProvider } from "./audio-context";
+import { AudioProvider } from "~/components/audio-context";
 import { cookies } from "next/headers";
 
 export const metadata = {

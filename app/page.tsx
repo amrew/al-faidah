@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { supabase } from "~/clients/supabaseClient";
 import { PropsWithChildren, cache } from "react";
-import { getTracks } from "./radio/service";
-import { RadioItem } from "./radio/radio-item";
-import { AudioItem } from "./kajian/audio-item";
-import { ArticleItem } from "./artikel/article-item";
-import { SharedLayout } from "./shared-layout";
+import { getTracks } from "~/components/radio-service";
+import { RadioItem } from "~/components/radio-item";
+import { AudioItem } from "~/components/audio-item";
+import { ArticleItem } from "~/components/article-item";
+import { SharedLayout } from "~/components/shared-layout";
+import { Player } from "~/components/player";
 
 const getTags = cache(async () => {
   return await supabase.from("tags").select();
@@ -27,7 +28,7 @@ export default async function Home() {
   ]);
   const twoRadios = radios.slice(0, 2);
   return (
-    <SharedLayout>
+    <SharedLayout footer={<Player />}>
       <main className="flex flex-col p-4 sm:p-8 gap-6">
         <Content title="Kategori">
           <div className="carousel gap-2">

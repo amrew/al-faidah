@@ -5,10 +5,11 @@ import { BiHeadphone, BiPlay, BiStop, BiLoader } from "react-icons/bi";
 import { BsShare } from "react-icons/bs";
 import { ImEmbed2 } from "react-icons/im";
 import { RWebShare } from "react-web-share";
-import { TrackInfo } from "./entity";
-import { useAudioContext } from "../audio-context";
-import { APP_URL } from "../utils";
-import { EmbedModal } from "./embed-modal";
+import { TrackInfo } from "./radio-entity";
+import { useAudioContext } from "./audio-context";
+import { APP_URL } from "./utils";
+import { ModalEmbed } from "./modal-embed";
+import { PlayingAnimation } from "./playing-animation";
 
 export type RadioItemProps = {
   item: TrackInfo;
@@ -92,21 +93,26 @@ export function RadioItem({ item, embed }: RadioItemProps) {
             </button>
           </RWebShare>
         </div>
-        <button
-          onClick={isActive ? onStop : onPlay}
-          className={`btn ${isActive ? "btn-secondary" : "btn-primary"} w-16`}
-        >
-          {isActive && isLoading ? (
-            <BiLoader size={24} color="white" className="animate-spin" />
-          ) : isActive ? (
-            <BiStop size={24} color="white" />
-          ) : (
-            <BiPlay size={24} color="white" />
-          )}
-        </button>
+        <div className="flex flex-row gap-2 items-center">
+          {!isLoading && embed ? (
+            <PlayingAnimation className="bg-accent" />
+          ) : null}
+          <button
+            onClick={isActive ? onStop : onPlay}
+            className={`btn ${isActive ? "btn-secondary" : "btn-primary"} w-16`}
+          >
+            {isActive && isLoading ? (
+              <BiLoader size={24} color="white" className="animate-spin" />
+            ) : isActive ? (
+              <BiStop size={24} color="white" />
+            ) : (
+              <BiPlay size={24} color="white" />
+            )}
+          </button>
+        </div>
       </div>
       {!embed ? (
-        <EmbedModal id={`embed-modal-${item.id}`} track={item} />
+        <ModalEmbed id={`embed-modal-${item.id}`} track={item} />
       ) : null}
     </div>
   );

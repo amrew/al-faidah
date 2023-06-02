@@ -7,7 +7,6 @@ html, body {
 }
 
 .playing {
-  background: rgba(255,255,255,.1);
   border-radius: .3rem;
   display: flex;
   justify-content: space-between;
@@ -17,7 +16,6 @@ html, body {
 
 .playing-bar {
   display: inline-block;
-  background: white;
   width: 25%;
   height: 100%;
   animation: up-and-down 1.3s ease infinite alternate;

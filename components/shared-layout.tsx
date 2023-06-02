@@ -1,10 +1,13 @@
 import Link from "next/link";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, ReactNode } from "react";
 import { HiMenuAlt2 } from "react-icons/hi";
-import { Player } from "./player";
 import { SideMenu } from "./sidemenu";
 
-export function SharedLayout(props: PropsWithChildren) {
+export type SharedLayoutProps = {
+  footer?: ReactNode;
+};
+
+export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
   return (
     <div className="flex h-full flex-1 flex-col">
       <div className="drawer drawer-mobile">
@@ -38,7 +41,6 @@ export function SharedLayout(props: PropsWithChildren) {
           <main className="flex flex-col h-full bg-base-200 overflow-y-auto">
             {props.children}
           </main>
-          <Player />
         </div>
         {/*  */}
         <div className="drawer-side border-r border-base-300">
@@ -56,6 +58,7 @@ export function SharedLayout(props: PropsWithChildren) {
         </div>
         {/*  */}
       </div>
+      {props.footer}
     </div>
   );
 }

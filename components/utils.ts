@@ -1,4 +1,4 @@
-import type { TrackInfo } from "./radio/entity";
+import type { TrackInfo } from "./radio-entity";
 
 export const APP_URL = "https://al-faidah.com";
 

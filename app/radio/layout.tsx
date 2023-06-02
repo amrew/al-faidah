@@ -1,3 +1,21 @@
-import { SharedLayout } from "../shared-layout";
+import { PropsWithChildren } from "react";
+import { Player } from "~/components/player";
+import { RefreshButton } from "~/components/refresh-button";
+import { SharedLayout } from "~/components/shared-layout";
 
-export default SharedLayout;
+export default function RadioLayout(props: PropsWithChildren) {
+  return (
+    <SharedLayout
+      footer={
+        <div>
+          <div className="relative">
+            <RefreshButton />
+          </div>
+          <Player />
+        </div>
+      }
+    >
+      {props.children}
+    </SharedLayout>
+  );
+}

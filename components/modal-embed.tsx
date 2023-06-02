@@ -1,6 +1,6 @@
-import { TrackInfo } from "./entity";
+import { TrackInfo } from "./radio-entity";
 import { RadioItem } from "./radio-item";
-import { APP_URL, ThemeName, themes } from "../utils";
+import { APP_URL, ThemeName, themes } from "./utils";
 import { useState } from "react";
 import { BiCheck } from "react-icons/bi";
 
@@ -12,7 +12,7 @@ function generateIFrameTemplate(src: string) {
   scrolling="no"></iframe>`;
 }
 
-export function EmbedModal({ track, id }: { track: TrackInfo; id: string }) {
+export function ModalEmbed({ track, id }: { track: TrackInfo; id: string }) {
   const [theme, setTheme] = useState<ThemeName>("cupcake");
   return (
     <>

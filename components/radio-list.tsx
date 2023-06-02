@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { SortBy, TrackInfo } from "./entity";
+import { SortBy, TrackInfo } from "./radio-entity";
 import { RadioItem } from "./radio-item";
 import MiniSearch, { SearchResult } from "minisearch";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
-import { sortRadios } from "../utils";
+import { sortRadios } from "./utils";
 
 type FilterOption = {
   name: string;
@@ -101,9 +101,12 @@ export function RadioList(props: RadioListProps) {
   }, [props.items, keyword, sortBy, teacher, topic]);
 
   return (
-    <div>
+    <div className="flex flex-col p-4 md:p-8 gap-4">
+      <div className="flex flex-row justify-between items-center">
+        <h1 className="text-2xl font-bold">Radio</h1>
+      </div>
       {filterShown ? (
-        <div className="mb-6 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
           <input
             type="text"
             placeholder="Cari radio / judul..."
@@ -152,7 +155,7 @@ export function RadioList(props: RadioListProps) {
           </button>
         </div>
       ) : null}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {results?.map((item) => (
           <RadioItem key={item.id} item={item} />
         ))}

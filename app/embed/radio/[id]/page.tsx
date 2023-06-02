@@ -1,5 +1,5 @@
-import { getTracks } from "../../../radio/service";
-import { RadioItem } from "../../../radio/radio-item";
+import { getTracks } from "~/components/radio-service";
+import { RadioItem } from "~/components/radio-item";
 
 export default async function RadioEmbed({
   params,

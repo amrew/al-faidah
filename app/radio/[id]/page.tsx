@@ -1,8 +1,7 @@
-import { getRadio, getTracks } from "../service";
-import { RadioList } from "../radio-list";
+import { getRadio, getTracks } from "~/components/radio-service";
 import Image from "next/image";
 import { BiLink } from "react-icons/bi";
-import { RadioItem } from "../radio-item";
+import { RadioItem } from "~/components/radio-item";
 
 export default async function RadioDetail({
   params,

@@ -1,6 +1,6 @@
 import { get } from "@vercel/edge-config";
-import { getTracks } from "./service";
-import { RadioList } from "./radio-list";
+import { getTracks } from "~/components/radio-service";
+import { RadioList } from "~/components/radio-list";
 
 export default async function Home({
   searchParams,
@@ -12,12 +12,5 @@ export default async function Home({
     get<{ name: string; keyword: string }[]>("teachers"),
     get<{ name: string; keyword: string }[]>("topics"),
   ]);
-  return (
-    <main className="flex flex-col p-4 sm:p-8">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-bold">Radio</h1>
-        <RadioList items={radios} teachers={teachers} topics={topics} />
-      </div>
-    </main>
-  );
+  return <RadioList items={radios} teachers={teachers} topics={topics} />;
 }
