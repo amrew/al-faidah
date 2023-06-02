@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { supabase } from "~/clients/supabaseClient";
-import { PropsWithChildren, cache } from "react";
+import type { PropsWithChildren } from "react";
+import { cache } from "react";
 import { getTracks } from "~/components/radio-service";
 import { RadioItem } from "~/components/radio-item";
 import { AudioItem } from "~/components/audio-item";

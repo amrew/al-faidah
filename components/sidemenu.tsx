@@ -11,12 +11,14 @@ import { usePathname } from "next/navigation";
 import { useMedia } from "react-use";
 import { useEffect, useRef } from "react";
 import { clientCookies } from "~/clients/cookies";
-import { ThemeName, themes } from "./utils";
+import type { ThemeName } from "./utils";
+import { themes } from "./utils";
 
 export function SideMenu() {
   const pathname = usePathname();
   const focusClassName = "font-bold text-primary-focus";
   const isWide = useMedia("(min-width: 1024px)", false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const drawerRef = useRef<any>();
 
   useEffect(() => {

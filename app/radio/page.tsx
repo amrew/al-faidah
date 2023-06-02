@@ -1,16 +1,24 @@
-import { get } from "@vercel/edge-config";
+import { getAll } from "@vercel/edge-config";
 import { getTracks } from "~/components/radio-service";
-import { RadioList } from "~/components/radio-list";
+import { RadioListWithFilter } from "~/components/radio-list-with-filter";
+
+type NameKeywordType = { name: string; keyword: string };
+
+export const revalidate = 10;
 
 export default async function Home({
   searchParams,
 }: {
   searchParams: { type: "rii" | "syariah" };
 }) {
-  const [radios, teachers, topics] = await Promise.all([
+  const [radios, { teachers, topics }] = await Promise.all([
     getTracks({ type: searchParams.type }),
-    get<{ name: string; keyword: string }[]>("teachers"),
-    get<{ name: string; keyword: string }[]>("topics"),
+    getAll<{ teachers: NameKeywordType[]; topics: NameKeywordType[] }>([
+      "teachers",
+      "topics",
+    ]),
   ]);
-  return <RadioList items={radios} teachers={teachers} topics={topics} />;
+  return (
+    <RadioListWithFilter items={radios} teachers={teachers} topics={topics} />
+  );
 }

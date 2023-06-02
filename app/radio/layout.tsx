@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 import { Player } from "~/components/player";
 import { RefreshButton } from "~/components/refresh-button";
 import { SharedLayout } from "~/components/shared-layout";

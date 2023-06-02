@@ -5,18 +5,18 @@ import { BiHeadphone, BiPlay, BiStop, BiLoader } from "react-icons/bi";
 import { BsShare } from "react-icons/bs";
 import { ImEmbed2 } from "react-icons/im";
 import { RWebShare } from "react-web-share";
-import { TrackInfo } from "./radio-entity";
+import type { TrackInfo } from "./radio-entity";
 import { useAudioContext } from "./audio-context";
 import { APP_URL } from "./utils";
-import { ModalEmbed } from "./modal-embed";
 import { PlayingAnimation } from "./playing-animation";
 
 export type RadioItemProps = {
   item: TrackInfo;
   embed?: boolean;
+  onEmbedClick?: () => void;
 };
 
-export function RadioItem({ item, embed }: RadioItemProps) {
+export function RadioItem({ item, embed, onEmbedClick }: RadioItemProps) {
   const { track, play, stop, isLoading } = useAudioContext();
   const isActive = track?.url === item.trackUrl;
   const isLive = item.status === "LIVE";
@@ -72,9 +72,10 @@ export function RadioItem({ item, embed }: RadioItemProps) {
       </div>
       <div className={`px-4 py-3 flex justify-between`}>
         <div className="flex flex-row gap-2 items-center">
-          {!embed ? (
+          {onEmbedClick && !embed ? (
             <label
-              htmlFor={`embed-modal-${item.id}`}
+              htmlFor="modal-embed"
+              onClick={onEmbedClick}
               className={`btn btn-ghost btn-sm btn-circle`}
             >
               <ImEmbed2 size={16} />
@@ -111,9 +112,6 @@ export function RadioItem({ item, embed }: RadioItemProps) {
           </button>
         </div>
       </div>
-      {!embed ? (
-        <ModalEmbed id={`embed-modal-${item.id}`} track={item} />
-      ) : null}
     </div>
   );
 }

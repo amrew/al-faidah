@@ -1,6 +1,7 @@
-import { TrackInfo } from "./radio-entity";
+import type { TrackInfo } from "./radio-entity";
 import { RadioItem } from "./radio-item";
-import { APP_URL, ThemeName, themes } from "./utils";
+import type { ThemeName } from "./utils";
+import { APP_URL, themes } from "./utils";
 import { useState } from "react";
 import { BiCheck } from "react-icons/bi";
 
@@ -12,11 +13,15 @@ function generateIFrameTemplate(src: string) {
   scrolling="no"></iframe>`;
 }
 
-export function ModalEmbed({ track, id }: { track: TrackInfo; id: string }) {
+export type ModalEmbedProps = {
+  track?: TrackInfo;
+};
+
+export function ModalEmbed({ track }: ModalEmbedProps) {
   const [theme, setTheme] = useState<ThemeName>("cupcake");
   return (
     <>
-      <input type="checkbox" id={id} className="modal-toggle" />
+      <input type="checkbox" id="modal-embed" className="modal-toggle" />
       <div className="modal">
         <div className="modal-box bg-white flex flex-col gap-4">
           <h3 className="text-lg font-bold">Preview</h3>
@@ -33,20 +38,22 @@ export function ModalEmbed({ track, id }: { track: TrackInfo; id: string }) {
             ))}
           </div>
           <div data-theme={theme}>
-            <RadioItem item={track} embed />
+            {track ? <RadioItem item={track} embed /> : null}
           </div>
           <p>Salin kode berikut untuk pasang di website atau blog kamu</p>
           <div className="mockup-code">
             <pre>
               <code>
-                {generateIFrameTemplate(
-                  `${APP_URL}/embed/radio/${track.serial}?theme=${theme}`
-                )}
+                {track
+                  ? generateIFrameTemplate(
+                      `${APP_URL}/embed/radio/${track.serial}?theme=${theme}`
+                    )
+                  : ""}
               </code>
             </pre>
           </div>
           <div className="modal-action">
-            <label className="btn btn-outline btn-sm" htmlFor={id}>
+            <label htmlFor="modal-embed" className="btn btn-outline btn-sm">
               Tutup
             </label>
           </div>

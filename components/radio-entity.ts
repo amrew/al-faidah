@@ -25,3 +25,8 @@ export type RadioInfo = {
   imgnya: string;
   prop: string;
 };
+
+export type FilterOption = {
+  name: string;
+  keyword: string;
+};

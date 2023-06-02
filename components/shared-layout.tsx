@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PropsWithChildren, ReactNode } from "react";
+import type { PropsWithChildren, ReactNode } from "react";
 import { HiMenuAlt2 } from "react-icons/hi";
 import { SideMenu } from "./sidemenu";
 

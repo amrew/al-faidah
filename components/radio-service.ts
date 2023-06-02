@@ -1,5 +1,5 @@
 import { get } from "@vercel/edge-config";
-import { RadioInfo, TrackInfo } from "./radio-entity";
+import type { RadioInfo, TrackInfo } from "./radio-entity";
 import { sortRadios } from "./utils";
 
 const RII_URL = process.env.RII_URL;
@@ -17,13 +17,14 @@ export async function getTracks(params?: {
 
   const [result, proxyUrl] = await Promise.all([
     fetch(url, {
-      next: { revalidate: 5 },
+      next: { revalidate: 10 },
     }),
     get<string>("proxyUrl"),
   ]);
 
   const data = await result.json();
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tracks: TrackInfo[] = data.map((item: any) => {
     const parsed = item.url.split("//");
     const [ip, port] = parsed[1].split(":");
