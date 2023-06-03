@@ -17,6 +17,7 @@ export function RefreshButton(props: RefreshButtonProps) {
       let timer: NodeJS.Timer | undefined = undefined;
 
       const startLongPooling = () => {
+        router.refresh();
         timer = setInterval(() => {
           router.refresh();
         }, props.refreshInterval);
