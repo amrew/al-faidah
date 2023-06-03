@@ -4,7 +4,7 @@ import type { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 
 export type MemberNavigationProps = {
   //
@@ -14,7 +14,6 @@ export function MemberNavigation({}: MemberNavigationProps) {
   const supabase = createClientComponentClient();
 
   const router = useRouter();
-  const [isPending, setTransition] = useTransition();
 
   const [user, setUser] = useState<User | null | undefined>();
   const userMetadata = user?.user_metadata;
@@ -22,9 +21,7 @@ export function MemberNavigation({}: MemberNavigationProps) {
 
   const logout = async () => {
     await supabase.auth.signOut();
-    setTransition(() => {
-      router.refresh();
-    });
+    router.push("/");
   };
 
   useEffect(() => {
@@ -45,10 +42,6 @@ export function MemberNavigation({}: MemberNavigationProps) {
   const loading = (
     <button className="btn-primary btn-disabled btn normal-case text-white btn-sm w-20" />
   );
-
-  if (isPending) {
-    return loading;
-  }
 
   return user ? (
     <div className="dropdown dropdown-end">
