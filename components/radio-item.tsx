@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { BiHeadphone, BiPlay, BiStop, BiLoader } from "react-icons/bi";
-import { BsShare } from "react-icons/bs";
+import { BsBookmark, BsBookmarkFill, BsShare } from "react-icons/bs";
 import { ImEmbed2 } from "react-icons/im";
 import { RWebShare } from "react-web-share";
 import type { TrackInfo } from "./radio-entity";
@@ -13,10 +13,22 @@ import { PlayingAnimation } from "./playing-animation";
 export type RadioItemProps = {
   item: TrackInfo;
   embed?: boolean;
+  isLiked?: boolean;
+  toggleLikeLoading?: boolean;
   onEmbedClick?: () => void;
+  onLikeClick?: () => void;
+  onUnlikeClick?: () => void;
 };
 
-export function RadioItem({ item, embed, onEmbedClick }: RadioItemProps) {
+export function RadioItem({
+  item,
+  embed,
+  isLiked,
+  toggleLikeLoading,
+  onEmbedClick,
+  onLikeClick,
+  onUnlikeClick,
+}: RadioItemProps) {
   const { track, play, stop, isLoading } = useAudioContext();
   const isActive = track?.url === item.trackUrl;
   const isLive = item.status === "LIVE";
@@ -72,6 +84,22 @@ export function RadioItem({ item, embed, onEmbedClick }: RadioItemProps) {
       </div>
       <div className={`px-4 py-3 flex justify-between`}>
         <div className="flex flex-row gap-2 items-center">
+          {!toggleLikeLoading ? (
+            <button
+              className={`btn btn-ghost btn-sm btn-circle`}
+              onClick={isLiked ? onUnlikeClick : onLikeClick}
+            >
+              {isLiked ? (
+                <BsBookmarkFill size={16} className="text-accent" />
+              ) : (
+                <BsBookmark size={16} />
+              )}
+            </button>
+          ) : (
+            <button className={`btn btn-ghost btn-sm btn-circle`}>
+              <BiLoader size={12} />
+            </button>
+          )}
           {onEmbedClick && !embed ? (
             <label
               htmlFor="modal-embed"

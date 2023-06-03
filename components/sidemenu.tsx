@@ -7,9 +7,9 @@ import {
 } from "react-icons/hi";
 import { BiRadio } from "react-icons/bi";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useMedia } from "react-use";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useTransition } from "react";
 import { clientCookies } from "~/clients/cookies";
 import type { ThemeName } from "./utils";
 import { themes } from "./utils";
@@ -18,6 +18,10 @@ export function SideMenu() {
   const pathname = usePathname();
   const focusClassName = "font-bold text-primary-focus";
   const isWide = useMedia("(min-width: 1024px)", false);
+
+  const router = useRouter();
+  const [, startTransition] = useTransition();
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const drawerRef = useRef<any>();
 
@@ -33,7 +37,9 @@ export function SideMenu() {
 
   const changeTheme = (theme: ThemeName) => {
     clientCookies.set("theme", theme);
-    document.documentElement.setAttribute("data-theme", theme);
+    startTransition(() => {
+      router.refresh();
+    });
   };
 
   return (
@@ -51,7 +57,7 @@ export function SideMenu() {
             Artikel
           </Link>
         </li>
-        <li className={pathname.startsWith("/radio") ? focusClassName : ""}>
+        <li className={pathname === "/radio" ? focusClassName : ""}>
           <Link href="/radio" onClick={clearDrawer}>
             <BiRadio />
             Radio

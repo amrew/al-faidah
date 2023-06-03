@@ -15,7 +15,6 @@ type FilterOption = {
 
 export type RadioListWithFilterProps = {
   items: TrackInfo[];
-  filterShown?: boolean;
   teachers?: FilterOption[];
   topics?: FilterOption[];
 };
@@ -49,7 +48,7 @@ const defaultFilter = {
 };
 
 export function RadioListWithFilter(props: RadioListWithFilterProps) {
-  const { filterShown = true, teachers = [], topics = [] } = props;
+  const { teachers = [], topics = [] } = props;
 
   const [{ keyword, sortBy, teacher, topic }, setFilter] = useState<{
     keyword: string;
@@ -106,47 +105,45 @@ export function RadioListWithFilter(props: RadioListWithFilterProps) {
       <div className="flex flex-row justify-between items-center">
         <h1 className="text-2xl font-bold">Radio</h1>
       </div>
-      {filterShown ? (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
-          <input
-            type="text"
-            placeholder="Cari radio / judul..."
-            className="input input-bordered input-sm sm:input-md"
-            value={keyword}
-            onChange={(event) => setKeyword(event.target.value)}
-          />
-          <select
-            className="select select-bordered select-sm sm:select-md"
-            onChange={(event) => setSortBy(event.target.value)}
-          >
-            <option value="">Urutkan</option>
-            <option value="most">Pendengar Terbanyak</option>
-            <option value="less">Pendengar Tersedikit</option>
-          </select>
-          <select
-            className="select select-bordered select-sm sm:select-md"
-            onChange={(event) => setTeacher(event.target.value)}
-          >
-            <option value="">Semua Ustadz</option>
-            {teachers.map((teacher) => (
-              <option key={teacher.keyword} value={teacher.keyword}>
-                {teacher.name}
-              </option>
-            ))}
-          </select>
-          <select
-            className="select select-bordered select-sm sm:select-md"
-            onChange={(event) => setTopic(event.target.value)}
-          >
-            <option value="">Semua Topic</option>
-            {topics.map((item) => (
-              <option key={item.keyword} value={item.keyword}>
-                {item.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      ) : null}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+        <input
+          type="text"
+          placeholder="Cari radio / judul..."
+          className="input input-bordered input-sm sm:input-md"
+          value={keyword}
+          onChange={(event) => setKeyword(event.target.value)}
+        />
+        <select
+          className="select select-bordered select-sm sm:select-md"
+          onChange={(event) => setSortBy(event.target.value)}
+        >
+          <option value="">Urutkan</option>
+          <option value="most">Pendengar Terbanyak</option>
+          <option value="less">Pendengar Tersedikit</option>
+        </select>
+        <select
+          className="select select-bordered select-sm sm:select-md"
+          onChange={(event) => setTeacher(event.target.value)}
+        >
+          <option value="">Semua Ustadz</option>
+          {teachers.map((teacher) => (
+            <option key={teacher.keyword} value={teacher.keyword}>
+              {teacher.name}
+            </option>
+          ))}
+        </select>
+        <select
+          className="select select-bordered select-sm sm:select-md"
+          onChange={(event) => setTopic(event.target.value)}
+        >
+          <option value="">Semua Topic</option>
+          {topics.map((item) => (
+            <option key={item.keyword} value={item.keyword}>
+              {item.name}
+            </option>
+          ))}
+        </select>
+      </div>
       {results.length === 0 ? (
         <div className="flex flex-1 flex-col justify-center items-center p-8 bg-base-100 gap-2">
           <HiOutlineDocumentSearch size={48} />

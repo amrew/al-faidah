@@ -1,5 +1,4 @@
 import Link from "next/link";
-import type { PropsWithChildren } from "react";
 import { getTracks } from "~/components/radio-service";
 import { RadioItem } from "~/components/radio-item";
 import { AudioItem } from "~/components/audio-item";
@@ -8,15 +7,7 @@ import { SharedLayout } from "~/components/shared-layout";
 import { Player } from "~/components/player";
 import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-
-function Content(props: PropsWithChildren<{ title: string }>) {
-  return (
-    <div className="flex flex-col gap-2">
-      <h1 className="text-2xl font-bold">{props.title}</h1>
-      {props.children}
-    </div>
-  );
-}
+import { Content } from "~/components/content";
 
 export default async function Home() {
   const supabase = createServerComponentClient({ cookies });

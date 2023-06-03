@@ -1,8 +1,7 @@
 import { getAll } from "@vercel/edge-config";
 import { getTracks } from "~/components/radio-service";
 import { RadioListWithFilter } from "~/components/radio-list-with-filter";
-
-type NameKeywordType = { name: string; keyword: string };
+import type { FilterOption } from "~/components/radio-entity";
 
 export const revalidate = 10;
 
@@ -13,7 +12,7 @@ export default async function Home({
 }) {
   const [radios, { teachers, topics }] = await Promise.all([
     getTracks({ type: searchParams.type }),
-    getAll<{ teachers: NameKeywordType[]; topics: NameKeywordType[] }>([
+    getAll<{ teachers: FilterOption[]; topics: FilterOption[] }>([
       "teachers",
       "topics",
     ]),
