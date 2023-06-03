@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { SortBy, TrackInfo } from "./radio-entity";
 import MiniSearch from "minisearch";
 import type { SearchResult } from "minisearch";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { sortRadios } from "./utils";
 import { RadioList } from "./radio-list";
-import { useRouter } from "next/navigation";
 
 type FilterOption = {
   name: string;
@@ -52,7 +51,6 @@ const defaultFilter = {
 export function RadioListWithFilter(props: RadioListWithFilterProps) {
   const { filterShown = true, teachers = [], topics = [] } = props;
 
-  const router = useRouter();
   const [{ keyword, sortBy, teacher, topic }, setFilter] = useState<{
     keyword: string;
     sortBy: SortBy;
@@ -102,30 +100,6 @@ export function RadioListWithFilter(props: RadioListWithFilterProps) {
 
     return sortRadios(radios as TrackInfo[], sortBy);
   }, [props.items, keyword, sortBy, teacher, topic]);
-
-  useEffect(() => {
-    let timer: NodeJS.Timer | undefined = undefined;
-
-    const startLongPooling = () => {
-      timer = setInterval(() => {
-        router.refresh();
-      }, 10000);
-    };
-    const pauseLongPooling = () => {
-      clearInterval(timer);
-    };
-
-    startLongPooling();
-
-    window.addEventListener("focus", startLongPooling);
-    window.addEventListener("blur", pauseLongPooling);
-    return () => {
-      clearInterval(timer);
-      window.removeEventListener("focus", startLongPooling);
-      window.removeEventListener("blur", pauseLongPooling);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <div className="flex flex-col p-4 md:p-8 gap-4">

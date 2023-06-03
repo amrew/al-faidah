@@ -9,7 +9,7 @@ export default function RadioLayout(props: PropsWithChildren) {
       footer={
         <div>
           <div className="relative">
-            <RefreshButton />
+            <RefreshButton refreshInterval={10000} />
           </div>
           <Player />
         </div>
