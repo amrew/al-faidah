@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@prisma/client": "^4.14.1",
+    "@supabase/auth-helpers-nextjs": "^0.7.1",
     "@supabase/supabase-js": "^2.13.1",
     "@vercel/analytics": "^1.0.1",
     "@vercel/edge-config": "^0.2.0",
@@ -20,8 +21,10 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
+    "react-query": "^3.39.3",
     "react-use": "^17.4.0",
     "react-web-share": "^2.0.2",
+    "tiny-invariant": "^1.3.1",
     "universal-cookie": "^4.0.4"
   },
   "devDependencies": {
@@ -39,6 +42,7 @@
     "postcss": "^8.4.21",
     "prettier": "^2.8.7",
     "prisma": "^4.14.1",
+    "supabase": "^1.64.8",
     "tailwindcss": "^3.3.1",
     "typescript": "5.0.3"
   }

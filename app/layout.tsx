@@ -2,6 +2,7 @@ import "./global.css";
 import { Analytics } from "@vercel/analytics/react";
 import { AudioProvider } from "~/components/audio-context";
 import { cookies } from "next/headers";
+import { Provider } from "~/components/provider";
 
 export const metadata = {
   title: "Al Faidah",
@@ -38,7 +39,9 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         <link rel="manifest" href="/site.webmanifest" />
       </head>
       <body>
-        <AudioProvider>{children}</AudioProvider>
+        <Provider>
+          <AudioProvider>{children}</AudioProvider>
+        </Provider>
         <Analytics />
       </body>
     </html>

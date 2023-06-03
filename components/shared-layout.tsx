@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { PropsWithChildren, ReactNode } from "react";
 import { HiMenuAlt2 } from "react-icons/hi";
 import { SideMenu } from "./sidemenu";
+import { MemberNavigation } from "./member-navigation";
 
 export type SharedLayoutProps = {
   footer?: ReactNode;
@@ -32,10 +33,7 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
               </Link>
             </div>
             <div className="flex-none gap-2 mr-2 ml-2">
-              <a className="btn-ghost btn normal-case btn-sm">Masuk</a>
-              <a className="btn-primary btn normal-case text-white btn-sm">
-                Daftar
-              </a>
+              <MemberNavigation />
             </div>
           </header>
           <main className="flex flex-col h-full bg-base-200 overflow-y-auto">

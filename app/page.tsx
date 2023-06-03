@@ -1,17 +1,13 @@
 import Link from "next/link";
-import { supabase } from "~/clients/supabaseClient";
 import type { PropsWithChildren } from "react";
-import { cache } from "react";
 import { getTracks } from "~/components/radio-service";
 import { RadioItem } from "~/components/radio-item";
 import { AudioItem } from "~/components/audio-item";
 import { ArticleItem } from "~/components/article-item";
 import { SharedLayout } from "~/components/shared-layout";
 import { Player } from "~/components/player";
-
-const getTags = cache(async () => {
-  return await supabase.from("tags").select();
-});
+import { cookies } from "next/headers";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 
 function Content(props: PropsWithChildren<{ title: string }>) {
   return (
@@ -23,11 +19,13 @@ function Content(props: PropsWithChildren<{ title: string }>) {
 }
 
 export default async function Home() {
+  const supabase = createServerComponentClient({ cookies });
   const [radios, { data: tags }] = await Promise.all([
     getTracks({ sortBy: "most" }),
-    getTags(),
+    supabase.from("tags").select(),
   ]);
   const twoRadios = radios.slice(0, 2);
+
   return (
     <SharedLayout footer={<Player />}>
       <main className="flex flex-col p-4 sm:p-8 gap-6">
