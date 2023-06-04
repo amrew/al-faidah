@@ -110,23 +110,6 @@
     "tiny-glob" "^0.2.9"
     "tslib" "^2.4.0"
 
-"@prisma/client@^4.14.1":
-  "integrity" "sha512-TZIswkeX1ccsHG/eN2kICzg/csXll0osK3EHu1QKd8VJ3XLcXozbNELKkCNfsCUvKJAwPdDtFCzF+O+raIVldw=="
-  "resolved" "https://registry.npmjs.org/@prisma/client/-/client-4.14.1.tgz"
-  "version" "4.14.1"
-  dependencies:
-    "@prisma/engines-version" "4.14.0-67.d9a4c5988f480fa576d43970d5a23641aa77bc9c"
-
-"@prisma/engines-version@4.14.0-67.d9a4c5988f480fa576d43970d5a23641aa77bc9c":
-  "integrity" "sha512-3jum8/YSudeSN0zGW5qkpz+wAN2V/NYCQ+BPjvHYDfWatLWlQkqy99toX0GysDeaUoBIJg1vaz2yKqiA3CFcQw=="
-  "resolved" "https://registry.npmjs.org/@prisma/engines-version/-/engines-version-4.14.0-67.d9a4c5988f480fa576d43970d5a23641aa77bc9c.tgz"
-  "version" "4.14.0-67.d9a4c5988f480fa576d43970d5a23641aa77bc9c"
-
-"@prisma/engines@4.14.1":
-  "integrity" "sha512-APqFddPVHYmWNKqc+5J5SqrLFfOghKOLZxobmguDUacxOwdEutLsbXPVhNnpFDmuQWQFbXmrTTPoRrrF6B1MWA=="
-  "resolved" "https://registry.npmjs.org/@prisma/engines/-/engines-4.14.1.tgz"
-  "version" "4.14.1"
-
 "@rushstack/eslint-patch@^1.1.3":
   "integrity" "sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg=="
   "resolved" "https://registry.npmjs.org/@rushstack/eslint-patch/-/eslint-patch-1.2.0.tgz"
@@ -2483,13 +2466,6 @@
   "integrity" "sha512-yPngTo3aXUUmyuTjeTUT75txrf+aMh9FiD7q9ZE/i6r0bPb22g4FsE6Y338PQX1bmfy08i9QQCB7/rcUAVntfw=="
   "resolved" "https://registry.npmjs.org/prettier/-/prettier-2.8.7.tgz"
   "version" "2.8.7"
-
-"prisma@*", "prisma@^4.14.1":
-  "integrity" "sha512-z6hxzTMYqT9SIKlzD08dhzsLUpxjFKKsLpp5/kBDnSqiOjtUyyl/dC5tzxLcOa3jkEHQ8+RpB/fE3w8bgNP51g=="
-  "resolved" "https://registry.npmjs.org/prisma/-/prisma-4.14.1.tgz"
-  "version" "4.14.1"
-  dependencies:
-    "@prisma/engines" "4.14.1"
 
 "prop-types@^15.8.1":
   "integrity" "sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg=="
