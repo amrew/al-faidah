@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { getTracks } from "~/components/radio-service";
-import { RadioItem } from "~/components/radio-item";
 import { AudioItem } from "~/components/audio-item";
 import { ArticleItem } from "~/components/article-item";
 import { SharedLayout } from "~/components/shared-layout";
@@ -8,6 +7,7 @@ import { Player } from "~/components/player";
 import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Content } from "~/components/content";
+import { RadioList } from "~/components/radio-list";
 
 export default async function Home() {
   const supabase = createServerComponentClient({ cookies });
@@ -37,21 +37,7 @@ export default async function Home() {
           <div className="flex flex-col xl:w-5/12 gap-4">
             <Content title="Radio Populer">
               <div className="flex flex-col gap-4">
-                {twoRadios.map((item) => (
-                  <RadioItem
-                    key={item.id}
-                    item={{
-                      id: item.id,
-                      serial: item.serial,
-                      logoUrl: item.logoUrl,
-                      name: item.name,
-                      trackTitle: item.trackTitle,
-                      listenerCount: item.listenerCount,
-                      status: item.status,
-                      trackUrl: item.trackUrl,
-                    }}
-                  />
-                ))}
+                <RadioList items={twoRadios} />
               </div>
             </Content>
             <Content title="Lanjut mendengarkan">

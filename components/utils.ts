@@ -1,4 +1,4 @@
-import type { TrackInfo } from "./radio-entity";
+import type { SortBy, TrackInfo } from "./radio-entity";
 
 export const APP_URL = "https://al-faidah.com";
 
@@ -19,11 +19,14 @@ export const themes: { name: ThemeName; color: string }[] = [
   { name: "autumn", color: "bg-red-700" },
 ];
 
-export const sortRadios = (
-  radios: TrackInfo[],
-  sortBy: "most" | "less" | "default" | undefined
-) => {
-  if (sortBy === "most") {
+export const sortRadios = (radios: TrackInfo[], sortBy: SortBy | undefined) => {
+  if (sortBy === "live") {
+    return [...radios].sort((a, b) =>
+      a.status.toLowerCase() === "live" && b.status.toLowerCase() !== "live"
+        ? -1
+        : 1
+    );
+  } else if (sortBy === "most") {
     return [...radios].sort((a, b) =>
       a.listenerCount > b.listenerCount ? -1 : 1
     );

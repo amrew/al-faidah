@@ -66,6 +66,8 @@ export function RadioListWithFilter(props: RadioListWithFilterProps) {
         return { ...prev, sortBy: "most" };
       } else if (sortBy === "less") {
         return { ...prev, sortBy: "less" };
+      } else if (sortBy === "live") {
+        return { ...prev, sortBy: "live" };
       } else {
         return { ...prev, sortBy: "default" };
       }
@@ -120,6 +122,7 @@ export function RadioListWithFilter(props: RadioListWithFilterProps) {
           <option value="">Urutkan</option>
           <option value="most">Pendengar Terbanyak</option>
           <option value="less">Pendengar Tersedikit</option>
+          <option value="live">Sedang Live</option>
         </select>
         <select
           className="select select-bordered select-sm sm:select-md"

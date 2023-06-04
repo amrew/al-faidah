@@ -9,7 +9,7 @@ export type TrackInfo = {
   trackUrl: string;
 };
 
-export type SortBy = "most" | "less" | "default";
+export type SortBy = "live" | "most" | "less" | "default";
 
 export type RadioInfo = {
   nama_rad: string;

@@ -107,7 +107,9 @@ export function RadioList(props: RadioListProps) {
   return (
     <>
       {results?.map((item, index) => {
-        return index < half || renderOnClient ? (
+        return (results.length > 10 && index < half) ||
+          results.length < 10 ||
+          renderOnClient ? (
           <RadioItem
             key={item.id}
             item={item}
