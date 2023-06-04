@@ -4,11 +4,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { ImWarning } from "react-icons/im";
+import { ImInfo, ImWarning } from "react-icons/im";
 import { useMutation } from "react-query";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-export default function AuthLogin() {
+export default function AuthLogin({
+  searchParams,
+}: {
+  searchParams: { messageType: string };
+}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -45,7 +49,17 @@ export default function AuthLogin() {
   });
 
   return (
-    <div className="flex h-full items-center justify-center bg-base-200">
+    <div className="flex flex-col h-full items-center justify-center bg-base-200 gap-4">
+      {searchParams.messageType ? (
+        <div className="max-w-sm alert alert-info mt-4 justify-start flex flex-row">
+          <ImInfo size={20} />
+          <span>
+            {searchParams.messageType === "like"
+              ? "Masuk/daftar dulu sebelum menandai radio favorite"
+              : ""}
+          </span>
+        </div>
+      ) : null}
       <form
         onSubmit={(e) => {
           e.preventDefault();

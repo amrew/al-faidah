@@ -45,7 +45,7 @@ export function RadioList(props: RadioListProps) {
         throw result.error;
       }
     } else {
-      router.push("/auth/login");
+      router.push("/auth/login?messageType=like");
     }
   };
 
@@ -61,7 +61,7 @@ export function RadioList(props: RadioListProps) {
         throw result.error;
       }
     } else {
-      router.push("/auth/login");
+      router.push("/auth/login?messageType=like");
     }
   };
 
