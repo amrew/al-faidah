@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import Link from "next/link";
 import { BiCircle } from "react-icons/bi";
 
@@ -22,16 +23,19 @@ export type ArticleItemProps = {
 export function ArticleItem(props: ArticleItemProps) {
   const titleDescription = (
     <>
-      <h1 className="text-lg font-bold line-clamp-2">{props.title}</h1>
-      <p
-        className={`text-gray-500 ${
+      <h1
+        className="text-xl font-bold line-clamp-2"
+        dangerouslySetInnerHTML={{ __html: props.title }}
+      />
+      <div
+        className={`prose text-gray-500 ${
           !props.isFullContent ? "line-clamp-3" : ""
         }`}
-      >
-        {props.content}
-      </p>
+        dangerouslySetInnerHTML={{ __html: props.content }}
+      />
     </>
   );
+  const createdAt = dayjs(props.createdAt).format("DD MMM YYYY");
   return (
     <div className="bg-base-100 rounded-md border border-base-300 p-4">
       <div className="flex flex-row gap-1 mb-1">
@@ -51,10 +55,10 @@ export function ArticleItem(props: ArticleItemProps) {
             <div>{titleDescription}</div>
           )}
           <div className="flex flex-row gap-2 mt-1 items-center">
-            <span className="text-gray-600 text-sm">{props.createdAt}</span>
+            <span className="text-gray-600 text-sm">{createdAt}</span>
             <BiCircle size={6} className="text-gray-600" />
             <span className="text-gray-600 text-sm">
-              baca {props.readDuration} menit
+              baca {Math.ceil(props.readDuration)} menit
             </span>
             <BiCircle size={6} className="text-gray-600 hidden sm:block" />
             <Link href={props.category.categoryUrl} className="hidden sm:block">

@@ -9,14 +9,26 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Content } from "~/components/content";
 import { RadioList } from "~/components/radio-list";
 
-export default async function Home() {
+export default async function Home({
+  searchParams: { page = 1 },
+}: {
+  searchParams: { page: number };
+}) {
+  const itemsPerPage = 5;
+  const offset = (page - 1) * itemsPerPage + 1;
   const supabase = createServerComponentClient({ cookies });
-  const [radios, { data: tags }] = await Promise.all([
+  const [radios, { data: tags }, { data: contents }] = await Promise.all([
     getTracks({ sortBy: "most" }),
-    supabase.from("tags").select(),
+    supabase.from("tags").select().eq("type", "category"),
+    supabase
+      .from("contents")
+      .select(
+        "title, slug, summary, image, created_at, read_stats, tags( slug, name ), publishers( title, logo_url, web_url )"
+      )
+      .range(offset, itemsPerPage)
+      .order("created_at", { ascending: false }),
   ]);
   const twoRadios = radios.slice(0, 2);
-
   return (
     <SharedLayout footer={<Player />}>
       <main className="flex flex-col p-4 sm:p-8 gap-6">
@@ -64,59 +76,26 @@ export default async function Home() {
           </div>
           <div className="flex flex-col xl:w-7/12 gap-4">
             <Content title="Artikel Terbaru">
-              <ArticleItem
-                author={{
-                  name: "syababsalafy.com",
-                  logoUrl:
-                    "https://syababsalafy.com/wp-content/uploads/2022/12/cropped-Desain-tanpa-judul-32x32.png",
-                }}
-                category={{
-                  name: "Santri",
-                  categoryUrl: "/artikel/category/1",
-                }}
-                title="3 Trik Jitu Agar Kamu Menjadi Juara Kelas"
-                content="Ujian semester di pondok pesantren adalah momen yang sangat berharga. Pada momen ini, para santri akan diuji sejauh mana pemahaman yang berhasil diporoleh selama satu semster penuh."
-                isFullContent={false}
-                createdAt="30 Mei"
-                readDuration={2}
-                detailUrl="https://syababsalafy.com/3-trik-jitu-agar-kamu-menjadi-juara-kelas.html"
-                imageUrl="https://syababsalafy.com/wp-content/uploads/2022/09/juara-1.jpg"
-              />
-              <ArticleItem
-                author={{
-                  name: "problematikaumat.com",
-                  logoUrl:
-                    "https://problematikaumat.com/wp-content/uploads/2018/11/favicon.png",
-                }}
-                category={{
-                  name: "Tanya Jawab",
-                  categoryUrl: "/artikel/category/2",
-                }}
-                title="Bekerja Di Madinah Atau Berdakwah di Kampung?"
-                content="Manakah yang lebih afdhol bagi seorang yang memiliki ilmu, bekerja di Madinah sehingga bisa shalat di masjid Nabawi atau tinggal di kampung untuk mendakwahkan al Quran dan Assunnah."
-                isFullContent={false}
-                createdAt="29 Mei"
-                readDuration={3}
-                detailUrl="https://problematikaumat.com/bekerja-di-madinah-atau-berdakwah-di-kampung"
-                imageUrl="https://problematikaumat.com/wp-content/uploads/2023/04/IMG-20230429-WA0007-750x375.jpg"
-              />
-              <ArticleItem
-                author={{
-                  name: "atsar.id",
-                  logoUrl: "https://www.atsar.id/favicon.ico",
-                }}
-                category={{
-                  name: "Adab-Akhlak",
-                  categoryUrl: "/artikel/category/3",
-                }}
-                title="Ujub Menghancurkan Amalan"
-                content="Jika Allah membukakan untukmu pintu shalat malam, janganlah engkau melihat orang-orang yang tidur dengan pandangan merendahkan!"
-                isFullContent={false}
-                createdAt="28 Mei"
-                readDuration={3}
-                detailUrl="https://www.atsar.id/2015/11/ujub-menghancurkan-amalan.html"
-                imageUrl="https://1.bp.blogspot.com/-1ux0yNKsdVQ/VkmWouOiiiI/AAAAAAAAFJs/CxdqFaoQjuo/s1600/ujub%2Bmenghancurkan%2Bamalan.jpg"
-              />
+              {contents?.map((item: any) => (
+                <ArticleItem
+                  key={item.slug}
+                  author={{
+                    name: item.publishers.title,
+                    logoUrl: item.publishers.logo_url,
+                  }}
+                  category={{
+                    name: item.tags.name,
+                    categoryUrl: `/artikel/category/${item.tags.slug}`,
+                  }}
+                  title={item.title}
+                  content={item.summary}
+                  isFullContent={false}
+                  createdAt={item.created_at}
+                  readDuration={item.read_stats.minutes}
+                  detailUrl={`/artikel/${item.slug}`}
+                  imageUrl={item.image?.medium?.url || item.image?.small?.url}
+                />
+              ))}
             </Content>
           </div>
         </div>
