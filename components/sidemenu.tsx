@@ -16,7 +16,7 @@ import { themes } from "./utils";
 
 export function SideMenu() {
   const pathname = usePathname();
-  const focusClassName = "font-bold text-primary-focus";
+  const focusClassName = "active";
   const isWide = useMedia("(min-width: 1024px)", false);
 
   const router = useRouter();
@@ -36,7 +36,7 @@ export function SideMenu() {
   };
 
   const changeTheme = (theme: ThemeName) => {
-    clientCookies.set("theme", theme);
+    clientCookies.set("theme", theme, { path: "/" });
     startTransition(() => {
       router.refresh();
     });
@@ -44,29 +44,49 @@ export function SideMenu() {
 
   return (
     <>
-      <ul className="menu w-56 p-2">
-        <li className={pathname === "/" ? focusClassName : ""}>
-          <Link href="/" onClick={clearDrawer}>
-            <HiOutlineHome />
+      <ul className="menu w-56 p-2 gap-2">
+        <li>
+          <Link
+            href="/"
+            onClick={clearDrawer}
+            prefetch={false}
+            className={pathname === "/" ? focusClassName : ""}
+          >
+            <HiOutlineHome size={24} />
             Beranda
           </Link>
         </li>
-        <li className={pathname.startsWith("/artikel") ? focusClassName : ""}>
-          <Link href="/kajian" onClick={clearDrawer}>
-            <HiOutlineNewspaper />
+        <li>
+          <Link
+            href="/artikel"
+            onClick={clearDrawer}
+            prefetch={false}
+            className={pathname.startsWith("/artikel") ? focusClassName : ""}
+          >
+            <HiOutlineNewspaper size={24} />
             Artikel
           </Link>
         </li>
-        <li className={pathname === "/radio" ? focusClassName : ""}>
-          <Link href="/radio" onClick={clearDrawer}>
-            <BiRadio />
+        <li>
+          <Link
+            href="/radio"
+            onClick={clearDrawer}
+            prefetch={false}
+            className={pathname === "/radio" ? focusClassName : ""}
+          >
+            <BiRadio size={24} />
             Radio
           </Link>
         </li>
-        <li className={pathname.startsWith("/kajian") ? focusClassName : ""}>
-          <Link href="/kajian" onClick={clearDrawer}>
-            <HiOutlineVolumeUp />
-            Audio Kajian
+        <li>
+          <Link
+            href="/c"
+            onClick={clearDrawer}
+            prefetch={false}
+            className={pathname.startsWith("/c") ? focusClassName : ""}
+          >
+            <HiOutlineVolumeUp size={24} />
+            Audio
           </Link>
         </li>
       </ul>

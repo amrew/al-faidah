@@ -6,7 +6,7 @@ import MiniSearch from "minisearch";
 import type { SearchResult } from "minisearch";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { sortRadios } from "./utils";
-import { RadioList } from "./radio-list";
+import { RadioList, RadioListLoading } from "./radio-list";
 
 type FilterOption = {
   name: string;
@@ -158,6 +158,39 @@ export function RadioListWithFilter(props: RadioListWithFilterProps) {
       ) : null}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         <RadioList items={results} />
+      </div>
+    </div>
+  );
+}
+
+export function RadioListWithFilterLoading() {
+  return (
+    <div className="flex flex-col p-4 md:p-8 gap-4">
+      <div className="flex flex-row justify-between items-center">
+        <h1 className="text-2xl font-bold">Radio</h1>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+        <input
+          type="text"
+          placeholder="Cari radio / judul..."
+          className="input input-bordered input-sm sm:input-md"
+          value=""
+        />
+        <select className="select select-bordered select-sm sm:select-md">
+          <option value="">Urutkan</option>
+          <option value="most">Pendengar Terbanyak</option>
+          <option value="less">Pendengar Tersedikit</option>
+          <option value="live">Sedang Live</option>
+        </select>
+        <select className="select select-bordered select-sm sm:select-md">
+          <option value="">Semua Ustadz</option>
+        </select>
+        <select className="select select-bordered select-sm sm:select-md">
+          <option value="">Semua Topic</option>
+        </select>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <RadioListLoading count={7} />
       </div>
     </div>
   );

@@ -143,3 +143,49 @@ export function RadioItem({
     </div>
   );
 }
+
+export function RadioItemLoading() {
+  return (
+    <div
+      className={`flex flex-1 flex-col border-base-00 rounded-md bg-base-100 border`}
+    >
+      <div className={`px-4 py-3 flex justify-between`}>
+        <div className="flex flex-row gap-3">
+          <div className="w-10 h-10 rounded-md bg-base-300" />
+          <div>
+            <h2
+              className={`line-clamp-1 font-bold text-md w-48 h-6 bg-base-300 animate-pulse`}
+            />
+            <div className={`flex flex-row items-center gap-1`}>
+              <BiHeadphone size={16} className="text-gray-500" />{" "}
+              <span className="text-sm text-gray-500">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="px-4 flex-1">
+        <p
+          className={`line-clamp-2 text-md text-base-content w-96 h-12 bg-base-300  animate-pulse`}
+        />
+      </div>
+      <div className={`px-4 py-3 flex justify-between`}>
+        <div className="flex flex-row gap-2 items-center">
+          <button className={`btn btn-ghost btn-sm btn-circle`}>
+            <BsBookmark size={16} />
+          </button>
+          <label className={`btn btn-ghost btn-sm btn-circle`}>
+            <ImEmbed2 size={16} />
+          </label>
+          <button className={`btn btn-ghost btn-sm btn-circle`}>
+            <BsShare size={16} />
+          </button>
+        </div>
+        <div className="flex flex-row gap-2 items-center">
+          <button className={`btn btn-primary w-16`}>
+            <BiPlay size={24} color="white" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

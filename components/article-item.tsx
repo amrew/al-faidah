@@ -24,13 +24,11 @@ export function ArticleItem(props: ArticleItemProps) {
   const titleDescription = (
     <>
       <h1
-        className="text-xl font-bold line-clamp-2"
+        className="text-xl md:text-2xl font-bold line-clamp-2"
         dangerouslySetInnerHTML={{ __html: props.title }}
       />
       <div
-        className={`prose text-gray-500 ${
-          !props.isFullContent ? "line-clamp-3" : ""
-        }`}
+        className={`prose ${!props.isFullContent ? "line-clamp-3" : ""}`}
         dangerouslySetInnerHTML={{ __html: props.content }}
       />
     </>
@@ -38,7 +36,7 @@ export function ArticleItem(props: ArticleItemProps) {
   const createdAt = dayjs(props.createdAt).format("DD MMM YYYY");
   return (
     <div className="bg-base-100 rounded-md border border-base-300 p-4">
-      <div className="flex flex-row gap-1 mb-1">
+      <div className="flex flex-row gap-1 mb-2">
         <img
           src={props.author.logoUrl}
           alt={props.author.name}
@@ -50,9 +48,15 @@ export function ArticleItem(props: ArticleItemProps) {
       <div className="flex flex-row gap-4">
         <div className="flex flex-col flex-1 justify-between">
           {!props.isFullContent ? (
-            <Link href={props.detailUrl}>{titleDescription}</Link>
+            <Link
+              href={props.detailUrl}
+              prefetch={false}
+              className="gap-1 flex flex-col"
+            >
+              {titleDescription}
+            </Link>
           ) : (
-            <div>{titleDescription}</div>
+            <div className="gap-1 flex flex-col">{titleDescription}</div>
           )}
           <div className="flex flex-row gap-2 mt-1 items-center">
             <span className="text-gray-600 text-sm">{createdAt}</span>
@@ -77,6 +81,59 @@ export function ArticleItem(props: ArticleItemProps) {
             />
           </div>
         ) : null}
+      </div>
+    </div>
+  );
+}
+
+export function ArticleDetail(props: Omit<ArticleItemProps, "isFullContent">) {
+  const createdAt = dayjs(props.createdAt).format("DD MMM YYYY");
+  return (
+    <div className="bg-base-100 rounded-md border border-base-300 p-10">
+      <div className="flex flex-row gap-2 mb-2">
+        <img
+          src={props.author.logoUrl}
+          alt={props.author.name}
+          width={24}
+          height={24}
+        />
+        <span className="text-md">{props.author.name}</span>
+      </div>
+      <div className="flex flex-row gap-4 mt-4">
+        <div className="flex flex-col flex-1 justify-between gap-8">
+          <div className="gap-4 flex flex-col">
+            <h1
+              className="text-xl md:text-4xl font-bold"
+              dangerouslySetInnerHTML={{ __html: props.title }}
+            />
+            {props.imageUrl ? (
+              <div>
+                <img
+                  src={props.imageUrl}
+                  alt={props.title}
+                  className="w-full h-48 object-cover"
+                />
+              </div>
+            ) : null}
+            <div
+              className={"prose"}
+              dangerouslySetInnerHTML={{ __html: props.content }}
+            />
+          </div>
+          <div className="flex flex-row gap-2 mt-1 items-center">
+            <span className="text-gray-600 text-sm">{createdAt}</span>
+            <BiCircle size={6} className="text-gray-600" />
+            <span className="text-gray-600 text-sm">
+              baca {Math.ceil(props.readDuration)} menit
+            </span>
+            <BiCircle size={6} className="text-gray-600 hidden sm:block" />
+            <Link href={props.category.categoryUrl} className="hidden sm:block">
+              <span className="badge badge-secondary line-clamp-1 text-white">
+                {props.category.name}
+              </span>
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

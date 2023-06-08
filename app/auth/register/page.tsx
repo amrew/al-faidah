@@ -111,6 +111,7 @@ export default function AuthRegister() {
               <p className="text-sm tracking-wide">
                 Sudah punya akun?{" "}
                 <Link
+                  prefetch={false}
                   href="/auth/login"
                   className="text-primary transition duration-200 hover:underline"
                 >

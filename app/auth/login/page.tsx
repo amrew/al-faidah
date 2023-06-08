@@ -74,6 +74,7 @@ export default function AuthLogin({
                 <p className="text-sm tracking-wide">
                   Tidak punya akun?{" "}
                   <Link
+                    prefetch={false}
                     href="/auth/register"
                     className="text-primary transition duration-200 hover:underline"
                   >

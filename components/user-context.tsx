@@ -20,10 +20,8 @@ export function UserProvider(props: PropsWithChildren) {
     };
     getUser();
 
-    supabase.auth.onAuthStateChange((event) => {
-      if (event === "SIGNED_OUT") {
-        setUser(null);
-      }
+    supabase.auth.onAuthStateChange(() => {
+      getUser();
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

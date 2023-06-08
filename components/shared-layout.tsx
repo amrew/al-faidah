@@ -26,13 +26,14 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
             {/*  */}
             <div className="flex-1">
               <Link
+                prefetch={false}
                 href="/"
                 className="btn-ghost btn text-xl normal-case lg:hidden"
               >
                 Al Faidah
               </Link>
             </div>
-            <div className="flex-none gap-2 mr-2 ml-2">
+            <div className="flex-none gap-1">
               <MemberNavigation />
             </div>
           </header>
@@ -43,9 +44,13 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
         {/*  */}
         <div className="drawer-side border-r border-base-300">
           <label htmlFor="drawer-1" className="drawer-overlay"></label>
-          <div className="bg-base-100 w-64">
+          <div className="bg-base-100 h-full">
             <div className="p-4">
-              <Link href="/" className="btn-ghost btn text-xl normal-case">
+              <Link
+                href="/"
+                className="btn-ghost btn text-xl normal-case"
+                prefetch={false}
+              >
                 Al Faidah
               </Link>
             </div>

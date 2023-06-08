@@ -3,11 +3,10 @@
 import { useContext, useEffect, useState } from "react";
 import { ModalEmbed } from "./modal-embed";
 import type { TrackInfo } from "./radio-entity";
-import { RadioItem } from "./radio-item";
+import { RadioItem, RadioItemLoading } from "./radio-item";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useMutation, useQuery } from "react-query";
 import { UserContext } from "./user-context";
-import { BiLoader } from "react-icons/bi";
 import { useRouter } from "next/navigation";
 
 export type RadioListProps = {
@@ -96,7 +95,7 @@ export function RadioList(props: RadioListProps) {
 
   if (props.favorite) {
     if (!radioLikesMap) {
-      return <BiLoader size={32} className="animate-spin" />;
+      return <RadioListLoading count={4} />;
     }
   }
 
@@ -125,6 +124,16 @@ export function RadioList(props: RadioListProps) {
         ) : null;
       })}
       <ModalEmbed track={selectedTrack} />
+    </>
+  );
+}
+
+export function RadioListLoading(props: { count: number }) {
+  return (
+    <>
+      {[...Array(props.count)].map((_, index) => (
+        <RadioItemLoading key={index} />
+      ))}
     </>
   );
 }

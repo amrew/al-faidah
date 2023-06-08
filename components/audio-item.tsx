@@ -11,7 +11,7 @@ export type AudioItemProps = {
 
 export function AudioItem(props: AudioItemProps) {
   return (
-    <div className="p-4 bg-base-100 rounded-md flex flex-row gap-4 border border-base-300">
+    <div className="p-4 bg-base-200 rounded-md flex flex-row gap-4 border border-base-300">
       <div className="flex flex-col flex-1">
         <h2 className="text-lg font-bold">{props.title}</h2>
         <p>{props.speaker}</p>
@@ -28,7 +28,7 @@ export function AudioItem(props: AudioItemProps) {
         </div>
       </div>
       <div className="flex flex-col gap-3 self-center">
-        <Link href={props.detailUrl}>
+        <Link href={props.detailUrl} prefetch={false}>
           <button className="btn btn-ghost">
             Lihat <BiChevronRight />
           </button>

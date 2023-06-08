@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { HiRefresh } from "react-icons/hi";
 
 export type RefreshButtonProps = {
@@ -11,13 +11,18 @@ export type RefreshButtonProps = {
 export function RefreshButton(props: RefreshButtonProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [isFirstTime, setFirstTime] = useState(true);
 
   useEffect(() => {
     if (props.refreshInterval) {
       let timer: NodeJS.Timer | undefined = undefined;
 
       const startLongPooling = () => {
-        router.refresh();
+        if (!isFirstTime) {
+          router.refresh();
+        } else {
+          setFirstTime(false);
+        }
         timer = setInterval(() => {
           router.refresh();
         }, props.refreshInterval);

@@ -17,6 +17,7 @@ export function MemberNavigation({}: MemberNavigationProps) {
 
   const { user } = useContext(UserContext);
   const userMetadata = user?.user_metadata;
+  const firstName = userMetadata?.name?.split(" ")[0];
   const initial = userMetadata?.name?.slice(0, 1).toUpperCase();
 
   const logout = async () => {
@@ -30,17 +31,19 @@ export function MemberNavigation({}: MemberNavigationProps) {
 
   return user ? (
     <>
-      <Link href="/radio/favorite" className="btn btn-ghost btn-circle btn-sm">
+      <Link
+        href="/radio/favorite"
+        className="btn btn-ghost btn-circle btn-sm"
+        prefetch={false}
+      >
         <BsBookmarkFill className="text-accent" />
       </Link>
       <div className="dropdown dropdown-end">
-        <label
-          tabIndex={0}
-          className="btn btn-ghost btn-circle avatar online placeholder"
-        >
+        <label tabIndex={0} className="btn btn-ghost avatar placeholder gap-2">
           <div className="bg-neutral-focus text-neutral-content rounded-full w-8">
             <span className="text-xs">{initial}</span>
           </div>
+          <div>{firstName}</div>
         </label>
         <ul
           tabIndex={0}
@@ -54,10 +57,15 @@ export function MemberNavigation({}: MemberNavigationProps) {
     </>
   ) : user === null ? (
     <>
-      <Link href="/auth/login" className="btn-ghost btn normal-case btn-sm">
+      <Link
+        href="/auth/login"
+        prefetch={false}
+        className="btn-ghost btn normal-case btn-sm"
+      >
         Masuk
       </Link>
       <Link
+        prefetch={false}
         href="/auth/register"
         className="btn-primary btn normal-case text-white btn-sm"
       >
