@@ -1,6 +1,4 @@
 import { ArticleItem } from "~/components/article-item";
-import { SharedLayout } from "~/components/shared-layout";
-import { Player } from "~/components/player";
 import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import type { ArticleSummaryType } from "~/components/article-entity";

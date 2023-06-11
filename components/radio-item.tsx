@@ -86,7 +86,7 @@ export function RadioItem({
       </div>
       <div className={`px-4 py-3 flex justify-between`}>
         <div className="flex flex-row gap-2 items-center">
-          {!toggleLikeLoading ? (
+          {!toggleLikeLoading && !embed ? (
             <button
               className={`btn btn-ghost btn-sm btn-circle`}
               onClick={isLiked ? onUnlikeClick : onLikeClick}
