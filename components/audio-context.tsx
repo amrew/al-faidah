@@ -47,10 +47,32 @@ export const AudioProvider = (props: PropsWithChildren) => {
         onload: () => {
           setLoading(false);
         },
-        onstop: () => {
-          setTrack(undefined);
-        },
       });
+
+      if ("mediaSession" in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: track.trackTitle,
+          artist: track.name,
+          artwork: [
+            {
+              src: track.logoUrl,
+              sizes: "48x48",
+            },
+          ],
+        });
+
+        const stopTrack = () => {
+          sound.stop();
+          setTrack(undefined);
+        };
+
+        navigator.mediaSession.setActionHandler("pause", () => {
+          stopTrack();
+        });
+        navigator.mediaSession.setActionHandler("stop", () => {
+          stopTrack();
+        });
+      }
 
       sound.play();
       setLoading(true);
