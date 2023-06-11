@@ -3,7 +3,7 @@ import { getTracks } from "~/components/radio-service";
 import { RadioListWithFilter } from "~/components/radio-list-with-filter";
 import type { FilterOption } from "~/components/radio-entity";
 
-export const revalidate = 10;
+export const revalidate = 20;
 
 export default async function Home({
   searchParams,

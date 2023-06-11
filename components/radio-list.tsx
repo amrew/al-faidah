@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState, useTransition } from "react";
 import { ModalEmbed } from "./modal-embed";
 import type { TrackInfo } from "./radio-entity";
 import { RadioItem, RadioItemLoading } from "./radio-item";
@@ -12,9 +12,11 @@ import { useRouter } from "next/navigation";
 export type RadioListProps = {
   items: TrackInfo[];
   favorite?: boolean;
+  refreshInterval?: number;
 };
 
 export function RadioList(props: RadioListProps) {
+  const { refreshInterval = 20000 } = props;
   const supabase = createClientComponentClient();
   const router = useRouter();
 
@@ -87,6 +89,44 @@ export function RadioList(props: RadioListProps) {
       refetch();
     },
   });
+
+  const [, startTransition] = useTransition();
+  const firstTime = useRef(true);
+
+  useEffect(() => {
+    if (refreshInterval) {
+      let timer: NodeJS.Timer | undefined = undefined;
+
+      const startLongPooling = () => {
+        if (!firstTime.current) {
+          startTransition(() => {
+            router.refresh();
+          });
+        } else {
+          firstTime.current = false;
+        }
+        timer = setInterval(() => {
+          startTransition(() => {
+            router.refresh();
+          });
+        }, refreshInterval);
+      };
+      const pauseLongPooling = () => {
+        clearInterval(timer);
+      };
+
+      startLongPooling();
+
+      window.addEventListener("focus", startLongPooling);
+      window.addEventListener("blur", pauseLongPooling);
+      return () => {
+        clearInterval(timer);
+        window.removeEventListener("focus", startLongPooling);
+        window.removeEventListener("blur", pauseLongPooling);
+      };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // reduce the item rendered on the server side.
   useEffect(() => {

@@ -1,48 +1,16 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { useTransition } from "react";
 import { HiRefresh } from "react-icons/hi";
 
 export type RefreshButtonProps = {
-  refreshInterval?: number;
+  //
 };
 
-export function RefreshButton(props: RefreshButtonProps) {
+export function RefreshButton() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [isFirstTime, setFirstTime] = useState(true);
-
-  useEffect(() => {
-    if (props.refreshInterval) {
-      let timer: NodeJS.Timer | undefined = undefined;
-
-      const startLongPooling = () => {
-        if (!isFirstTime) {
-          router.refresh();
-        } else {
-          setFirstTime(false);
-        }
-        timer = setInterval(() => {
-          router.refresh();
-        }, props.refreshInterval);
-      };
-      const pauseLongPooling = () => {
-        clearInterval(timer);
-      };
-
-      startLongPooling();
-
-      window.addEventListener("focus", startLongPooling);
-      window.addEventListener("blur", pauseLongPooling);
-      return () => {
-        clearInterval(timer);
-        window.removeEventListener("focus", startLongPooling);
-        window.removeEventListener("blur", pauseLongPooling);
-      };
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <button

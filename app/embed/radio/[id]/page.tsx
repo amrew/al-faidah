@@ -1,5 +1,7 @@
 import { getTracks } from "~/components/radio-service";
-import { RadioItem } from "~/components/radio-item";
+import { RadioList } from "~/components/radio-list";
+
+export const revalidate = 20;
 
 export default async function RadioEmbed({
   params,
@@ -12,7 +14,7 @@ export default async function RadioEmbed({
   const track = radios.find((item) => item.serial === params.id);
   return (
     <main className="flex h-full" data-theme={searchParams.theme}>
-      {track ? <RadioItem item={track} embed /> : null}
+      {track ? <RadioList items={[track]} /> : null}
     </main>
   );
 }
