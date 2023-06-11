@@ -28,7 +28,7 @@ export default async function Home({
   ]);
   const twoRadios = radios.slice(0, 2);
   return (
-    <SharedLayout footer={<Player />}>
+    <SharedLayout>
       <main className="flex flex-col md:flex-row-reverse p-4 md:p-8 gap-4">
         <Content title="Radio" className="flex-1">
           <div className="flex flex-col gap-4">

@@ -1,6 +1,6 @@
 "use client";
 
-import type { PropsWithChildren } from "react";
+import type { Dispatch, PropsWithChildren, SetStateAction } from "react";
 import { createContext, useState, useContext, useEffect } from "react";
 import { Howl } from "howler";
 import { usePrevious } from "react-use";
@@ -17,11 +17,14 @@ export const AudioContext = createContext<{
   isLoading: boolean;
   play: (track: AudioTrack) => void;
   stop: () => void;
+  countDown?: number | undefined;
+  setCountDown: Dispatch<SetStateAction<number | undefined>>;
 }>({
   track: undefined,
   isLoading: false,
   play: () => {},
   stop: () => {},
+  setCountDown: () => {},
 });
 
 export const useAudioContext = () => {
@@ -31,6 +34,7 @@ export const useAudioContext = () => {
 export const AudioProvider = (props: PropsWithChildren) => {
   const [track, setTrack] = useState<AudioTrack>();
   const [isLoading, setLoading] = useState(false);
+  const [countDown, setCountDown] = useState<number>();
   const prevTrack = usePrevious(track);
 
   useEffect(() => {
@@ -42,6 +46,9 @@ export const AudioProvider = (props: PropsWithChildren) => {
         html5: true,
         onload: () => {
           setLoading(false);
+        },
+        onstop: () => {
+          setTrack(undefined);
         },
       });
 
@@ -61,6 +68,8 @@ export const AudioProvider = (props: PropsWithChildren) => {
       value={{
         track,
         isLoading,
+        countDown,
+        setCountDown,
         play: (track) => setTrack(track),
         stop: () => setTrack(undefined),
       }}

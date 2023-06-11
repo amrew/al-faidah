@@ -15,7 +15,12 @@ const timerOptions = [
   },
 ];
 
-export function TimerModal(props: { onSubmit: (v: string) => void }) {
+export function TimerModal(props: {
+  onSubmit: (v: string) => void;
+  onDisable: () => void;
+  hasTimer: boolean;
+}) {
+  const { hasTimer, onDisable, onSubmit } = props;
   const [time, setTime] = useState<string>();
   return (
     <>
@@ -24,26 +29,35 @@ export function TimerModal(props: { onSubmit: (v: string) => void }) {
         <div className="modal-box max-w-xs">
           <h3 className="font-bold text-xl">Timer</h3>
           <div className="py-4">
-            <p>Lagi dengerin taklim terus ketiduran?</p>
-            <p>Atur waktu kapan radio akan dimatikan.</p>
+            {hasTimer ? (
+              <>
+                <p>Matikan timer?</p>
+              </>
+            ) : (
+              <>
+                <p>Lagi dengerin taklim terus ketiduran?</p>
+                <p>Atur waktu kapan radio akan dimatikan.</p>
+              </>
+            )}
           </div>
-          {timerOptions.map((item) => (
-            <div className="form-control" key={item.value}>
-              <label className="label cursor-pointer">
-                <span className="label-text">{item.title}</span>
-                <input
-                  type="radio"
-                  name="timer-value"
-                  className="radio checked:bg-primary"
-                  checked={time === item.value}
-                  onChange={() => {
-                    setTime(item.value);
-                  }}
-                  value={item.value}
-                />
-              </label>
-            </div>
-          ))}
+          {!hasTimer &&
+            timerOptions.map((item) => (
+              <div className="form-control" key={item.value}>
+                <label className="label cursor-pointer">
+                  <span className="label-text">{item.title}</span>
+                  <input
+                    type="radio"
+                    name="timer-value"
+                    className="radio checked:bg-primary"
+                    checked={time === item.value}
+                    onChange={() => {
+                      setTime(item.value);
+                    }}
+                    value={item.value}
+                  />
+                </label>
+              </div>
+            ))}
           <div className="modal-action">
             <label htmlFor={"timer-modal"} className="btn btn-outline btn-sm">
               Batal
@@ -53,9 +67,11 @@ export function TimerModal(props: { onSubmit: (v: string) => void }) {
               className={`btn btn-primary btn-sm ${
                 !time ? "btn-disabled" : ""
               }`}
-              onClick={() => (time ? props.onSubmit(time) : undefined)}
+              onClick={() =>
+                hasTimer ? onDisable() : time ? onSubmit(time) : undefined
+              }
             >
-              Aktifkan
+              {hasTimer ? "Matikan" : "Aktifkan"}
             </label>
           </div>
         </div>

@@ -1,7 +1,14 @@
-import { useEffect, useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import { useEffect } from "react";
 
-export function CountDownView(props: { countDown: number; onEnd: () => void }) {
-  const [countDown, setCountDown] = useState<number>(props.countDown);
+type CountDownViewProps = {
+  countDown: number;
+  onEnd: () => void;
+  updateCountDown: Dispatch<SetStateAction<number | undefined>>;
+};
+
+export function CountDownView(props: CountDownViewProps) {
+  const { countDown, updateCountDown } = props;
 
   const minutes = countDown ? Math.floor((countDown / 60) % 60) : 0;
   const seconds = countDown ? Math.floor(countDown % 60) : 0;
@@ -9,7 +16,7 @@ export function CountDownView(props: { countDown: number; onEnd: () => void }) {
   useEffect(() => {
     if (typeof countDown !== "undefined") {
       const timeId = setInterval(() => {
-        setCountDown((prev) => {
+        updateCountDown((prev) => {
           const defined = typeof prev !== "undefined";
           if (defined && prev > 0) {
             return prev - 1;
