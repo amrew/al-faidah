@@ -62,7 +62,6 @@ export const AudioProvider = (props: PropsWithChildren) => {
         });
 
         const stopTrack = () => {
-          sound.stop();
           setTrack(undefined);
         };
 
