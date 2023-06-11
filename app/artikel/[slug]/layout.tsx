@@ -5,7 +5,7 @@ import { MemberNavigation } from "~/components/member-navigation";
 
 export default function ArticleLayout(props: PropsWithChildren) {
   return (
-    <>
+    <div className="flex flex-col flex-1 h-full">
       <header className="navbar border-b border-solid gap-2 bg-base-100 border-b-base-300">
         <div className="container mx-auto max-w-3xl">
           <div className="flex-none">
@@ -26,7 +26,9 @@ export default function ArticleLayout(props: PropsWithChildren) {
           </div>
         </div>
       </header>
-      <main className="bg-base-200 py-6">{props.children}</main>
-    </>
+      <main className="flex flex-col flex-1 overflow-y-auto bg-base-200 py-6">
+        {props.children}
+      </main>
+    </div>
   );
 }

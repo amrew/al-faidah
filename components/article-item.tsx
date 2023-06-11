@@ -111,7 +111,7 @@ export function ArticleDetail(props: Omit<ArticleItemProps, "isFullContent">) {
                 <img
                   src={props.imageUrl}
                   alt={props.title}
-                  className="w-full h-48 object-cover"
+                  className="w-full h-96 object-cover"
                 />
               </div>
             ) : null}

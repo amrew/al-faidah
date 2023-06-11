@@ -1,7 +1,6 @@
 import "./global.css";
 import { Analytics } from "@vercel/analytics/react";
 import { AudioProvider } from "~/components/audio-context";
-import { cookies } from "next/headers";
 import { Provider } from "~/components/provider";
 
 export const metadata = {
@@ -14,10 +13,8 @@ type RootLayoutProps = {
 };
 
 export default async function RootLayout({ children }: RootLayoutProps) {
-  const cookieStore = cookies();
-  const theme = cookieStore.get("theme");
   return (
-    <html lang="en" data-theme={theme?.value || "cupcake"}>
+    <html lang="en" data-theme={"cupcake"}>
       <head>
         <link
           rel="apple-touch-icon"

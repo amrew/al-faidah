@@ -174,7 +174,7 @@ export function RadioListWithFilterLoading() {
           type="text"
           placeholder="Cari radio / judul..."
           className="input input-bordered input-sm sm:input-md"
-          value=""
+          defaultValue=""
         />
         <select className="select select-bordered select-sm sm:select-md">
           <option value="">Urutkan</option>

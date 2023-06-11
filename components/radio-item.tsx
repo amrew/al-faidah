@@ -62,10 +62,12 @@ export function RadioItem({
             height={80}
           />
           <div>
-            <h2 className={`line-clamp-1 font-bold text-md`}>{item.name}</h2>
+            <h2 className={`line-clamp-1 font-bold text-md text-base-content`}>
+              {item.name}
+            </h2>
             <div className={`flex flex-row items-center gap-1`}>
-              <BiHeadphone size={16} className="text-gray-500" />{" "}
-              <span className="text-sm text-gray-500">
+              <BiHeadphone size={16} className="text-base-content opacity-70" />{" "}
+              <span className="text-sm text-base-content opacity-70">
                 {item.listenerCount}
               </span>
             </div>
@@ -128,7 +130,9 @@ export function RadioItem({
           ) : null}
           <button
             onClick={isActive ? onStop : onPlay}
-            className={`btn ${isActive ? "btn-secondary" : "btn-primary"} w-16`}
+            className={`btn btn-sm ${
+              isActive ? "btn-secondary" : "btn-primary"
+            }`}
           >
             {isActive && isLoading ? (
               <BiLoader size={24} color="white" className="animate-spin" />
@@ -147,14 +151,14 @@ export function RadioItem({
 export function RadioItemLoading() {
   return (
     <div
-      className={`flex flex-1 flex-col border-base-00 rounded-md bg-base-100 border`}
+      className={`flex flex-1 flex-col border-base-300 rounded-md bg-base-100 border`}
     >
       <div className={`px-4 py-3 flex justify-between`}>
         <div className="flex flex-row gap-3">
           <div className="w-10 h-10 rounded-md bg-base-300" />
           <div>
             <h2
-              className={`line-clamp-1 font-bold text-md w-48 h-6 bg-base-300 animate-pulse`}
+              className={`line-clamp-1 font-bold text-md w-32 sm:w-48 h-6 bg-base-300 animate-pulse`}
             />
             <div className={`flex flex-row items-center gap-1`}>
               <BiHeadphone size={16} className="text-gray-500" />{" "}
@@ -165,7 +169,7 @@ export function RadioItemLoading() {
       </div>
       <div className="px-4 flex-1">
         <p
-          className={`line-clamp-2 text-md text-base-content w-96 h-12 bg-base-300  animate-pulse`}
+          className={`line-clamp-2 text-md text-base-content w-5/6 sm:w-48 md:w-72 h-12 bg-base-300  animate-pulse`}
         />
       </div>
       <div className={`px-4 py-3 flex justify-between`}>
@@ -181,7 +185,7 @@ export function RadioItemLoading() {
           </button>
         </div>
         <div className="flex flex-row gap-2 items-center">
-          <button className={`btn btn-primary w-16`}>
+          <button className={`btn btn-sm btn-primary`} disabled>
             <BiPlay size={24} color="white" />
           </button>
         </div>

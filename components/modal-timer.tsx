@@ -59,6 +59,9 @@ export function TimerModal(props: { onSubmit: (v: string) => void }) {
             </label>
           </div>
         </div>
+        <label className="modal-backdrop" htmlFor="timer-modal">
+          Close
+        </label>
       </div>
     </>
   );

@@ -51,9 +51,9 @@ export function Player() {
         <div>
           <button className="btn btn-accent-content" onClick={stop}>
             {isLoading ? (
-              <BiLoader size={24} color="white" className="animate-spin" />
+              <BiLoader size={24} className="animate-spin text-content" />
             ) : (
-              <BiStop size={24} color="white" />
+              <BiStop size={24} className="text-content" />
             )}
           </button>
         </div>

@@ -24,7 +24,7 @@ export function ModalEmbed({ track }: ModalEmbedProps) {
       <input type="checkbox" id="modal-embed" className="modal-toggle" />
       <div className="modal">
         <div className="modal-box bg-white flex flex-col gap-4">
-          <h3 className="text-lg font-bold">Preview</h3>
+          <h3 className="text-lg font-bold text-neutral">Preview</h3>
           <div className="flex flex-row gap-1 carousel">
             {themes.map((item) => (
               <button
@@ -40,7 +40,9 @@ export function ModalEmbed({ track }: ModalEmbedProps) {
           <div data-theme={theme}>
             {track ? <RadioItem item={track} embed /> : null}
           </div>
-          <p>Salin kode berikut untuk pasang di website atau blog kamu</p>
+          <p className="text-neutral">
+            Salin kode berikut untuk pasang di website atau blog kamu
+          </p>
           <div className="mockup-code">
             <pre>
               <code>
@@ -53,11 +55,17 @@ export function ModalEmbed({ track }: ModalEmbedProps) {
             </pre>
           </div>
           <div className="modal-action">
-            <label htmlFor="modal-embed" className="btn btn-outline btn-sm">
-              Tutup
+            <label
+              htmlFor="modal-embed"
+              className="btn btn-outline btn-sm border-neutral-content"
+            >
+              <span className="text-neutral">Tutup</span>
             </label>
           </div>
         </div>
+        <label className="modal-backdrop" htmlFor="modal-embed">
+          Close
+        </label>
       </div>
     </>
   );

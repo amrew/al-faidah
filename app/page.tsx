@@ -29,37 +29,35 @@ export default async function Home({
   const twoRadios = radios.slice(0, 2);
   return (
     <SharedLayout footer={<Player />}>
-      <div className="container mx-auto">
-        <main className="flex flex-col md:flex-row-reverse p-4 gap-4">
-          <Content title="Radio" className="flex-1">
-            <div className="flex flex-col gap-4">
-              <RadioList items={twoRadios} />
-            </div>
-          </Content>
-          <Content title="Terbaru" className="max-w-2xl">
-            {contents?.map((item) => (
-              <ArticleItem
-                key={item.id}
-                title={item.title}
-                isFullContent={false}
-                content={item.summary}
-                createdAt={item.created_at}
-                readDuration={item.read_stats.minutes}
-                category={{
-                  name: item.taxonomies.name,
-                  categoryUrl: `/kategori/${item.taxonomies.slug}`,
-                }}
-                author={{
-                  name: item.publishers.title,
-                  logoUrl: item.publishers.logo_url,
-                }}
-                detailUrl={`/artikel/${item.slug}`}
-                imageUrl={item.image?.medium?.url}
-              />
-            ))}
-          </Content>
-        </main>
-      </div>
+      <main className="flex flex-col md:flex-row-reverse p-4 md:p-8 gap-4">
+        <Content title="Radio" className="flex-1">
+          <div className="flex flex-col gap-4">
+            <RadioList items={twoRadios} />
+          </div>
+        </Content>
+        <Content title="Terbaru" className="max-w-2xl">
+          {contents?.map((item) => (
+            <ArticleItem
+              key={item.id}
+              title={item.title}
+              isFullContent={false}
+              content={item.summary}
+              createdAt={item.created_at}
+              readDuration={item.read_stats.minutes}
+              category={{
+                name: item.taxonomies.name,
+                categoryUrl: `/kategori/${item.taxonomies.slug}`,
+              }}
+              author={{
+                name: item.publishers.title,
+                logoUrl: item.publishers.logo_url,
+              }}
+              detailUrl={`/artikel/${item.slug}`}
+              imageUrl={item.image?.medium?.url}
+            />
+          ))}
+        </Content>
+      </main>
     </SharedLayout>
   );
 }
