@@ -73,13 +73,11 @@ export function ArticleItem(props: ArticleItemProps) {
           </div>
         </div>
         {props.imageUrl ? (
-          <div>
-            <img
-              src={props.imageUrl}
-              alt={props.title}
-              className="w-48 h-36 object-cover"
-            />
-          </div>
+          <img
+            src={props.imageUrl}
+            alt={props.title}
+            className="w-24 h-16 self-center sm:w-48 sm:h-36 object-cover"
+          />
         ) : null}
       </div>
     </div>

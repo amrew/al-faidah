@@ -38,6 +38,7 @@ type Content = {
   user_id: string;
   terms: string[];
   embedding: string | null;
+  type_id: number;
 };
 
 const configuration = new Configuration({
@@ -107,6 +108,7 @@ export async function GET(request: NextRequest) {
           user_id: "9ffac14d-d7d1-49fe-81ef-4ab6c86fab85",
           terms: [],
           embedding: null,
+          type_id: 1,
         };
 
         const embedded = item["_embedded"]["wp:featuredmedia"][0];
@@ -161,7 +163,7 @@ export async function GET(request: NextRequest) {
     })
     .then(async ({ contents, termMap }) => {
       const taxonomies: Term[] = Object.values(termMap);
-      // const taxResult = await supabase.from("taxonomies").upsert(taxonomies);
+      const taxResult = await supabase.from("taxonomies").upsert(taxonomies);
 
       // const contentsWithEmbedding = await Promise.all(
       //   contents.map((item) => {
@@ -181,8 +183,8 @@ export async function GET(request: NextRequest) {
       //   })
       // );
 
-      // const contentResult = await supabase.from("contents").upsert(contents);
+      const contentResult = await supabase.from("contents").upsert(contents);
 
-      return NextResponse.json({ taxResult: null, contentResult: null });
+      return NextResponse.json({ taxResult, contentResult });
     });
 }
