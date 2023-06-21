@@ -11,16 +11,19 @@ export default async function RadioEmbed({
   searchParams: { theme: string };
 }) {
   const radios = await getTracks();
-  let track = radios.find((item) => item.alias === params.id);
-
-  // legacy support
-  if (!track) {
-    track = radios.find((item) => item.serial === params.id);
-  }
+  const track = radios.find((item) => item.alias === params.id);
 
   return (
-    <main className="flex h-full" data-theme={searchParams.theme}>
-      {track ? <RadioList items={[track]} /> : null}
+    <main
+      className="flex flex-col gap-2 h-full"
+      data-theme={searchParams.theme}
+    >
+      <RadioList
+        items={
+          track ? [track] : radios.filter((item) => item.serial === params.id)
+        }
+        embed
+      />
     </main>
   );
 }

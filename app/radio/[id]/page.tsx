@@ -1,7 +1,7 @@
 import { getRadio, getTracks } from "~/components/radio-service";
 import Image from "next/image";
 import { BiLink } from "react-icons/bi";
-import { RadioItem } from "~/components/radio-item";
+import { RadioList } from "~/components/radio-list";
 
 export default async function RadioDetail({
   params,
@@ -9,17 +9,16 @@ export default async function RadioDetail({
   params: { id: string };
 }) {
   const radios = await getTracks();
-  let track = radios.find((item) => item.alias === params.id);
+  const track = radios.find((item) => item.alias === params.id);
   const detail = await (track ? getRadio(track.serial) : getRadio(params.id));
-
-  // legacy support
-  if (!track) {
-    track = radios.find((item) => item.serial === params.id);
-  }
 
   return (
     <main className="flex flex-col p-4 gap-4">
-      {track ? <RadioItem item={track} /> : null}
+      <RadioList
+        items={
+          track ? [track] : radios.filter((item) => item.serial === params.id)
+        }
+      />
       <div className="flex flex-row gap-2">
         <div className="flex flex-col sm:flex-row rounded-md overflow-hidden shadow-md">
           {detail && detail.imgnya && detail.imgnya !== "belum ada" ? (

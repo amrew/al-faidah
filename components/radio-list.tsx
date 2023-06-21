@@ -13,6 +13,7 @@ export type RadioListProps = {
   items: TrackInfo[];
   favorite?: boolean;
   refreshInterval?: number;
+  embed?: boolean;
 };
 
 export function RadioList(props: RadioListProps) {
@@ -152,6 +153,7 @@ export function RadioList(props: RadioListProps) {
           <RadioItem
             key={item.id}
             item={item}
+            embed={props.embed}
             isLiked={!!radioLikesMap?.[item.id]}
             onEmbedClick={() => setSelectedTrack(item)}
             toggleLikeLoading={

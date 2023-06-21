@@ -97,11 +97,11 @@ export function RadioItem({
                 <BsBookmark size={16} />
               )}
             </button>
-          ) : (
+          ) : !embed ? (
             <button className={`btn btn-ghost btn-sm btn-circle`}>
               <BiLoader size={12} />
             </button>
-          )}
+          ) : null}
           {onEmbedClick && !embed ? (
             <label
               htmlFor="modal-embed"
