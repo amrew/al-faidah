@@ -30,6 +30,7 @@ export async function getTracks(params?: {
     const [ip, port] = parsed[1].split(":");
     return {
       id: item.uid_rad,
+      alias: item.alias,
       serial: item.id_radet,
       name: item.nama,
       logoUrl: item.logo,

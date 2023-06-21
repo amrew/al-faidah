@@ -56,6 +56,10 @@ const endpointMap: Record<string, { endpoint: string; publisher_id: number }> =
       endpoint: "https://www.ukhuwahanakkuliah.com",
       publisher_id: 2,
     },
+    asy: {
+      endpoint: "https://asysyariah.com",
+      publisher_id: 3,
+    },
   };
 
 export async function GET(request: NextRequest) {
@@ -164,27 +168,7 @@ export async function GET(request: NextRequest) {
     .then(async ({ contents, termMap }) => {
       const taxonomies: Term[] = Object.values(termMap);
       const taxResult = await supabase.from("taxonomies").upsert(taxonomies);
-
-      // const contentsWithEmbedding = await Promise.all(
-      //   contents.map((item) => {
-      //     const getEmbedding = async () => {
-      //       const embeddingResponse = await openai.createEmbedding({
-      //         model: "text-embedding-ada-002",
-      //         input: item.title,
-      //       });
-
-      //       const [{ embedding }] = embeddingResponse.data.data;
-      //       return {
-      //         ...item,
-      //         embedding,
-      //       };
-      //     };
-      //     return getEmbedding();
-      //   })
-      // );
-
       const contentResult = await supabase.from("contents").upsert(contents);
-
       return NextResponse.json({ taxResult, contentResult });
     });
 }

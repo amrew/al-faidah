@@ -11,7 +11,13 @@ export default async function RadioEmbed({
   searchParams: { theme: string };
 }) {
   const radios = await getTracks();
-  const track = radios.find((item) => item.serial === params.id);
+  let track = radios.find((item) => item.alias === params.id);
+
+  // legacy support
+  if (!track) {
+    track = radios.find((item) => item.serial === params.id);
+  }
+
   return (
     <main className="flex h-full" data-theme={searchParams.theme}>
       {track ? <RadioList items={[track]} /> : null}

@@ -24,6 +24,7 @@ const search = (radios: TrackInfo[] | SearchResult[], keyword: string) => {
     fields: ["name", "trackTitle"],
     storeFields: [
       "id",
+      "alias",
       "serial",
       "name",
       "logoUrl",

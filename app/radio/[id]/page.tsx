@@ -8,11 +8,15 @@ export default async function RadioDetail({
 }: {
   params: { id: string };
 }) {
-  const [radios, detail] = await Promise.all([
-    getTracks(),
-    getRadio(params.id),
-  ]);
-  const track = radios.find((item) => item.serial === params.id);
+  const radios = await getTracks();
+  let track = radios.find((item) => item.alias === params.id);
+  const detail = await (track ? getRadio(track.serial) : getRadio(params.id));
+
+  // legacy support
+  if (!track) {
+    track = radios.find((item) => item.serial === params.id);
+  }
+
   return (
     <main className="flex flex-col p-4 gap-4">
       {track ? <RadioItem item={track} /> : null}

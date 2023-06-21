@@ -33,7 +33,7 @@ export function RadioItem({
   const isActive = track?.url === item.trackUrl;
   const isLive = item.status === "LIVE";
 
-  const shareUrl = `${APP_URL}/radio/${item.serial}`;
+  const shareUrl = `${APP_URL}/radio/${item.alias}`;
   const shareDescription = `Yuk simak kajian: ${item.trackTitle} di ${item.name}`;
 
   const onStop = () => stop();

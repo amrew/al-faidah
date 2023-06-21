@@ -20,7 +20,7 @@ export default async function Home({
   ]);
 
   return (
-    <div className="container max-w-3xl mx-auto flex flex-col gap-6">
+    <div className="flex flex-row gap-6 p-4 md:p-8">
       <div>
         {item ? (
           <ArticleDetail

@@ -48,7 +48,7 @@ export function ModalEmbed({ track }: ModalEmbedProps) {
               <code>
                 {track
                   ? generateIFrameTemplate(
-                      `${APP_URL}/embed/radio/${track.serial}?theme=${theme}`
+                      `${APP_URL}/embed/radio/${track.alias}?theme=${theme}`
                     )
                   : ""}
               </code>

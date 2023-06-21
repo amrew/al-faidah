@@ -1,5 +1,6 @@
 export type TrackInfo = {
   id: string;
+  alias: string;
   serial: string;
   name: string;
   logoUrl: string;
