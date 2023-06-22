@@ -9,6 +9,7 @@ import type { TrackInfo } from "./radio-entity";
 import { useAudioContext } from "./audio-context";
 import { APP_URL } from "./utils";
 import { PlayingAnimation } from "./playing-animation";
+import Link from "next/link";
 
 export type RadioItemProps = {
   item: TrackInfo;
@@ -45,6 +46,40 @@ export function RadioItem({
       logoUrl: item.logoUrl,
     });
 
+  const headerNode = (
+    <div className="flex flex-row gap-3">
+      <Image
+        src={item.logoUrl}
+        alt={item.name}
+        className="w-10 h-10 rounded-md"
+        width={80}
+        height={80}
+      />
+      <div>
+        <h2 className={`line-clamp-1 font-bold text-md text-base-content`}>
+          {item.name}
+        </h2>
+        <div className={`flex flex-row items-center gap-1`}>
+          <BiHeadphone size={16} className="text-base-content opacity-70" />{" "}
+          <span className="text-sm text-base-content opacity-70">
+            {item.listenerCount}
+          </span>
+        </div>
+      </div>
+      {isLive ? (
+        <div className="mt-px">
+          <span className="badge-error badge text-white">Live</span>
+        </div>
+      ) : null}
+    </div>
+  );
+
+  const trackNode = (
+    <p className={`line-clamp-2 text-md text-base-content`}>
+      {item.trackTitle}
+    </p>
+  );
+
   return (
     <div
       className={`flex flex-1 flex-col border-base-300 rounded-md bg-base-100 ${
@@ -53,36 +88,22 @@ export function RadioItem({
       key={item.id}
     >
       <div className={`px-4 py-3 flex justify-between`}>
-        <div className="flex flex-row gap-3">
-          <Image
-            src={item.logoUrl}
-            alt={item.name}
-            className="w-10 h-10 rounded-md"
-            width={80}
-            height={80}
-          />
-          <div>
-            <h2 className={`line-clamp-1 font-bold text-md text-base-content`}>
-              {item.name}
-            </h2>
-            <div className={`flex flex-row items-center gap-1`}>
-              <BiHeadphone size={16} className="text-base-content opacity-70" />{" "}
-              <span className="text-sm text-base-content opacity-70">
-                {item.listenerCount}
-              </span>
-            </div>
-          </div>
-          {isLive ? (
-            <div className="mt-px">
-              <span className="badge-error badge text-white">Live</span>
-            </div>
-          ) : null}
-        </div>
+        {embed ? (
+          <a href="/radio" target="_blank">
+            {headerNode}
+          </a>
+        ) : (
+          headerNode
+        )}
       </div>
       <div className="px-4 flex-1">
-        <p className={`line-clamp-2 text-md text-base-content`}>
-          {item.trackTitle}
-        </p>
+        {embed ? (
+          <a href="/radio" target="_blank">
+            {trackNode}
+          </a>
+        ) : (
+          trackNode
+        )}
       </div>
       <div className={`px-4 py-3 flex justify-between`}>
         <div className="flex flex-row gap-2 items-center">
