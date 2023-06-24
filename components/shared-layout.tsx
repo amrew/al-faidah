@@ -7,9 +7,11 @@ import { Player } from "./player";
 
 export type SharedLayoutProps = {
   footer?: ReactNode;
+  contentClassname?: string;
 };
 
 export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
+  const { contentClassname = "" } = props;
   return (
     <div className="drawer lg:drawer-open flex flex-row-reverse flex-1 h-full">
       <input id="drawer-1" type="checkbox" className="drawer-toggle" />
@@ -37,7 +39,9 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
             <MemberNavigation />
           </div>
         </header>
-        <main className="flex flex-col flex-1 bg-base-200 overflow-y-auto">
+        <main
+          className={`flex flex-col flex-1 overflow-y-auto ${contentClassname}`}
+        >
           {props.children}
         </main>
         <div>
@@ -48,7 +52,7 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
       {/*  */}
       <div className="drawer-side border-r border-base-300">
         <label htmlFor="drawer-1" className="drawer-overlay"></label>
-        <div className="bg-base-100 h-full">
+        <div className="bg-base-200 h-full">
           <div className="p-4">
             <Link
               href="/"

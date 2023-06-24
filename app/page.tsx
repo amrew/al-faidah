@@ -1,41 +1,134 @@
-import { getTracks } from "~/components/radio-service";
-import { ArticleItem } from "~/components/article-item";
+import { ArticleItem, ArticleItemSmall } from "~/components/article-item";
 import { SharedLayout } from "~/components/shared-layout";
-import { Player } from "~/components/player";
 import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Content } from "~/components/content";
-import { RadioList } from "~/components/radio-list";
 import type { ArticleSummaryType } from "~/components/article-entity";
+import Link from "next/link";
 
 export default async function Home({
-  searchParams: { page = 1 },
+  searchParams: { page = 1, publisher },
 }: {
-  searchParams: { page: number };
+  searchParams: { page: number; publisher: string };
 }) {
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const offset = (page - 1) * itemsPerPage + 1;
   const supabase = createServerComponentClient({ cookies });
-  const [radios, { data: contents }] = await Promise.all([
-    getTracks({ sortBy: "most" }),
-    supabase
+
+  const getContents = async () => {
+    let query = supabase.from("contents").select<any, ArticleSummaryType>(
+      `id, title, slug, summary, image, created_at, 
+      read_stats, taxonomies( slug, name ), publishers!inner( title, slug, logo_url, web_url )`
+    );
+
+    if (publisher) {
+      query = query.eq("publishers.slug", publisher);
+    }
+
+    return query
+      .range(offset, itemsPerPage)
+      .order("created_at", { ascending: false });
+  };
+
+  const getEditorPicks = async () => {
+    return supabase
       .from("contents")
       .select<any, ArticleSummaryType>(
-        "id, title, slug, summary, image, created_at, read_stats, taxonomies( slug, name ), publishers( title, logo_url, web_url )"
+        `id, title, slug, read_stats, taxonomies( slug, name ), publishers!inner( title, slug, logo_url )`
       )
-      .range(offset, itemsPerPage)
-      .order("created_at", { ascending: false }),
-  ]);
-  const twoRadios = radios.slice(0, 2);
+      .eq("recommended", 1)
+      .range(0, 2)
+      .order("created_at", { ascending: false });
+  };
+
+  const [{ data: contents }, { data: editorPicks }, { data: publishers }] =
+    await Promise.all([
+      getContents(),
+      getEditorPicks(),
+      supabase.from("publishers").select("id, title, slug, logo_url"),
+    ]);
+
   return (
     <SharedLayout>
-      <main className="flex flex-col md:flex-row-reverse p-4 md:p-8 gap-4">
-        <Content title="Radio" className="flex-1">
-          <div className="flex flex-col gap-4">
-            <RadioList items={twoRadios} />
+      <main className="flex flex-col md:flex-row-reverse justify-end p-4 md:px-8 gap-8 lg:gap-16">
+        <div className="md:w-5/12 lg:w-4/12">
+          <div className="flex flex-col gap-4 sticky top-0 py-4">
+            <div>
+              <h2 className="font-bold text-lg">Pilihan Editor</h2>
+              <div className="mt-2">
+                <div className="flex flex-col gap-2">
+                  {editorPicks?.map((item) => (
+                    <ArticleItemSmall
+                      key={item.id}
+                      title={item.title}
+                      author={{
+                        name: item.publishers?.title,
+                        logoUrl: item.publishers?.logo_url,
+                      }}
+                      readDuration={item.read_stats?.minutes}
+                      detailUrl={`/article/${item.slug}`}
+                      category={{
+                        name: item.taxonomies?.name,
+                        categoryUrl: `/kategori/${item.taxonomies?.slug}`,
+                      }}
+                    />
+                  ))}
+                </div>
+                <a href="" className="text-primary">
+                  Lihat semua
+                </a>
+              </div>
+            </div>
+            <div>
+              <div className="alert p-8">
+                <div className="flex flex-col gap-2">
+                  <h3 className="font-bold text-xl">Menulis di Al-Faidah</h3>
+                  <div className="text-md">
+                    Asah kreatifitas dan sebarkan ilmu yang bermanfaat.
+                  </div>
+                  <div>
+                    <button className="btn btn-accent">Jadi Penulis</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <h2 className="font-bold text-lg">Topik rekomendasi</h2>
+            <div>
+              <div className="flex flex-row flex-wrap gap-2">
+                <button className="btn btn-sm">Sholat</button>
+                <button className="btn btn-sm">Puasa</button>
+                <button className="btn btn-sm">Zakat</button>
+                <button className="btn btn-sm">Aqidah</button>
+                <button className="btn btn-sm">Akhlak</button>
+              </div>
+              <div className="mt-2">
+                <a href="" className="text-primary">
+                  Lihat semua topik
+                </a>
+              </div>
+            </div>
           </div>
-        </Content>
-        <Content title="Terbaru" className="max-w-2xl">
+        </div>
+        <div className="md:w-7/12 lg:w-8/12">
+          <div className="tabs sticky top-0 mb-8 pt-4 bg-base-100">
+            <Link
+              href="/"
+              className={`tab tab-bordered ${!publisher ? "tab-active" : ""}`}
+            >
+              Beranda
+            </Link>
+            {publishers?.map((item) => (
+              <Link
+                href={`/?publisher=${item.slug}`}
+                key={item.id}
+                className={`tab tab-bordered ${
+                  publisher === item.slug ? "tab-active" : ""
+                }`}
+                prefetch={false}
+              >
+                {item.title}
+              </Link>
+            ))}
+          </div>
           {contents?.map((item) => (
             <ArticleItem
               key={item.id}
@@ -56,7 +149,7 @@ export default async function Home({
               imageUrl={item.image?.medium?.url}
             />
           ))}
-        </Content>
+        </div>
       </main>
     </SharedLayout>
   );

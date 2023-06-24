@@ -35,7 +35,7 @@ export function ArticleItem(props: ArticleItemProps) {
   );
   const createdAt = dayjs(props.createdAt).format("DD MMM YYYY");
   return (
-    <div className="bg-base-100 rounded-md border border-base-300 p-4">
+    <div className="border-b border-b-base-300 mb-8 pb-8">
       <div className="flex flex-row gap-1 mb-2">
         <img
           src={props.author.logoUrl}
@@ -84,10 +84,48 @@ export function ArticleItem(props: ArticleItemProps) {
   );
 }
 
+export function ArticleItemSmall(
+  props: Omit<ArticleItemProps, "content" | "isFullContent" | "createdAt">
+) {
+  return (
+    <div className="border-b border-b-base-300 mb-2 pb-2">
+      <div className="flex flex-row gap-1 mb-2">
+        <img
+          src={props.author.logoUrl}
+          alt={props.author.name}
+          width={16}
+          height={16}
+          className="object-contain"
+        />
+        <span className="text-sm">{props.author.name}</span>
+      </div>
+      <div className="flex flex-row gap-4">
+        <div className="flex flex-col flex-1 justify-between">
+          <Link
+            href={props.detailUrl}
+            prefetch={false}
+            className="gap-1 flex flex-col"
+          >
+            <h1
+              className="text-md font-bold line-clamp-2"
+              dangerouslySetInnerHTML={{ __html: props.title }}
+            />
+          </Link>
+          <div className="flex flex-row gap-2 mt-1 items-center">
+            <span className="text-gray-600 text-sm">
+              baca {Math.ceil(props.readDuration)} menit
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ArticleDetail(props: Omit<ArticleItemProps, "isFullContent">) {
   const createdAt = dayjs(props.createdAt).format("DD MMM YYYY");
   return (
-    <div className="bg-base-100 rounded-md border border-base-300 p-10">
+    <div className="rounded-md border border-base-300 p-10">
       <div className="flex flex-row gap-2 mb-2">
         <img
           src={props.author.logoUrl}

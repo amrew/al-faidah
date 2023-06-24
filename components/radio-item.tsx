@@ -9,7 +9,6 @@ import type { TrackInfo } from "./radio-entity";
 import { useAudioContext } from "./audio-context";
 import { APP_URL } from "./utils";
 import { PlayingAnimation } from "./playing-animation";
-import Link from "next/link";
 
 export type RadioItemProps = {
   item: TrackInfo;
@@ -82,7 +81,7 @@ export function RadioItem({
 
   return (
     <div
-      className={`flex flex-1 flex-col border-base-300 rounded-md bg-base-100 ${
+      className={`flex flex-1 flex-col border-base-300 rounded-md bg-base-100 shadow-sm ${
         embed ? "h-full justify-between border-4" : "border"
       }`}
       key={item.id}
@@ -172,7 +171,7 @@ export function RadioItem({
 export function RadioItemLoading() {
   return (
     <div
-      className={`flex flex-1 flex-col border-base-300 rounded-md bg-base-100 border`}
+      className={`flex flex-1 flex-col border-base-300 rounded-md shadow-sm bg-base-100 border`}
     >
       <div className={`px-4 py-3 flex justify-between`}>
         <div className="flex flex-row gap-3">

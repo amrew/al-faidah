@@ -60,6 +60,10 @@ const endpointMap: Record<string, { endpoint: string; publisher_id: number }> =
       endpoint: "https://asysyariah.com",
       publisher_id: 3,
     },
+    prob: {
+      endpoint: "https://problematikaumat.com",
+      publisher_id: 4,
+    },
   };
 
 export async function GET(request: NextRequest) {
