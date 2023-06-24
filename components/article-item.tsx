@@ -130,7 +130,7 @@ export function ArticleDetail(
 ) {
   const createdAt = dayjs(props.createdAt).format("DD MMM YYYY");
   return (
-    <div className="p-10">
+    <div className="p-4 lg:p-10">
       <div className="flex flex-row gap-2 mb-2">
         <img
           src={props.author.logoUrl}
@@ -173,7 +173,7 @@ export function ArticleDetail(
               </div>
             ) : null}
             <div
-              className={"prose"}
+              className={"prose prose-pre:whitespace-pre-wrap"}
               dangerouslySetInnerHTML={{ __html: props.content }}
             />
           </div>

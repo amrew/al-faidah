@@ -1,7 +1,9 @@
 import "./global.css";
-import { Analytics } from "@vercel/analytics/react";
 import { AudioProvider } from "~/components/audio-context";
 import { Provider } from "~/components/provider";
+import Script from "next/script";
+
+const GA_ID = process.env.GA_ID;
 
 export const metadata = {
   title: "Al Faidah",
@@ -39,7 +41,25 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         <Provider>
           <AudioProvider>{children}</AudioProvider>
         </Provider>
-        <Analytics />
+        {GA_ID && (
+          <>
+            <Script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+            />
+            <Script
+              id="google-analytics"
+              dangerouslySetInnerHTML={{
+                __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${GA_ID}');
+            `,
+              }}
+            />
+          </>
+        )}
       </body>
     </html>
   );
