@@ -31,7 +31,7 @@ export type ArticleSummaryType = {
   };
 };
 
-export type ArticleDetailType = { description: string } & Omit<
-  ArticleSummaryType,
-  "summary"
->;
+export type ArticleDetailType = {
+  description: string;
+  link: string;
+} & Omit<ArticleSummaryType, "summary">;

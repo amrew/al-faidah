@@ -65,7 +65,7 @@ export default async function Home({
                         logoUrl: item.publishers?.logo_url,
                       }}
                       readDuration={item.read_stats?.minutes}
-                      detailUrl={`/article/${item.slug}`}
+                      detailUrl={`/artikel/${item.slug}`}
                       category={{
                         name: item.taxonomies?.name,
                         categoryUrl: `/kategori/${item.taxonomies?.slug}`,

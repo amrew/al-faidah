@@ -13,7 +13,7 @@ export default async function Home({
     supabase
       .from("contents")
       .select<any, ArticleDetailType>(
-        "title, slug, description, image, created_at, read_stats, taxonomies( slug, name ), publishers( title, logo_url, web_url )"
+        "title, slug, description, link, image, created_at, read_stats, taxonomies( slug, name ), publishers( title, logo_url, web_url )"
       )
       .eq("id", slug)
       .single(),
@@ -39,6 +39,7 @@ export default async function Home({
             readDuration={item.read_stats.minutes}
             detailUrl={`/artikel/${item.slug}`}
             imageUrl={item.image?.medium?.url}
+            sourceLink={item.link}
           />
         ) : null}
       </div>

@@ -85,7 +85,10 @@ export function ArticleItem(props: ArticleItemProps) {
 }
 
 export function ArticleItemSmall(
-  props: Omit<ArticleItemProps, "content" | "isFullContent" | "createdAt">
+  props: Omit<
+    ArticleItemProps,
+    "content" | "isFullContent" | "createdAt" | "sourceLink"
+  >
 ) {
   return (
     <div className="border-b border-b-base-300 mb-2 pb-2">
@@ -122,10 +125,12 @@ export function ArticleItemSmall(
   );
 }
 
-export function ArticleDetail(props: Omit<ArticleItemProps, "isFullContent">) {
+export function ArticleDetail(
+  props: { sourceLink: string } & Omit<ArticleItemProps, "isFullContent">
+) {
   const createdAt = dayjs(props.createdAt).format("DD MMM YYYY");
   return (
-    <div className="rounded-md border border-base-300 p-10">
+    <div className="p-10">
       <div className="flex flex-row gap-2 mb-2">
         <img
           src={props.author.logoUrl}
@@ -142,6 +147,22 @@ export function ArticleDetail(props: Omit<ArticleItemProps, "isFullContent">) {
               className="text-xl md:text-4xl font-bold"
               dangerouslySetInnerHTML={{ __html: props.title }}
             />
+            <div className="flex flex-row gap-2 mt-1 items-center">
+              <span className="text-gray-600 text-sm">{createdAt}</span>
+              <BiCircle size={6} className="text-gray-600" />
+              <span className="text-gray-600 text-sm">
+                baca {Math.ceil(props.readDuration)} menit
+              </span>
+              <BiCircle size={6} className="text-gray-600 hidden sm:block" />
+              <Link
+                href={props.category.categoryUrl}
+                className="hidden sm:block"
+              >
+                <span className="badge badge-secondary line-clamp-1 text-white">
+                  {props.category.name}
+                </span>
+              </Link>
+            </div>
             {props.imageUrl ? (
               <div>
                 <img
@@ -156,19 +177,14 @@ export function ArticleDetail(props: Omit<ArticleItemProps, "isFullContent">) {
               dangerouslySetInnerHTML={{ __html: props.content }}
             />
           </div>
-          <div className="flex flex-row gap-2 mt-1 items-center">
-            <span className="text-gray-600 text-sm">{createdAt}</span>
-            <BiCircle size={6} className="text-gray-600" />
-            <span className="text-gray-600 text-sm">
-              baca {Math.ceil(props.readDuration)} menit
-            </span>
-            <BiCircle size={6} className="text-gray-600 hidden sm:block" />
-            <Link href={props.category.categoryUrl} className="hidden sm:block">
-              <span className="badge badge-secondary line-clamp-1 text-white">
-                {props.category.name}
-              </span>
-            </Link>
-          </div>
+          {props.sourceLink ? (
+            <div className="alert alert-warning">
+              <div>Sumber Tulisan:</div>
+              <a href={props.sourceLink} target="_blank">
+                {props.sourceLink}
+              </a>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
