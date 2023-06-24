@@ -84,6 +84,45 @@ export function ArticleItem(props: ArticleItemProps) {
   );
 }
 
+export function ArticleItemLoading() {
+  const titleDescription = (
+    <>
+      <div>
+        <div className="w-full h-7 bg-base-300 animate-pulse mb-2 " />
+        <div className="w-1/3 h-7 bg-base-300 animate-pulse " />
+      </div>
+      <div>
+        <div className={"bg-base-300 animate-pulse w-full h-5 mt-2"} />
+        <div className={"bg-base-300 animate-pulse w-full h-5 mt-2"} />
+        <div className={"bg-base-300 animate-pulse w-1/2 h-5 mt-2"} />
+      </div>
+    </>
+  );
+  return (
+    <div className="border-b border-b-base-300 mb-8 pb-8">
+      <div className="flex flex-row gap-1 mb-2 items-center">
+        <div className="w-4 h-4 bg-base-300 animate-pulse" />
+        <span className="text-sm bg-base-300 animate-pulse w-24 h-5" />
+      </div>
+      <div className="flex flex-row gap-4">
+        <div className="flex flex-col flex-1 justify-between">
+          <div className="gap-1 flex flex-col">{titleDescription}</div>
+          <div className="flex flex-row gap-2 mt-1 items-center">
+            <span className="w-24 h-4 bg-base-300 animate-pulse" />
+            <BiCircle size={6} className="text-gray-600" />
+            <span className="w-24 h-4 bg-base-300 animate-pulse" />
+            <BiCircle size={6} className="text-gray-600 hidden sm:block" />
+            <div className="hidden sm:block">
+              <span className="badge badge-secondary line-clamp-1 text-white w-24"></span>
+            </div>
+          </div>
+        </div>
+        <div className="w-24 h-16 self-center sm:w-48 sm:h-36 bg-base-300 animate-pulse" />
+      </div>
+    </div>
+  );
+}
+
 export function ArticleItemSmall(
   props: Omit<
     ArticleItemProps,
@@ -125,12 +164,34 @@ export function ArticleItemSmall(
   );
 }
 
+export function ArticleItemSmallLoading() {
+  return (
+    <div className="border-b border-b-base-300 mb-2 pb-2">
+      <div className="flex flex-row gap-1 mb-2 items-center">
+        <div className="w-4 h-4 bg-base-300 animate-pulse" />
+        <span className="text-sm bg-base-300 animate-pulse w-24 h-5" />
+      </div>
+      <div className="flex flex-row gap-4">
+        <div className="flex flex-col flex-1 justify-between">
+          <div>
+            <div className="text-md font-bold w-full h-5 bg-base-300 animate-pulse mb-1" />
+            <div className="text-md font-bold w-1/2 h-5 bg-base-300 animate-pulse" />
+          </div>
+          <div className="flex flex-row gap-2 mt-1 items-center">
+            <span className="text-sm bg-base-300 animate-pulse w-24 h-5" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ArticleDetail(
   props: { sourceLink: string } & Omit<ArticleItemProps, "isFullContent">
 ) {
   const createdAt = dayjs(props.createdAt).format("DD MMM YYYY");
   return (
-    <div className="p-4 lg:p-10">
+    <div className="p-4">
       <div className="flex flex-row gap-2 mb-2">
         <img
           src={props.author.logoUrl}

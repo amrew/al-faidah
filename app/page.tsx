@@ -3,7 +3,6 @@ import { SharedLayout } from "~/components/shared-layout";
 import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import type { ArticleSummaryType } from "~/components/article-entity";
-import Link from "next/link";
 import { PublisherTab } from "~/components/publisher-tab";
 
 export default async function Home({

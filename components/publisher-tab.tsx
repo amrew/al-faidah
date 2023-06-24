@@ -68,3 +68,28 @@ export function PublisherTab({
     </>
   );
 }
+
+export function PublisherTabLoading() {
+  return (
+    <>
+      <div className="carousel hidden sm:flex">
+        <div className={"carousel-item py-2 px-4 border-b-2 border-b-base-200"}>
+          <Link href="/" prefetch={false}>
+            Beranda
+          </Link>
+        </div>
+        {[...Array(2)]?.map((_, idx) => (
+          <div
+            className={"carousel-item py-2 px-4 border-b-2 border-b-base-200"}
+            key={idx}
+          >
+            <div className="bg-base-300 animate-pulse w-24" />
+          </div>
+        ))}
+      </div>
+      <select className="select select-primary w-full sm:hidden">
+        <option value="">Beranda</option>
+      </select>
+    </>
+  );
+}
