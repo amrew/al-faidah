@@ -13,11 +13,9 @@ import {
 } from "@remix-run/react";
 import styles from "./tailwind.css";
 import { useEffect, useState } from "react";
-import {
-  createBrowserClient,
-  createServerClient,
-} from "@supabase/auth-helpers-remix";
+import { createBrowserClient } from "@supabase/auth-helpers-remix";
 import { Provider } from "./components/provider";
+import { createServerSupabase } from "./clients/createServerSupabase";
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
@@ -31,35 +29,18 @@ export const loader = async ({ request }: LoaderArgs) => {
     GA_ID: process.env.GA_ID!,
   };
 
-  const response = new Response();
+  const { supabase, response } = createServerSupabase(request);
 
-  const supabase = createServerClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY!,
-    {
-      request,
-      response,
-    }
-  );
-
-  const [sessionResult, userResult] = await Promise.all([
-    supabase.auth.getSession(),
-    supabase.auth.getUser(),
-  ]);
+  const sessionResult = await supabase.auth.getSession();
 
   const {
     data: { session },
   } = sessionResult;
 
-  const {
-    data: { user },
-  } = userResult;
-
   return json(
     {
       env,
       session,
-      user,
     },
     {
       headers: response.headers,
@@ -68,7 +49,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export default function App() {
-  const { env, session, user } = useLoaderData<typeof loader>();
+  const { env, session } = useLoaderData<typeof loader>();
   const { revalidate } = useRevalidator();
 
   const navigation = useNavigation();
@@ -126,7 +107,7 @@ export default function App() {
         className={navigation.state === "loading" ? "navigate-loading" : ""}
       >
         <Provider>
-          <Outlet context={{ supabase, user }} />
+          <Outlet context={{ supabase, user: session?.user }} />
         </Provider>
         <ScrollRestoration />
         <Scripts />

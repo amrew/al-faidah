@@ -1,7 +1,7 @@
 import WPAPI from "wpapi";
 import readingTime from "reading-time";
 import { type LoaderArgs, json } from "@remix-run/node";
-import { createServerClient } from "@supabase/auth-helpers-remix";
+import { createServerSupabase } from "~/clients/createServerSupabase";
 
 type Term = {
   id: string;
@@ -70,16 +70,15 @@ export async function loader({ request }: LoaderArgs) {
   const endpoint = endpointMap[name].endpoint;
   const publisher_id = endpointMap[name].publisher_id;
 
-  const response = new Response();
+  const { supabase, response } = createServerSupabase(request);
 
-  const supabase = createServerClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY!,
-    {
-      request,
-      response,
-    }
-  );
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user || (user && user.id !== process.env.USER_ID)) {
+    return json({ error: "auth failed" });
+  }
 
   const wp = new WPAPI({ endpoint: `${endpoint}/wp-json` });
 

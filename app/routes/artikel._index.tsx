@@ -1,9 +1,9 @@
 import { ArticleItem } from "~/components/article-item";
 import type { ArticleSummaryType } from "~/components/article-entity";
-import { createServerClient } from "@supabase/auth-helpers-remix";
 import { json, type V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Pagination } from "~/components/pagination";
+import { createServerSupabase } from "~/clients/createServerSupabase";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -20,16 +20,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
   const page = Number(url.searchParams.get("page") || 1);
 
-  const response = new Response();
-
-  const supabase = createServerClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY!,
-    {
-      request,
-      response,
-    }
-  );
+  const { supabase, response } = createServerSupabase(request);
 
   const itemsPerPage = 10;
   const offset = (page - 1) * itemsPerPage;

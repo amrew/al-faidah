@@ -1,24 +1,15 @@
 import { json, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { createServerClient } from "@supabase/auth-helpers-remix";
 import type { ArticleDetailType } from "~/components/article-entity";
 import { ArticleDetail } from "~/components/article-item";
 import { BackButton } from "~/components/back-button";
 import { type V2_MetaFunction } from "@remix-run/node";
+import { createServerSupabase } from "~/clients/createServerSupabase";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const slug = params.slug;
 
-  const response = new Response();
-
-  const supabase = createServerClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY!,
-    {
-      request,
-      response,
-    }
-  );
+  const { supabase, response } = createServerSupabase(request);
 
   const [{ data: item }] = await Promise.all([
     supabase
@@ -57,7 +48,7 @@ export default function Detail() {
       <div className="flex flex-row items-center px-4 pt-4 md:px-8">
         <BackButton />
       </div>
-      <div className="flex flex-row gap-6 p-4 md:p-8">
+      <div className="flex flex-row gap-4 p-4 md:px-8">
         <div>
           {item ? (
             <ArticleDetail

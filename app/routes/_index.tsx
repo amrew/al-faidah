@@ -2,30 +2,22 @@ import { json, type LoaderArgs, type V2_MetaFunction } from "@remix-run/node";
 import { ArticleItem, ArticleItemSmall } from "~/components/article-item";
 import { SharedLayout } from "~/components/shared-layout";
 import type { ArticleSummaryType } from "~/components/article-entity";
-import { PublisherTab } from "~/components/publisher-tab";
-import { createServerClient } from "@supabase/auth-helpers-remix";
+import { Tab } from "~/components/tab";
 import { Link, useLoaderData } from "@remix-run/react";
 import { Pagination } from "~/components/pagination";
+import { createServerSupabase } from "~/clients/createServerSupabase";
+import { TwoColumn } from "~/components/two-column";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
 
   const page = Number(url.searchParams.get("page") || 1);
-  const publisher = url.searchParams.get("publisher") || undefined;
+  const publisher = url.searchParams.get("publisher") || "";
 
   const itemsPerPage = 10;
   const offset = (page - 1) * itemsPerPage;
 
-  const response = new Response();
-
-  const supabase = createServerClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY!,
-    {
-      request,
-      response,
-    }
-  );
+  const { supabase, response } = createServerSupabase(request);
 
   const getContents = () => {
     let query = supabase.from("contents").select<any, ArticleSummaryType>(
@@ -120,9 +112,61 @@ export default function Index() {
 
   return (
     <SharedLayout>
-      <main className="flex flex-col md:flex-row-reverse justify-end p-4 md:px-8 gap-4 lg:gap-16">
-        <div className="w-full md:w-5/12 lg:w-4/12">
-          <div className="flex flex-col gap-4 sticky top-0 py-4">
+      <TwoColumn
+        left={
+          <>
+            <div className="sticky top-0 right-0 mb-4 pt-2 pb-2 bg-base-100">
+              <Tab
+                currentId={publisher}
+                items={[
+                  { id: "", title: "Beranda", href: "/" },
+                  ...(publishers?.map((item) => ({
+                    id: item.slug,
+                    title: item.title,
+                    href: `/?publisher=${item.slug}`,
+                  })) || []),
+                ]}
+              />
+            </div>
+            {contents?.map((item) => (
+              <ArticleItem
+                key={item.id}
+                title={item.title}
+                isFullContent={false}
+                content={item.summary}
+                createdAt={item.created_at}
+                readDuration={item.read_stats.minutes}
+                category={{
+                  name: item.taxonomies.name,
+                  categoryUrl: `/kategori/${item.taxonomies.slug}`,
+                }}
+                author={{
+                  name: item.publishers.title,
+                  logoUrl: item.publishers.logo_url,
+                }}
+                detailUrl={`/artikel/${item.slug}`}
+                imageUrl={item.image?.medium?.url}
+              />
+            ))}
+            <Pagination
+              page={page}
+              totalPage={totalPage}
+              buildUrl={(page) => {
+                let params: Record<string, string> = {};
+                if (publisher) {
+                  params.publisher = publisher;
+                }
+                if (page) {
+                  params.page = String(page);
+                }
+                const searchParams = new URLSearchParams(params);
+                return `/?${searchParams.toString()}`;
+              }}
+            />
+          </>
+        }
+        right={
+          <>
             <div>
               <h2 className="font-bold text-lg">Pilihan Editor</h2>
               <div className="mt-2">
@@ -177,57 +221,9 @@ export default function Index() {
                 </Link>
               </div>
             </div>
-          </div>
-        </div>
-        <div className="w-full md:w-7/12 lg:w-8/12">
-          <div className="sticky top-0 right-0 mb-4 pt-2 pb-2 bg-base-100">
-            <PublisherTab
-              currentPublisher={publisher}
-              publishers={
-                publishers?.map((item) => ({
-                  slug: item.slug,
-                  title: item.title,
-                })) || []
-              }
-            />
-          </div>
-          {contents?.map((item) => (
-            <ArticleItem
-              key={item.id}
-              title={item.title}
-              isFullContent={false}
-              content={item.summary}
-              createdAt={item.created_at}
-              readDuration={item.read_stats.minutes}
-              category={{
-                name: item.taxonomies.name,
-                categoryUrl: `/kategori/${item.taxonomies.slug}`,
-              }}
-              author={{
-                name: item.publishers.title,
-                logoUrl: item.publishers.logo_url,
-              }}
-              detailUrl={`/artikel/${item.slug}`}
-              imageUrl={item.image?.medium?.url}
-            />
-          ))}
-          <Pagination
-            page={page}
-            totalPage={totalPage}
-            buildUrl={(page) => {
-              let params: Record<string, string> = {};
-              if (publisher) {
-                params.publisher = publisher;
-              }
-              if (page) {
-                params.page = String(page);
-              }
-              const searchParams = new URLSearchParams(params);
-              return `/?${searchParams.toString()}`;
-            }}
-          />
-        </div>
-      </main>
+          </>
+        }
+      />
     </SharedLayout>
   );
 }

@@ -12,7 +12,7 @@ export function Pagination(props: PaginationProps) {
   const isFirstPage = page === 1;
   const hasMorePage = totalPage > page;
 
-  if (totalPage === 1) {
+  if (totalPage <= 1) {
     return null;
   }
 

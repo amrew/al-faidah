@@ -184,7 +184,7 @@ export function ArticleDetail(
 ) {
   const createdAt = dayjs(props.createdAt).format("DD MMM YYYY");
   return (
-    <div className="p-4">
+    <div>
       <div className="flex flex-row gap-2 mb-2">
         <img
           src={props.author.logoUrl}
@@ -208,7 +208,7 @@ export function ArticleDetail(
                 baca {Math.ceil(props.readDuration)} menit
               </span>
               <BiCircle size={6} className="text-gray-600 hidden sm:block" />
-              <Link to={props.category.categoryUrl} className="hidden sm:block">
+              <Link to={props.category.categoryUrl}>
                 <span className="badge badge-secondary line-clamp-1 text-white">
                   {props.category.name}
                 </span>

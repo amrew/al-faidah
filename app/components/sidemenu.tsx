@@ -39,7 +39,7 @@ export function SideMenu() {
           Beranda
         </NavLink>
       </li>
-      <li>
+      {/* <li>
         <NavLink
           to="/artikel"
           onClick={clearDrawer}
@@ -50,7 +50,7 @@ export function SideMenu() {
           <HiOutlineNewspaper size={24} />
           Artikel
         </NavLink>
-      </li>
+      </li> */}
       <li>
         <NavLink
           to="/radio"
