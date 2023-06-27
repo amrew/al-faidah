@@ -39,7 +39,7 @@ export function Pagination(props: PaginationProps) {
         <button className="join-item btn">...</button>
       ) : null}
       {page + 1 < totalPage ? (
-        <Link to={buildUrl(page + 1)}>
+        <Link to={buildUrl(totalPage)}>
           <button className="join-item btn">{totalPage}</button>
         </Link>
       ) : null}

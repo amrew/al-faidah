@@ -1,12 +1,17 @@
-import { json, type LoaderArgs, type V2_MetaFunction } from "@remix-run/node";
-import { ArticleItem, ArticleItemSmall } from "~/components/article-item";
+import { defer, type LoaderArgs, type V2_MetaFunction } from "@remix-run/node";
+import {
+  ArticleItem,
+  ArticleItemSmall,
+  ArticleItemSmallLoading,
+} from "~/components/article-item";
 import { SharedLayout } from "~/components/shared-layout";
 import type { ArticleSummaryType } from "~/components/article-entity";
 import { Tab } from "~/components/tab";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Await, Link, useLoaderData } from "@remix-run/react";
 import { Pagination } from "~/components/pagination";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { TwoColumn } from "~/components/two-column";
+import { Suspense } from "react";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -19,7 +24,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const { supabase, response } = createServerSupabase(request);
 
-  const getContents = () => {
+  const getContents = async () => {
     let query = supabase.from("contents").select<any, ArticleSummaryType>(
       `id, title, slug, summary, image, created_at, 
       read_stats, taxonomies( slug, name ), publishers!inner( title, slug, logo_url, web_url )`
@@ -34,7 +39,7 @@ export const loader = async ({ request }: LoaderArgs) => {
       .order("created_at", { ascending: false });
   };
 
-  const getContentCount = () => {
+  const getContentCount = async () => {
     let query = supabase
       .from("contents")
       .select("id, publishers!inner( slug )", { count: "exact", head: true });
@@ -46,7 +51,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     return query;
   };
 
-  const getEditorPicks = () => {
+  const getEditorPicks = async () => {
     return supabase
       .from("contents")
       .select<any, ArticleSummaryType>(
@@ -57,7 +62,7 @@ export const loader = async ({ request }: LoaderArgs) => {
       .order("created_at", { ascending: false });
   };
 
-  const getPublishers = () => {
+  const getPublishers = async () => {
     return supabase
       .from("publishers")
       .select<
@@ -66,28 +71,19 @@ export const loader = async ({ request }: LoaderArgs) => {
       >("id, title, slug, logo_url");
   };
 
-  const [
-    { data: contents },
-    { count },
-    { data: editorPicks },
-    { data: publishers },
-  ] = await Promise.all([
-    getContents(),
-    getContentCount(),
-    getEditorPicks(),
-    getPublishers(),
-  ]);
+  const [{ data: contents }, { count }, { data: publishers }] =
+    await Promise.all([getContents(), getContentCount(), getPublishers()]);
 
   const totalPage = count ? Math.ceil(count / itemsPerPage) : 0;
 
-  return json(
+  return defer(
     {
       publisher,
       contents,
-      editorPicks,
       publishers,
-      totalPage,
       page,
+      totalPage,
+      editorPicks: getEditorPicks(),
     },
     {
       headers: response.headers,
@@ -107,8 +103,14 @@ export const meta: V2_MetaFunction = () => {
 };
 
 export default function Index() {
-  const { publisher, contents, editorPicks, publishers, page, totalPage } =
-    useLoaderData<typeof loader>();
+  const {
+    publisher,
+    contents,
+    publishers,
+    page,
+    totalPage,
+    editorPicks: editorPicksPromise,
+  } = useLoaderData<typeof loader>();
 
   return (
     <SharedLayout>
@@ -171,22 +173,32 @@ export default function Index() {
               <h2 className="font-bold text-lg">Pilihan Editor</h2>
               <div className="mt-2">
                 <div className="flex flex-col gap-2">
-                  {editorPicks?.map((item) => (
-                    <ArticleItemSmall
-                      key={item.id}
-                      title={item.title}
-                      author={{
-                        name: item.publishers?.title,
-                        logoUrl: item.publishers?.logo_url,
-                      }}
-                      readDuration={item.read_stats?.minutes}
-                      detailUrl={`/artikel/${item.slug}`}
-                      category={{
-                        name: item.taxonomies?.name,
-                        categoryUrl: `/kategori/${item.taxonomies?.slug}`,
-                      }}
-                    />
-                  ))}
+                  <Suspense
+                    fallback={[...Array(3)].map((_, i) => (
+                      <ArticleItemSmallLoading key={i} />
+                    ))}
+                  >
+                    <Await resolve={editorPicksPromise}>
+                      {({ data: editorPicks }) =>
+                        editorPicks?.map((item) => (
+                          <ArticleItemSmall
+                            key={item.id}
+                            title={item.title}
+                            author={{
+                              name: item.publishers?.title,
+                              logoUrl: item.publishers?.logo_url,
+                            }}
+                            readDuration={item.read_stats?.minutes}
+                            detailUrl={`/artikel/${item.slug}`}
+                            category={{
+                              name: item.taxonomies?.name,
+                              categoryUrl: `/kategori/${item.taxonomies?.slug}`,
+                            }}
+                          />
+                        ))
+                      }
+                    </Await>
+                  </Suspense>
                 </div>
                 <Link to="/" className="text-primary">
                   Lihat semua
