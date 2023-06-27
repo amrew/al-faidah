@@ -55,12 +55,24 @@ const endpointMap: Record<string, { endpoint: string; publisher_id: number }> =
       endpoint: "https://problematikaumat.com",
       publisher_id: 4,
     },
+    tash: {
+      endpoint: "https://tashfiyah.com",
+      publisher_id: 5,
+    },
+    qonitah: {
+      endpoint: "https://qonitah.id",
+      publisher_id: 6,
+    },
+    warisan: {
+      endpoint: "https://warisansalaf.com",
+      publisher_id: 7,
+    },
   };
 
 export async function loader({ request }: LoaderArgs) {
   const { searchParams } = new URL(request.url);
   const name = searchParams.get("name") || "";
-  const page = Number(searchParams.get("page") || 1);
+  const initialPage = Number(searchParams.get("initialPage") || 1);
 
   const app = endpointMap[name];
   if (!app) {
@@ -85,94 +97,119 @@ export async function loader({ request }: LoaderArgs) {
   const termMap: Record<string, Term> = {};
   const contents: Content[] = [];
 
+  const run = (page: number, perPage: number) => {
+    return wp
+      .posts()
+      .embed()
+      .perPage(perPage)
+      .page(page)
+      .get()
+      .then((data) => {
+        for (const item of data) {
+          const readStats = readingTime(item.content.rendered);
+          const content: Content = {
+            id: item.slug,
+            created_at: item.date,
+            updated_at: item.modified,
+            original_id: item.id,
+            link: item.link,
+            slug: item.slug,
+            title: item.title.rendered,
+            description: item.content.rendered,
+            summary: item.excerpt.rendered,
+            status: item.status,
+            read_stats: {
+              minutes: readStats.minutes,
+              time: readStats.time,
+              words: readStats.words,
+            },
+            image: null,
+            category_id: null,
+            publisher_id: publisher_id,
+            user_id: process.env.USER_ID!,
+            terms: [],
+            embedding: null,
+            type_id: 1,
+          };
+
+          const embedded = item["_embedded"]?.["wp:featuredmedia"]?.[0];
+          const wpTerms = item["_embedded"]["wp:term"];
+          const media_details = embedded?.media_details;
+
+          const image: Image | null = media_details
+            ? {
+                full: media_details.sizes.full
+                  ? {
+                      url: media_details.sizes.full?.source_url,
+                      width: media_details.sizes.full?.width,
+                      height: media_details.sizes.full?.height,
+                    }
+                  : null,
+                medium: media_details.sizes.large
+                  ? {
+                      url: media_details.sizes.large?.source_url,
+                      width: media_details.sizes.large?.width,
+                      height: media_details.sizes.large?.height,
+                    }
+                  : null,
+                small: media_details.sizes.medium
+                  ? {
+                      url: media_details.sizes.medium?.source_url,
+                      width: media_details.sizes.medium?.width,
+                      height: media_details.sizes.medium?.height,
+                    }
+                  : null,
+              }
+            : null;
+
+          content.image = image;
+
+          const terms: string[] = [];
+          for (const termsdeep of wpTerms) {
+            for (const term of termsdeep) {
+              termMap[term.slug] = {
+                id: term.slug,
+                name: term.name,
+                slug: term.slug,
+                type: term.taxonomy === "category" ? "category" : "tag",
+              };
+              if (!content.category_id && term.taxonomy === "category") {
+                content.category_id = term.slug;
+              }
+              terms.push(term.slug);
+            }
+          }
+          content.terms = terms;
+
+          contents.push(content);
+        }
+        return { contents, termMap };
+      })
+      .then(async ({ contents, termMap }) => {
+        const taxonomies: Term[] = Object.values(termMap);
+        const taxResult = await supabase.from("taxonomies").upsert(taxonomies);
+        const contentResult = await supabase.from("contents").upsert(contents);
+        return { taxResult, contentResult };
+      });
+  };
+
   return wp
     .posts()
     .embed()
-    .perPage(5)
-    .page(page)
+    .perPage(1)
+    .page(1)
     .get()
-    .then((data) => {
-      for (const item of data) {
-        const readStats = readingTime(item.content.rendered);
-        const content: Content = {
-          id: item.slug,
-          created_at: item.date,
-          updated_at: item.modified,
-          original_id: item.id,
-          link: item.link,
-          slug: item.slug,
-          title: item.title.rendered,
-          description: item.content.rendered,
-          summary: item.excerpt.rendered,
-          status: item.status,
-          read_stats: {
-            minutes: readStats.minutes,
-            time: readStats.time,
-            words: readStats.words,
-          },
-          image: null,
-          category_id: null,
-          publisher_id: publisher_id,
-          user_id: process.env.USER_ID!,
-          terms: [],
-          embedding: null,
-          type_id: 1,
-        };
+    .then(async (data) => {
+      const totalItem = data._paging.total;
+      const totalPerItem = 10;
+      const totalPage = Math.ceil(totalItem / totalPerItem);
 
-        const embedded = item["_embedded"]["wp:featuredmedia"][0];
-        const wpTerms = item["_embedded"]["wp:term"];
-        const media_details = embedded.media_details;
-
-        const image: Image = {
-          full: media_details.sizes.full
-            ? {
-                url: media_details.sizes.full?.source_url,
-                width: media_details.sizes.full?.width,
-                height: media_details.sizes.full?.height,
-              }
-            : null,
-          medium: media_details.sizes.large
-            ? {
-                url: media_details.sizes.large?.source_url,
-                width: media_details.sizes.large?.width,
-                height: media_details.sizes.large?.height,
-              }
-            : null,
-          small: media_details.sizes.medium
-            ? {
-                url: media_details.sizes.medium?.source_url,
-                width: media_details.sizes.medium?.width,
-                height: media_details.sizes.medium?.height,
-              }
-            : null,
-        };
-        content.image = image;
-
-        const terms: string[] = [];
-        for (const termsdeep of wpTerms) {
-          for (const term of termsdeep) {
-            termMap[term.slug] = {
-              id: term.slug,
-              name: term.name,
-              slug: term.slug,
-              type: term.taxonomy === "category" ? "category" : "tag",
-            };
-            if (!content.category_id && term.taxonomy === "category") {
-              content.category_id = term.slug;
-            }
-            terms.push(term.slug);
-          }
-        }
-        content.terms = terms;
-
-        contents.push(content);
+      console.log("totalPage", totalPage);
+      for (let page = initialPage; page <= totalPage; page++) {
+        console.log("page", page);
+        await run(page, totalPerItem);
       }
-      return { contents, termMap };
-    })
-    .then(async ({ contents, termMap }) => {
-      const taxonomies: Term[] = Object.values(termMap);
-      const taxResult = await supabase.from("taxonomies").upsert(taxonomies);
-      const contentResult = await supabase.from("contents").upsert(contents);
-      return json({ taxResult, contentResult }, { headers: response.headers });
+
+      return json({ data }, { headers: response.headers });
     });
 }
