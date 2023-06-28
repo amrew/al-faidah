@@ -24,8 +24,8 @@ export function ArticleItem(props: ArticleItemProps) {
   const titleDescription = (
     <>
       <h1
-        className="text-xl md:text-2xl font-bold line-clamp-2"
-        dangerouslySetInnerHTML={{ __html: props.title }}
+        className="text-xl md:text-2xl font-bold line-clamp-2 capitalize"
+        dangerouslySetInnerHTML={{ __html: props.title.toLowerCase() }}
       />
       <div
         className={`prose ${!props.isFullContent ? "line-clamp-3" : ""}`}
@@ -142,8 +142,8 @@ export function ArticleItemSmall(
         <div className="flex flex-col flex-1 justify-between">
           <Link to={props.detailUrl} className="gap-1 flex flex-col">
             <h1
-              className="text-md font-bold line-clamp-2"
-              dangerouslySetInnerHTML={{ __html: props.title }}
+              className="text-md font-bold line-clamp-2 capitalize"
+              dangerouslySetInnerHTML={{ __html: props.title.toLowerCase() }}
             />
           </Link>
           <div className="flex flex-row gap-2 mt-1 items-center">
@@ -198,8 +198,8 @@ export function ArticleDetail(
         <div className="flex flex-col flex-1 justify-between gap-8">
           <div className="gap-4 flex flex-col">
             <h1
-              className="text-xl md:text-4xl font-bold"
-              dangerouslySetInnerHTML={{ __html: props.title }}
+              className="text-xl md:text-4xl font-bold capitalize"
+              dangerouslySetInnerHTML={{ __html: props.title.toLowerCase() }}
             />
             <div className="flex flex-row gap-2 mt-1 items-center">
               <span className="text-gray-600 text-sm">{createdAt}</span>

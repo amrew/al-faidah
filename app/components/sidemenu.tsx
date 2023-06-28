@@ -1,7 +1,7 @@
 import {
   HiOutlineHome,
   // HiOutlineVolumeUp,
-  HiOutlineNewspaper,
+  // HiOutlineNewspaper,
 } from "react-icons/hi";
 import { BiRadio } from "react-icons/bi";
 import { useMedia } from "react-use";

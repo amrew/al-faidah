@@ -17,10 +17,6 @@ export function MemberNavigation() {
     navigate("/");
   };
 
-  const loading = (
-    <button className="btn-primary btn-disabled btn normal-case text-white btn-sm w-20" />
-  );
-
   return user ? (
     <>
       <Link to="/radio/favorite" className="btn btn-ghost btn-circle btn-sm">
@@ -43,7 +39,7 @@ export function MemberNavigation() {
         </ul>
       </div>
     </>
-  ) : user === null ? (
+  ) : (
     <>
       <Link to="/auth/login" className="btn-ghost btn normal-case btn-sm">
         Masuk
@@ -55,7 +51,5 @@ export function MemberNavigation() {
         Daftar
       </Link>
     </>
-  ) : (
-    loading
   );
 }

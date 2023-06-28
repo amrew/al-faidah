@@ -17,10 +17,10 @@ export function Tab({ items, currentId }: TabProps) {
 
   return (
     <>
-      <div className="carousel hidden sm:flex">
+      <div className="flex-row flex-wrap hidden sm:flex">
         {items?.map((item) => (
           <div
-            className={`carousel-item py-2 px-4 border-b-2 ${
+            className={`py-2 px-4 border-b-2 ${
               currentId === item.id
                 ? "border-b-neutral-content font-bold"
                 : "border-b-base-200"
