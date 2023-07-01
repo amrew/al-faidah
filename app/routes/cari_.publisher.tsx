@@ -1,11 +1,13 @@
 import { json, type V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData, useNavigate } from "@remix-run/react";
 import { Pagination } from "~/components/pagination";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { SharedLayout } from "~/components/shared-layout";
 import { TwoColumn } from "~/components/two-column";
 import { Tab } from "~/components/tab";
-import { TaxonomiesResult } from "~/components/taxonomies-result";
+import { debounce } from "debounce";
+import { BiSearch } from "react-icons/bi";
+import type { ChangeEvent } from "react";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -24,45 +26,34 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     return `${acc} | '${cur}'`;
   }, "");
 
-  const [{ data: publishers }, { count }, { data: taxonomies }] =
-    await Promise.all([
-      supabase
-        .from("publishers")
-        .select<
-          any,
-          {
-            id: string;
-            slug: string;
-            title: string;
-            logo_url: string;
-            web_url: string;
-            description: string;
-          }
-        >("id, slug, title, logo_url, web_url, description")
-        .textSearch("title", `${searchParams}`)
-        .range(offset, offset + itemsPerPage - 1)
-        .order("created_at", { ascending: false }),
-      supabase
-        .from("publishers")
-        .select("id", { count: "exact", head: true })
-        .textSearch("title", `${searchParams}`),
-      supabase
-        .from("taxonomies")
-        .select<any, { id: string; slug: string; name: string }>(
-          "id, name, slug"
-        )
-        // .eq("type", "category")
-        .textSearch("name", `${searchParams}`)
-        .range(0, 4)
-        .order("created_at", { ascending: false }),
-    ]);
+  const [{ data: publishers }, { count }] = await Promise.all([
+    supabase
+      .from("publishers")
+      .select<
+        any,
+        {
+          id: string;
+          slug: string;
+          title: string;
+          logo_url: string;
+          web_url: string;
+          description: string;
+        }
+      >("id, slug, title, logo_url, web_url, description")
+      .textSearch("title", `${searchParams}`)
+      .range(offset, offset + itemsPerPage - 1)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("publishers")
+      .select("id", { count: "exact", head: true })
+      .textSearch("title", `${searchParams}`),
+  ]);
 
   const totalPage = count ? Math.ceil(count / itemsPerPage) : 0;
 
   return json(
     {
       type,
-      taxonomies,
       publishers,
       page,
       totalPage,
@@ -86,20 +77,37 @@ export const meta: V2_MetaFunction = ({ data }) => {
 };
 
 export default function Articles() {
-  const {
-    type,
-    publishers,
-    taxonomies,
-    page,
-    totalPage,
-    keyword,
-    normalizedKeyword,
-  } = useLoaderData<typeof loader>();
+  const { type, publishers, page, totalPage, keyword, normalizedKeyword } =
+    useLoaderData<typeof loader>();
+  const navigate = useNavigate();
+  const q = keyword.replace(/ /g, "+");
 
   return (
     <SharedLayout
-      keyword={normalizedKeyword}
-      searchHref={(value) => `/cari/publisher?q=${value}`}
+      searchComponent={
+        <div className="flex-1 relative">
+          <div className="absolute left-4 top-4">
+            <BiSearch />
+          </div>
+          <input
+            type="search"
+            placeholder="Cari artikel..."
+            className="input input-bordered pl-12 w-full md:w-2/3"
+            defaultValue={normalizedKeyword}
+            onChange={debounce<(e: ChangeEvent<HTMLInputElement>) => void>(
+              (e) => {
+                const value = e.target.value;
+                const normalizedValue = value.replace(" ", "+");
+                navigate(`/cari/${type}?q=${normalizedValue}`, {
+                  replace: true,
+                });
+              },
+              500
+            )}
+            autoFocus
+          />
+        </div>
+      }
     >
       <TwoColumn
         left={
@@ -114,52 +122,54 @@ export default function Articles() {
                   {
                     id: "artikel",
                     title: "Artikel",
-                    href: `/cari/artikel?q=${keyword}`,
+                    href: `/cari/artikel?q=${q}`,
                   },
                   {
                     id: "publisher",
                     title: "Publisher",
-                    href: `/cari/publisher?q=${keyword}`,
+                    href: `/cari/publisher?q=${q}`,
                   },
                   {
                     id: "topik",
                     title: "Topik",
-                    href: `/cari/topik?q=${keyword}`,
+                    href: `/cari/topik?q=${q}`,
                   },
                 ]}
               />
             </div>
-            {publishers && publishers?.length > 0 ? (
-              publishers?.map((publisher) => (
-                <Link
-                  to={`/publisher/${publisher.slug}`}
-                  key={publisher.id}
-                  className="flex flex-row gap-4 items-center"
-                >
-                  <div className="avatar">
-                    <div className="w-12 rounded-full bg-base-200 p-2">
-                      <img
-                        src={publisher.logo_url}
-                        alt={publisher.title}
-                        width={48}
-                        height={48}
-                        className="avatar"
-                      />
+            <div className="flex flex-col gap-4">
+              {publishers && publishers?.length > 0 ? (
+                publishers?.map((publisher) => (
+                  <Link
+                    to={`/publisher/${publisher.slug}`}
+                    key={publisher.id}
+                    className="flex flex-row gap-4 items-center"
+                  >
+                    <div className="avatar">
+                      <div className="w-12 rounded-full bg-base-200 p-2">
+                        <img
+                          src={publisher.logo_url}
+                          alt={publisher.title}
+                          width={48}
+                          height={48}
+                          className="avatar"
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <h2 className="font-bold text-lg">{publisher.title}</h2>
-                    <p>{publisher.description}</p>
-                  </div>
-                </Link>
-              ))
-            ) : (
-              <div>
-                <p>Pastikan kata pencarian tidak salah ketik</p>
-                <p>Coba kata lain</p>
-                <p>Coba kata yang lebih umum</p>
-              </div>
-            )}
+                    <div>
+                      <h2 className="font-bold text-lg">{publisher.title}</h2>
+                      <p>{publisher.description}</p>
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <div>
+                  <p>Pastikan kata pencarian tidak salah ketik</p>
+                  <p>Coba kata lain</p>
+                  <p>Coba kata yang lebih umum</p>
+                </div>
+              )}
+            </div>
             <Pagination
               page={page}
               totalPage={totalPage}
@@ -177,11 +187,7 @@ export default function Articles() {
             />
           </>
         }
-        right={
-          taxonomies && taxonomies.length > 0 ? (
-            <TaxonomiesResult items={taxonomies} keyword={keyword} />
-          ) : null
-        }
+        right={null}
       />
     </SharedLayout>
   );

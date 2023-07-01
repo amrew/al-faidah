@@ -1,6 +1,10 @@
 import dayjs from "dayjs";
 import { Link } from "@remix-run/react";
-import { BiCircle } from "react-icons/bi";
+import { BiCircle, BiLoader } from "react-icons/bi";
+import { FaShare } from "react-icons/fa";
+import { TbBookmarkPlus } from "react-icons/tb";
+import { BsBookmarkFill, BsShare } from "react-icons/bs";
+import { RWebShare } from "react-web-share";
 
 export type ArticleItemProps = {
   title: string;
@@ -13,11 +17,22 @@ export type ArticleItemProps = {
     name: string;
     categoryUrl: string;
   };
-  author: {
+  publisher: {
     name: string;
     logoUrl: string;
   };
+  authorName?: string;
   detailUrl: string;
+  metadata?: {
+    answer?: string;
+    source?: string;
+    link?: string;
+  } | null;
+  link: string;
+  toggleLikeLoading?: boolean;
+  onLikeClick?: () => void;
+  onUnlikeClick?: () => void;
+  isLiked?: boolean;
 };
 
 export function ArticleItem(props: ArticleItemProps) {
@@ -34,25 +49,38 @@ export function ArticleItem(props: ArticleItemProps) {
     </>
   );
   const createdAt = dayjs(props.createdAt).format("DD MMM YYYY");
+
+  const wrapWithLink = (node: React.ReactNode) => {
+    if (!props.isFullContent) {
+      return <Link to={props.detailUrl}>{node}</Link>;
+    } else {
+      return node;
+    }
+  };
+
   return (
     <div className="border-b border-b-base-300 mb-8 pb-8">
       <div className="flex flex-row gap-1 mb-2 items-center">
         <img
-          src={props.author.logoUrl}
-          alt={props.author.name}
+          src={props.publisher.logoUrl}
+          alt={props.publisher.name}
           width={16}
           height={16}
           className="object-contain"
         />
-        <span className="text-sm">{props.author.name}</span>
+        <div className="line-clamp-1">
+          <span className="text-sm font-semibold">{props.publisher.name} </span>
+          {props.authorName ? (
+            <>
+              <span className="text-sm">oleh </span>
+              <span className="text-sm font-semibold">{props.authorName}</span>
+            </>
+          ) : null}
+        </div>
       </div>
       <div className="flex flex-row gap-4">
         <div className="flex flex-col flex-1 justify-between">
-          {!props.isFullContent ? (
-            <Link to={props.detailUrl} className="gap-1 flex flex-col">
-              {titleDescription}
-            </Link>
-          ) : (
+          {wrapWithLink(
             <div className="gap-1 flex flex-col">{titleDescription}</div>
           )}
           <div className="flex flex-row gap-2 mt-1 items-center">
@@ -69,13 +97,54 @@ export function ArticleItem(props: ArticleItemProps) {
             </Link>
           </div>
         </div>
-        {props.imageUrl ? (
-          <img
-            src={props.imageUrl}
-            alt={props.title}
-            className="w-24 h-16 self-center sm:w-48 sm:h-36 object-cover"
-          />
-        ) : null}
+        {props.imageUrl
+          ? wrapWithLink(
+              <img
+                src={props.imageUrl}
+                alt={props.title}
+                className="w-24 h-16 self-center sm:w-48 sm:h-36 object-cover"
+              />
+            )
+          : null}
+      </div>
+      <div className="mt-4 flex flex-row gap-2">
+        <RWebShare
+          data={{
+            title: props.title,
+            text: props.content,
+            url: props.link,
+          }}
+          sites={["whatsapp", "telegram", "mail", "copy"]}
+        >
+          <button className={`btn btn-outline btn-sm btn-circle`}>
+            <BsShare />
+          </button>
+        </RWebShare>
+        {!props.toggleLikeLoading ? (
+          <button
+            className={`btn btn-sm ${
+              props.isLiked ? "btn-accent" : "btn-outline"
+            }`}
+            onClick={props.isLiked ? props.onUnlikeClick : props.onLikeClick}
+          >
+            {props.isLiked ? (
+              <BsBookmarkFill className="text-white" />
+            ) : (
+              <TbBookmarkPlus />
+            )}
+          </button>
+        ) : (
+          <button className={`btn btn-ghost btn-sm`}>
+            <BiLoader />
+          </button>
+        )}
+        <Link
+          to={props.link}
+          target="_blank"
+          className="btn btn-primary btn-sm text-white"
+        >
+          Sumber <FaShare />
+        </Link>
       </div>
     </div>
   );
@@ -116,6 +185,14 @@ export function ArticleItemLoading() {
         </div>
         <div className="w-24 h-16 self-center sm:w-48 sm:h-36 bg-base-300 animate-pulse" />
       </div>
+      <div className="mt-4 flex flex-row gap-2">
+        <button className="btn btn-outline btn-sm">
+          <TbBookmarkPlus />
+        </button>
+        <button className="btn btn-accent btn-sm">
+          Sumber <FaShare />
+        </button>
+      </div>
     </div>
   );
 }
@@ -130,13 +207,21 @@ export function ArticleItemSmall(
     <div className="border-b border-b-base-300 mb-2 pb-2">
       <div className="flex flex-row gap-1 mb-2 items-center">
         <img
-          src={props.author.logoUrl}
-          alt={props.author.name}
+          src={props.publisher.logoUrl}
+          alt={props.publisher.name}
           width={16}
           height={16}
           className="object-contain"
         />
-        <span className="text-sm">{props.author.name}</span>
+        <div className="line-clamp-1">
+          <span className="text-sm">{props.publisher.name}</span>
+          {props.authorName ? (
+            <>
+              <span className="text-sm">oleh </span>
+              <span className="text-sm font-semibold">{props.authorName}</span>
+            </>
+          ) : null}
+        </div>
       </div>
       <div className="flex flex-row gap-4">
         <div className="flex flex-col flex-1 justify-between">
@@ -185,14 +270,22 @@ export function ArticleDetail(
   const createdAt = dayjs(props.createdAt).format("DD MMM YYYY");
   return (
     <div>
-      <div className="flex flex-row gap-2 mb-2">
+      <div className="flex flex-row gap-2 mb-2 items-center">
         <img
-          src={props.author.logoUrl}
-          alt={props.author.name}
+          src={props.publisher.logoUrl}
+          alt={props.publisher.name}
           width={24}
           height={24}
         />
-        <span className="text-md">{props.author.name}</span>
+        <div className="line-clamp-1">
+          <span className="text-md">{props.publisher.name}</span>
+          {props.authorName ? (
+            <>
+              <span className="text-sm">oleh </span>
+              <span className="text-sm font-semibold">{props.authorName}</span>
+            </>
+          ) : null}
+        </div>
       </div>
       <div className="flex flex-row gap-4 mt-4">
         <div className="flex flex-col flex-1 justify-between gap-8">
@@ -219,14 +312,31 @@ export function ArticleDetail(
                 <img
                   src={props.imageUrl}
                   alt={props.title}
-                  className="w-full h-96 object-cover"
+                  className="w-full sm:max-w-xl md:max-w-2xl sm:w-auto h-auto object-cover"
                 />
               </div>
             ) : null}
-            <div
-              className={"prose prose-pre:whitespace-pre-wrap"}
-              dangerouslySetInnerHTML={{ __html: props.content }}
-            />
+            {props.metadata?.answer ? (
+              <div>
+                <h2 className="text-xl font-bold mb-2">Pertanyaan</h2>
+                <div className="p-4 bg-base-200 rounded-md max-w-2xl">
+                  <div
+                    className={"prose prose-pre:whitespace-pre-wrap"}
+                    dangerouslySetInnerHTML={{ __html: props.content }}
+                  />
+                </div>
+                <h2 className="text-xl font-bold mt-4 mb-2">Jawaban</h2>
+                <div
+                  className={"prose prose-pre:whitespace-pre-wrap"}
+                  dangerouslySetInnerHTML={{ __html: props.metadata.answer }}
+                />
+              </div>
+            ) : (
+              <div
+                className={"prose prose-pre:whitespace-pre-wrap"}
+                dangerouslySetInnerHTML={{ __html: props.content }}
+              />
+            )}
           </div>
           {props.sourceLink ? (
             <div className="alert alert-warning">

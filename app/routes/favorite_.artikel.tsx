@@ -1,0 +1,118 @@
+import type { ArticleSummaryType } from "~/components/article-entity";
+import { json, type V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
+import { useLoaderData, useRevalidator } from "@remix-run/react";
+import { Pagination } from "~/components/pagination";
+import { createServerSupabase } from "~/clients/createServerSupabase";
+import { SharedLayout } from "~/components/shared-layout";
+import { TwoColumn } from "~/components/two-column";
+import { Tab } from "~/components/tab";
+import { ArticleList } from "~/components/article-list";
+
+export const loader = async ({ request, context }: LoaderArgs) => {
+  const url = new URL(request.url);
+  const page = Number(url.searchParams.get("page") || 1);
+
+  const { supabase, response } = createServerSupabase(request);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const itemsPerPage = 10;
+  const offset = (page - 1) * itemsPerPage;
+  const { data: contentLikes } = await supabase
+    .from("content_likes")
+    .select("content_id")
+    .eq("type", "article")
+    .eq("user_id", user?.id);
+  const contentIds =
+    contentLikes?.map((contentLike) => contentLike.content_id) || [];
+
+  const [{ data: contents }, { count }] = await Promise.all([
+    supabase
+      .from("contents")
+      .select<any, ArticleSummaryType>(
+        `id, title, slug, summary, image, created_at, read_stats, link,
+          taxonomies( slug, name ), publishers( title, logo_url, web_url ), author`
+      )
+      .in("id", contentIds)
+      .range(offset, offset + itemsPerPage - 1)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("contents")
+      .select("id", { count: "exact", head: true })
+      .in("id", contentIds),
+  ]);
+
+  const totalPage = count ? Math.ceil(count / itemsPerPage) : 0;
+
+  return json(
+    {
+      contents,
+      page,
+      totalPage,
+    },
+    { headers: response.headers }
+  );
+};
+
+export const meta: V2_MetaFunction = ({ data }) => {
+  return [
+    { title: `Artikel Favorite - Al Faidah` },
+    {
+      name: "description",
+      content:
+        "Media dakwah Ahlus Sunnah Wal Jama'ah yang berisi bermacam-macam artikel, kajian, radio dan audio islami",
+    },
+  ];
+};
+
+export default function FavoriteArticles() {
+  const { contents, page, totalPage } = useLoaderData<typeof loader>();
+  const { revalidate } = useRevalidator();
+
+  return (
+    <SharedLayout>
+      <TwoColumn
+        left={
+          <>
+            <h1 className="text-xl md:text-3xl mt-2 mb-4">Disimpan</h1>
+            <div className="sticky top-0 right-0 mb-4 pt-2 pb-2 bg-base-100">
+              <Tab
+                currentId="artikel"
+                items={[
+                  {
+                    id: "radio",
+                    title: "Radio",
+                    href: `/favorite/radio`,
+                  },
+                  {
+                    id: "artikel",
+                    title: "Artikel",
+                    href: `/favorite/artikel`,
+                  },
+                ]}
+              />
+            </div>
+            <ArticleList
+              contents={contents || []}
+              onUnlikeCallback={() => revalidate()}
+            />
+            <Pagination
+              page={page}
+              totalPage={totalPage}
+              buildUrl={(page) => {
+                let params: Record<string, string> = {};
+                if (page) {
+                  params.page = String(page);
+                }
+                const searchParams = new URLSearchParams(params);
+                return `/favorite/artikel?${searchParams.toString()}`;
+              }}
+            />
+          </>
+        }
+        right={null}
+      />
+    </SharedLayout>
+  );
+}

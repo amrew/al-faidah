@@ -4,6 +4,8 @@ import { json, type V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Pagination } from "~/components/pagination";
 import { createServerSupabase } from "~/clients/createServerSupabase";
+import { getArticleUrl } from "~/utils/linkUtils";
+import { ArticleList } from "~/components/article-list";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -29,7 +31,9 @@ export const loader = async ({ request }: LoaderArgs) => {
     supabase
       .from("contents")
       .select<any, ArticleSummaryType>(
-        "id, title, slug, summary, image, created_at, read_stats, taxonomies( slug, name ), publishers( title, logo_url, web_url )"
+        `id, title, slug, summary, image, created_at, link, 
+        read_stats, taxonomies( slug, name ), publishers!inner( title, slug, logo_url, web_url ), 
+        author`
       )
       .range(offset, offset + itemsPerPage - 1)
       .order("created_at", { ascending: false }),
@@ -54,26 +58,7 @@ export default function Articles() {
   return (
     <>
       <main className="p-4 md:p-8 gap-4 grid grid-cols-1 md:grid-cols-2">
-        {contents?.map((item) => (
-          <ArticleItem
-            key={item.id}
-            title={item.title}
-            isFullContent={false}
-            content={item.summary}
-            createdAt={item.created_at}
-            readDuration={item.read_stats.minutes}
-            category={{
-              name: item.taxonomies.name,
-              categoryUrl: `/kategori/${item.taxonomies.slug}`,
-            }}
-            author={{
-              name: item.publishers.title,
-              logoUrl: item.publishers.logo_url,
-            }}
-            detailUrl={`/artikel/${item.slug}`}
-            imageUrl={item.image?.medium?.url}
-          />
-        ))}
+        <ArticleList contents={contents || []} />
       </main>
       <div className="flex justify-center mb-4 sm:mb-8">
         <Pagination

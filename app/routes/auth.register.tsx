@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useMutation } from "react-query";
 import { BiMailSend } from "react-icons/bi";
 import { ImWarning } from "react-icons/im";
-import { useSupabase } from "~/clients/useSupabase";
+import { useSupabase } from "~/hooks/useSupabase";
 import { Link } from "@remix-run/react";
 import { BackButton } from "~/components/back-button";
 import { type V2_MetaFunction } from "@remix-run/node";

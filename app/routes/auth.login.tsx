@@ -3,7 +3,7 @@ import { FcGoogle } from "react-icons/fc";
 import { ImInfo, ImWarning } from "react-icons/im";
 import { useMutation } from "react-query";
 import { Link, useLoaderData, useNavigate } from "@remix-run/react";
-import { useSupabase } from "~/clients/useSupabase";
+import { useSupabase } from "~/hooks/useSupabase";
 import { json, type V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
 import { BackButton } from "~/components/back-button";
 
@@ -60,12 +60,14 @@ export default function AuthLogin() {
   return (
     <div className="flex flex-col h-full sm:items-center sm:justify-center bg-base-200 gap-4">
       {messageType ? (
-        <div className="max-w-sm alert alert-info mt-4 justify-start flex flex-row">
+        <div className="w-full sm:max-w-sm alert alert-error mt-4 justify-start flex flex-row">
           <ImInfo size={20} />
           <span>
-            {messageType === "like"
-              ? "Masuk/daftar dulu sebelum menandai radio favorite"
-              : ""}
+            {messageType === "radio-like"
+              ? "Login dulu sebelum menyimpan radio"
+              : messageType === "article-like"
+              ? "Login dulu sebelum menyimpan artikel"
+              : null}
           </span>
         </div>
       ) : null}

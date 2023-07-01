@@ -1,6 +1,5 @@
 import { defer, type LoaderArgs, type V2_MetaFunction } from "@remix-run/node";
 import {
-  ArticleItem,
   ArticleItemSmall,
   ArticleItemSmallLoading,
 } from "~/components/article-item";
@@ -12,6 +11,8 @@ import { Pagination } from "~/components/pagination";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { TwoColumn } from "~/components/two-column";
 import { Suspense } from "react";
+import { getArticleUrl } from "~/utils/linkUtils";
+import { ArticleList } from "~/components/article-list";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -26,8 +27,9 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const getContents = async () => {
     let query = supabase.from("contents").select<any, ArticleSummaryType>(
-      `id, title, slug, summary, image, created_at, 
-      read_stats, taxonomies( slug, name ), publishers!inner( title, slug, logo_url, web_url )`
+      `id, title, slug, summary, image, created_at, link, 
+      read_stats, taxonomies( slug, name ), publishers!inner( title, slug, logo_url, web_url ), 
+      author`
     );
 
     if (publisher) {
@@ -130,26 +132,7 @@ export default function Index() {
                 ]}
               />
             </div>
-            {contents?.map((item) => (
-              <ArticleItem
-                key={item.id}
-                title={item.title}
-                isFullContent={false}
-                content={item.summary}
-                createdAt={item.created_at}
-                readDuration={item.read_stats.minutes}
-                category={{
-                  name: item.taxonomies.name,
-                  categoryUrl: `/kategori/${item.taxonomies.slug}`,
-                }}
-                author={{
-                  name: item.publishers.title,
-                  logoUrl: item.publishers.logo_url,
-                }}
-                detailUrl={`/artikel/${item.slug}`}
-                imageUrl={item.image?.medium?.url}
-              />
-            ))}
+            <ArticleList contents={contents || []} />
             <Pagination
               page={page}
               totalPage={totalPage}
@@ -173,23 +156,26 @@ export default function Index() {
               <h2 className="font-bold text-lg">Pilihan Editor</h2>
               <div className="mt-2">
                 <div className="flex flex-col gap-2">
-                  <Suspense
-                    fallback={[...Array(3)].map((_, i) => (
-                      <ArticleItemSmallLoading key={i} />
-                    ))}
-                  >
-                    <Await resolve={editorPicksPromise}>
+                  <Suspense fallback={<EditorPickFallback />}>
+                    <Await
+                      resolve={editorPicksPromise}
+                      errorElement={<EditorPickFallback />}
+                    >
                       {({ data: editorPicks }) =>
                         editorPicks?.map((item) => (
                           <ArticleItemSmall
                             key={item.id}
                             title={item.title}
-                            author={{
+                            publisher={{
                               name: item.publishers?.title,
                               logoUrl: item.publishers?.logo_url,
                             }}
                             readDuration={item.read_stats?.minutes}
-                            detailUrl={`/artikel/${item.slug}`}
+                            detailUrl={getArticleUrl({
+                              publisherSlug: item.publishers.slug,
+                              articleSlug: item.slug,
+                            })}
+                            link={item.link}
                             category={{
                               name: item.taxonomies?.name,
                               categoryUrl: `/kategori/${item.taxonomies?.slug}`,
@@ -239,3 +225,7 @@ export default function Index() {
     </SharedLayout>
   );
 }
+
+const EditorPickFallback = () => {
+  return [...Array(3)].map((_, i) => <ArticleItemSmallLoading key={i} />);
+};

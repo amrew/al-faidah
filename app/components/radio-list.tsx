@@ -2,10 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { ModalEmbed } from "./modal-embed";
 import type { TrackInfo } from "./radio-entity";
 import { RadioItem, RadioItemLoading } from "./radio-item";
-import { useMutation, useQuery } from "react-query";
-import { useSupabase, useUser } from "~/clients/useSupabase";
-import { Link, useNavigate, useRevalidator } from "@remix-run/react";
+import { Link, useRevalidator } from "@remix-run/react";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
+import { useToggleLike } from "~/hooks/useToggleLike";
 
 export type RadioListProps = {
   items: TrackInfo[];
@@ -16,78 +15,15 @@ export type RadioListProps = {
 
 export function RadioList(props: RadioListProps) {
   const { refreshInterval = 20000 } = props;
-  const supabase = useSupabase();
-  const navigate = useNavigate();
   const { revalidate } = useRevalidator();
 
   const [selectedTrack, setSelectedTrack] = useState<TrackInfo>();
   const half = Math.floor(props.items.length / 2);
   const [renderOnClient, setRenderOnClient] = useState(false);
 
-  const user = useUser();
-
-  const getRadioLikes = async () => {
-    if (user) {
-      return await supabase
-        .from("radio_likes")
-        .select()
-        .eq("type", "radio")
-        .eq("user_id", user.id);
-    }
-    return undefined;
-  };
-
-  const likeRadio = async (id: string) => {
-    if (user) {
-      const result = await supabase
-        .from("radio_likes")
-        .insert({ type: "radio", content_id: id });
-      if (result.error) {
-        throw result.error;
-      }
-    } else {
-      navigate("/auth/login?messageType=like");
-    }
-  };
-
-  const unlikeRadio = async (id: string) => {
-    if (user) {
-      const result = await supabase
-        .from("radio_likes")
-        .delete()
-        .eq("type", "radio")
-        .eq("content_id", id)
-        .eq("user_id", user.id);
-      if (result.error) {
-        throw result.error;
-      }
-    } else {
-      navigate("/auth/login?messageType=like");
-    }
-  };
-
-  const { data: radioLikes, refetch } = useQuery(
-    ["radioLikes"],
-    getRadioLikes,
-    {
-      enabled: !!user,
-      cacheTime: Infinity,
-    }
-  );
-  const radioLikesMap = radioLikes?.data?.reduce((acc, radioLike) => {
-    return { ...acc, [radioLike.content_id]: true };
-  }, {});
-
-  const likeMutation = useMutation(likeRadio, {
-    onSuccess: () => {
-      refetch();
-    },
-  });
-
-  const unlikeMutation = useMutation(unlikeRadio, {
-    onSuccess: () => {
-      refetch();
-    },
+  const { like, unlike, isLiked, isLoading, isDataLoaded } = useToggleLike({
+    contentType: "radio",
+    onUnlikeCallback: revalidate,
   });
 
   const firstTime = useRef(true);
@@ -129,13 +65,13 @@ export function RadioList(props: RadioListProps) {
   }, []);
 
   if (props.favorite) {
-    if (!radioLikesMap) {
+    if (!isDataLoaded) {
       return <RadioListLoading count={4} />;
     }
   }
 
   const results = props.favorite
-    ? props.items.filter((item) => !!radioLikesMap?.[item.id])
+    ? props.items.filter((item) => isLiked(item.id))
     : props.items;
 
   return (
@@ -149,16 +85,11 @@ export function RadioList(props: RadioListProps) {
               key={item.id}
               item={item}
               embed={props.embed}
-              isLiked={!!radioLikesMap?.[item.id]}
+              isLiked={isLiked(item.id)}
               onEmbedClick={() => setSelectedTrack(item)}
-              toggleLikeLoading={
-                (likeMutation.isLoading &&
-                  likeMutation.variables === item.id) ||
-                (unlikeMutation.isLoading &&
-                  unlikeMutation.variables === item.id)
-              }
-              onLikeClick={() => likeMutation.mutate(item.id)}
-              onUnlikeClick={() => unlikeMutation.mutate(item.id)}
+              toggleLikeLoading={isLoading(item.id)}
+              onLikeClick={() => like(item.id)}
+              onUnlikeClick={() => unlike(item.id)}
             />
           ) : null;
         })

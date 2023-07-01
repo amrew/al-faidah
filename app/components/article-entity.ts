@@ -28,7 +28,18 @@ export type ArticleSummaryType = {
     title: string;
     logo_url: string;
     web_url: string;
+    slug: string;
   };
+  author: {
+    slug: string;
+    name: string;
+  } | null;
+  link: string;
+  metadata?: {
+    answer?: string;
+    source?: string;
+    link?: string;
+  } | null;
 };
 
 export type ArticleDetailType = {

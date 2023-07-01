@@ -1,5 +1,5 @@
-import { BsBookmarkFill } from "react-icons/bs";
-import { useSupabase, useUser } from "~/clients/useSupabase";
+import { BsBookmark } from "react-icons/bs";
+import { useSupabase, useUser } from "~/hooks/useSupabase";
 import { Link, useNavigate } from "@remix-run/react";
 
 export function MemberNavigation() {
@@ -19,8 +19,8 @@ export function MemberNavigation() {
 
   return user ? (
     <>
-      <Link to="/radio/favorite" className="btn btn-ghost btn-circle btn-sm">
-        <BsBookmarkFill className="text-accent" />
+      <Link to="/favorite/radio" className="btn btn-ghost btn-circle btn-sm">
+        <BsBookmark />
       </Link>
       <div className="dropdown dropdown-end">
         <label tabIndex={0} className="btn btn-ghost avatar placeholder gap-2">
