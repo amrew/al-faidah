@@ -46,10 +46,7 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
               hasSearchComponent ? "hidden" : ""
             }`}
           >
-            <Link
-              to="/cari/artikel"
-              className="btn btn-ghost btn-circle btn-sm"
-            >
+            <Link to="/cari" className="btn btn-ghost btn-circle btn-sm">
               <BiSearch />
             </Link>
           </div>
