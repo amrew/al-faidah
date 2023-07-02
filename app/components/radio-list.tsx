@@ -23,7 +23,6 @@ export function RadioList(props: RadioListProps) {
 
   const { like, unlike, isLiked, isLoading, isDataLoaded } = useToggleLike({
     contentType: "radio",
-    onUnlikeCallback: revalidate,
   });
 
   const firstTime = useRef(true);

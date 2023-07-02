@@ -2,7 +2,6 @@ import { getArticleUrl } from "~/utils/linkUtils";
 import type { ArticleSummaryType } from "./article-entity";
 import { ArticleItem } from "./article-item";
 import { useToggleLike } from "~/hooks/useToggleLike";
-import { useRevalidator } from "@remix-run/react";
 
 export type ArticleListProps = {
   contents: ArticleSummaryType[];
@@ -10,11 +9,15 @@ export type ArticleListProps = {
   onUnlikeCallback?: () => void;
 };
 
-export function ArticleList({ contents }: ArticleListProps) {
-  const { revalidate } = useRevalidator();
+export function ArticleList({
+  contents,
+  onLikeCallback,
+  onUnlikeCallback,
+}: ArticleListProps) {
   const { like, unlike, isLiked, isLoading } = useToggleLike({
     contentType: "article",
-    onUnlikeCallback: revalidate,
+    onLikeCallback,
+    onUnlikeCallback,
   });
 
   return contents?.map((item) => (

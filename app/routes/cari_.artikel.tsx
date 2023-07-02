@@ -55,10 +55,13 @@ const SearchBox = ({
   refine: (value: string) => void;
 }) => {
   const [value, setValue] = useState(keyword);
+  console.log(value, keyword);
 
   useDebounce(
     () => {
-      onChange(value);
+      if (value !== keyword) {
+        onChange(value);
+      }
     },
     300,
     [value]
@@ -79,7 +82,8 @@ const SearchBox = ({
         className="input input-bordered pl-12 w-full md:w-2/3"
         value={value}
         onChange={(e) => {
-          setValue(e.target.value);
+          const value = e.currentTarget.value;
+          setValue(value);
         }}
         autoFocus
       />
