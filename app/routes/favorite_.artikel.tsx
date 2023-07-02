@@ -1,5 +1,10 @@
 import type { ArticleSummaryType } from "~/components/article-entity";
-import { json, type V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
+import {
+  json,
+  type V2_MetaFunction,
+  type LoaderArgs,
+  redirect,
+} from "@remix-run/node";
 import { useLoaderData, useRevalidator } from "@remix-run/react";
 import { Pagination } from "~/components/pagination";
 import { createServerSupabase } from "~/clients/createServerSupabase";
@@ -7,8 +12,14 @@ import { SharedLayout } from "~/components/shared-layout";
 import { TwoColumn } from "~/components/two-column";
 import { Tab } from "~/components/tab";
 import { ArticleList } from "~/components/article-list";
+import { isLoggedIn } from "~/utils/authUtils.server";
 
-export const loader = async ({ request, context }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderArgs) => {
+  const loggedIn = await isLoggedIn(request);
+  if (!loggedIn) {
+    return redirect(`/auth/login?messageType=favorite-page`);
+  }
+
   const url = new URL(request.url);
   const page = Number(url.searchParams.get("page") || 1);
 

@@ -4,10 +4,21 @@ import { ImInfo, ImWarning } from "react-icons/im";
 import { useMutation } from "react-query";
 import { Link, useLoaderData, useNavigate } from "@remix-run/react";
 import { useSupabase } from "~/hooks/useSupabase";
-import { json, type V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
+import {
+  json,
+  type V2_MetaFunction,
+  type LoaderArgs,
+  redirect,
+} from "@remix-run/node";
 import { BackButton } from "~/components/back-button";
+import { isLoggedIn } from "~/utils/authUtils.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const loggedIn = await isLoggedIn(request);
+  if (loggedIn) {
+    return redirect("/");
+  }
+
   const url = new URL(request.url);
   const messageType = url.searchParams.get("messageType");
 
@@ -18,6 +29,12 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: "Login - Al Faidah" }];
+};
+
+const messageMap: Record<string, string> = {
+  "radio-like": "Login dulu sebelum menyimpan radio",
+  "article-like": "Login dulu sebelum menyimpan artikel",
+  "favorite-page": "Login dulu sebelum melihat halaman favorit",
 };
 
 export default function AuthLogin() {
@@ -62,13 +79,7 @@ export default function AuthLogin() {
       {messageType ? (
         <div className="w-full sm:max-w-sm alert alert-error mt-4 justify-start flex flex-row">
           <ImInfo size={20} />
-          <span>
-            {messageType === "radio-like"
-              ? "Login dulu sebelum menyimpan radio"
-              : messageType === "article-like"
-              ? "Login dulu sebelum menyimpan artikel"
-              : null}
-          </span>
+          <span>{messageMap[messageType]}</span>
         </div>
       ) : null}
       <form

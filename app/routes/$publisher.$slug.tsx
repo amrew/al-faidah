@@ -42,6 +42,10 @@ export const meta: V2_MetaFunction = ({ data }) => {
       name: "description",
       content: item.summary,
     },
+    {
+      name: "robots",
+      content: "noindex",
+    },
   ];
 };
 
