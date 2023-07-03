@@ -21,7 +21,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
         read_stats, taxonomies( slug, name ), publishers!inner( title, logo_url, web_url ),
         author, metadata`
       )
-      .eq("id", slug)
+      .eq("slug", slug)
       .eq("publishers.slug", publisherSlug)
       .single(),
   ]);
