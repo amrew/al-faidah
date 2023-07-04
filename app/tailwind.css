@@ -61,3 +61,6 @@ body.navigate-loading main {
   }
 }
 
+.prose iframe {
+  width: 100%;
+}
