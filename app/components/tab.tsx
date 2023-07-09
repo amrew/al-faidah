@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import { BiLock } from "react-icons/bi";
 
 export type TabProps = {
@@ -13,14 +13,9 @@ export type TabProps = {
 };
 
 export function Tab({ items, currentId }: TabProps) {
-  const navigate = useNavigate();
-  const idHrefMap = items.reduce<Record<string, string>>((acc, item) => {
-    return { ...acc, [item.id]: item.href };
-  }, {});
-
   return (
-    <>
-      <nav className="carousel hidden sm:flex">
+    <div className="overflow-x-auto">
+      <nav className="flex flex-row">
         {items
           .filter((item) => !item.hide)
           .map((item) => (
@@ -38,25 +33,6 @@ export function Tab({ items, currentId }: TabProps) {
             </div>
           ))}
       </nav>
-      <select
-        className="select select-primary w-full sm:hidden"
-        value={currentId}
-        onChange={(e) => {
-          const value = e.target.value;
-          const href = idHrefMap[value];
-          if (href) {
-            navigate(href);
-          }
-        }}
-      >
-        {items
-          .filter((item) => !item.hide)
-          .map((item) => (
-            <option key={item.title} value={item.id}>
-              {item.title}
-            </option>
-          ))}
-      </select>
-    </>
+    </div>
   );
 }

@@ -11,10 +11,11 @@ export type RadioListProps = {
   favorite?: boolean;
   refreshInterval?: number;
   embed?: boolean;
+  canBeSaved?: boolean;
 };
 
 export function RadioList(props: RadioListProps) {
-  const { refreshInterval = 20000 } = props;
+  const { refreshInterval = 20000, canBeSaved } = props;
   const { revalidate } = useRevalidator();
 
   const [selectedTrack, setSelectedTrack] = useState<TrackInfo>();
@@ -89,6 +90,7 @@ export function RadioList(props: RadioListProps) {
               toggleLikeLoading={isLoading(item.id)}
               onLikeClick={() => like(item.id)}
               onUnlikeClick={() => unlike(item.id)}
+              canBeSaved={canBeSaved}
             />
           ) : null;
         })

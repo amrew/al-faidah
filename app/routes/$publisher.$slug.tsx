@@ -52,10 +52,7 @@ export const meta: V2_MetaFunction = ({ data }) => {
 export default function Detail() {
   const { item } = useLoaderData<typeof loader>();
   return (
-    <SharedLayout>
-      <div className="flex flex-row items-center px-4 pt-4 md:px-8">
-        <BackButton />
-      </div>
+    <SharedLayout bottomNavShown={false} hasBackButton={true}>
       <main className="flex flex-row gap-4 p-4 md:px-8">
         <div>
           {item ? (

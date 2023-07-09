@@ -10,6 +10,8 @@ import {
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { createServerSupabase } from "~/clients/createServerSupabase";
+import { Tab } from "~/components/tab";
+import { useUser } from "~/hooks/useSupabase";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -26,23 +28,30 @@ export const loader = async ({ request }: LoaderArgs) => {
   const type = url.searchParams.get("type") === "syariah" ? "syariah" : "rii";
 
   const { supabase, response } = createServerSupabase(request);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let userProfile: {
+    is_verified: boolean;
+  } | null = { is_verified: false };
+
+  if (user) {
+    const { data } = await supabase
+      .from("user_profiles")
+      .select("is_verified")
+      .eq("user_id", user.id)
+      .single();
+
+    userProfile = data;
+  }
 
   if (type === "syariah") {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
     if (!user) {
       return redirect("/auth/login?messageType=syariah-radio", {
         headers: response.headers,
       });
     }
-
-    const { data: userProfile } = await supabase
-      .from("user_profiles")
-      .select("is_verified")
-      .eq("user_id", user.id)
-      .single();
 
     if (!userProfile || !userProfile?.is_verified) {
       return redirect("/auth/verify", { headers: response.headers });
@@ -59,12 +68,31 @@ export const loader = async ({ request }: LoaderArgs) => {
       radios,
       teachers,
       type,
+      isVerified: userProfile?.is_verified,
     },
     { headers: response.headers }
   );
 };
 
 export default function Radio() {
-  const { radios, teachers, type } = useLoaderData<typeof loader>();
-  return <RadioListWithFilter items={radios} teachers={teachers} type={type} />;
+  const { radios, teachers, type, isVerified } = useLoaderData<typeof loader>();
+  const user = useUser();
+  return (
+    <div className="flex flex-col p-4 md:p-8 gap-4">
+      <Tab
+        currentId={type == "syariah" ? "syariah" : "rii"}
+        items={[
+          { id: "rii", title: "RII", href: "/radio" },
+          {
+            id: "syariah",
+            title: "Syariah",
+            href: "/radio?type=syariah",
+            hide: !user,
+            private: !isVerified,
+          },
+        ]}
+      />
+      <RadioListWithFilter items={radios} teachers={teachers} type={type} />
+    </div>
+  );
 }

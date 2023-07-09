@@ -12,6 +12,7 @@ export type RadioItemProps = {
   item: TrackInfo;
   embed?: boolean;
   isLiked?: boolean;
+  canBeSaved?: boolean;
   toggleLikeLoading?: boolean;
   onEmbedClick?: () => void;
   onLikeClick?: () => void;
@@ -26,6 +27,7 @@ export function RadioItem({
   onEmbedClick,
   onLikeClick,
   onUnlikeClick,
+  canBeSaved = true,
 }: RadioItemProps) {
   const { track, play, stop, isLoading } = useAudioContext();
   const isActive = track?.url === item.trackUrl;
@@ -104,21 +106,23 @@ export function RadioItem({
       </div>
       <div className={`px-4 py-3 flex justify-between`}>
         <div className="flex flex-row gap-2 items-center">
-          {!toggleLikeLoading && !embed ? (
-            <button
-              className={`btn btn-ghost btn-sm btn-circle`}
-              onClick={isLiked ? onUnlikeClick : onLikeClick}
-            >
-              {isLiked ? (
-                <BsBookmarkFill size={16} className="text-accent" />
-              ) : (
-                <TbBookmarkPlus size={16} />
-              )}
-            </button>
-          ) : !embed ? (
-            <button className={`btn btn-ghost btn-sm btn-circle`}>
-              <BiLoader size={12} />
-            </button>
+          {canBeSaved ? (
+            !toggleLikeLoading && !embed ? (
+              <button
+                className={`btn btn-ghost btn-sm btn-circle`}
+                onClick={isLiked ? onUnlikeClick : onLikeClick}
+              >
+                {isLiked ? (
+                  <BsBookmarkFill size={16} className="text-accent" />
+                ) : (
+                  <TbBookmarkPlus size={16} />
+                )}
+              </button>
+            ) : !embed ? (
+              <button className={`btn btn-ghost btn-sm btn-circle`}>
+                <BiLoader size={12} />
+              </button>
+            ) : null
           ) : null}
           {onEmbedClick && !embed ? (
             <label
@@ -187,7 +191,7 @@ export function RadioItemLoading() {
       </div>
       <div className="px-4 flex-1">
         <p
-          className={`line-clamp-2 text-md text-base-content w-5/6 sm:w-48 md:w-72 h-12 bg-base-300  animate-pulse`}
+          className={`line-clamp-2 text-md text-base-content w-5/6 sm:w-48 h-12 bg-base-300  animate-pulse`}
         />
       </div>
       <div className={`px-4 py-3 flex justify-between`}>

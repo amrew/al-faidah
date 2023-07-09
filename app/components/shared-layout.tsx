@@ -9,15 +9,22 @@ export type SharedLayoutProps = {
   footer?: ReactNode;
   contentClassname?: string;
   searchComponent?: ReactNode;
+  bottomNavShown?: boolean;
+  hasBackButton?: boolean;
 };
 
 export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
-  const { contentClassname = "" } = props;
+  const { contentClassname = "", bottomNavShown = true, hasBackButton } = props;
   const hasSearchComponent = !!props.searchComponent;
 
   return (
-    <div className={contentClassname}>
-      <header className="navbar border-b border-solid gap-2 bg-base-200 border-b-base-300 sticky top-0 left-0 right-0 z-50">
+    <div className={`h-full ${contentClassname}`}>
+      <header className="navbar border-b border-solid gap-2 bg-base-200 border-b-base-300 fixed top-0 left-0 right-0 z-50">
+        {hasBackButton ? (
+          <div className="sm:hidden">
+            <BackButton withText={false} />
+          </div>
+        ) : null}
         <div
           className={`flex-none ${hasSearchComponent ? "hidden sm:flex" : ""}`}
         >
@@ -25,11 +32,6 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
             Al Faidah
           </Link>
         </div>
-        {hasSearchComponent ? (
-          <div className="sm:hidden">
-            <BackButton withText={false} />
-          </div>
-        ) : null}
         <div className="flex-none hidden sm:flex">
           <ul className="menu menu-sm menu-horizontal bg-base-200 rounded-box gap-2">
             <li>
@@ -63,21 +65,25 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
           <MemberNavigation />
         </div>
       </header>
-      <div className="max-w-5xl mx-auto pb-36 sm:pb-20">{props.children}</div>
+      <div className="max-w-5xl mx-auto pb-36 sm:pb-20 pt-16 relative">
+        {props.children}
+      </div>
       <div className="fixed bottom-0 left-0 w-full">
         {props.footer}
         <Player />
-        <div className="btm-nav btm-nav-sm border-t border-t-base-200 sm:hidden relative">
-          <NavLink to="/" className="bg-white">
-            <BiHome />
-          </NavLink>
-          <NavLink to="/radio" className="bg-white">
-            <BiRadio />
-          </NavLink>
-          <NavLink to="/cari" className="bg-white">
-            <BiSearch />
-          </NavLink>
-        </div>
+        {bottomNavShown ? (
+          <div className="btm-nav btm-nav-sm border-t border-t-base-200 sm:hidden relative">
+            <NavLink to="/" className="bg-white">
+              <BiHome />
+            </NavLink>
+            <NavLink to="/radio" className="bg-white">
+              <BiRadio />
+            </NavLink>
+            <NavLink to="/cari" className="bg-white">
+              <BiSearch />
+            </NavLink>
+          </div>
+        ) : null}
       </div>
     </div>
   );

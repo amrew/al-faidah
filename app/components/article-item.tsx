@@ -278,7 +278,7 @@ export function ArticleDetail(
           height={24}
         />
         <div className="line-clamp-1">
-          <span className="text-md">{props.publisher.name}</span>
+          <span className="text-md">{props.publisher.name} </span>
           {props.authorName ? (
             <>
               <span className="text-sm">oleh </span>

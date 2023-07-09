@@ -3,12 +3,20 @@ import { BiStop, BiLoader, BiTimer } from "react-icons/bi";
 import { PlayingAnimation } from "./playing-animation";
 import { CountDownView } from "./countdown";
 import { TimerModal } from "./modal-timer";
+import { useState } from "react";
 
 export function Player() {
   const { track, stop, isLoading, countDown, setCountDown } = useAudioContext();
+  const [toastShown, setToastShown] = useState(false);
   const hasTimer = typeof countDown !== "undefined";
   return track ? (
-    <div className="p-4 border-t border-t-secondary-focus bg-secondary">
+    <div
+      className={`p-4 border-t border-t-secondary-focus bg-secondary ${
+        toastShown ? "tooltip tooltip-open text-left" : ""
+      }`}
+      data-tip={track.trackTitle}
+      onClick={() => setToastShown((v) => !v)}
+    >
       <div className="max-w-5xl mx-auto flex flex-1 flex-row gap-4 items-center">
         <img
           src={track.logoUrl}
@@ -21,7 +29,7 @@ export function Player() {
           <h1 className="font-bold sm:text-lg text-base-100 line-clamp-1">
             {track.name}
           </h1>
-          <p className="line-clamp-2 text-sm sm:text-md text-base-100">
+          <p className="line-clamp-1 text-sm sm:text-md text-base-100">
             {track.trackTitle}
           </p>
         </div>

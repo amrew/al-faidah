@@ -110,6 +110,7 @@ export default function Search() {
   return (
     <InstantSearch searchClient={searchClient.current} indexName="contents">
       <SharedLayout
+        hasBackButton={true}
         searchComponent={
           <CustomSearchBox
             defaultRefinement={normalizedKeyword}

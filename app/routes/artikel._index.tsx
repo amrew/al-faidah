@@ -1,10 +1,8 @@
-import { ArticleItem } from "~/components/article-item";
 import type { ArticleSummaryType } from "~/components/article-entity";
 import { json, type V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Pagination } from "~/components/pagination";
 import { createServerSupabase } from "~/clients/createServerSupabase";
-import { getArticleUrl } from "~/utils/linkUtils";
 import { ArticleList } from "~/components/article-list";
 
 export const meta: V2_MetaFunction = () => {

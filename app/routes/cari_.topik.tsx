@@ -67,6 +67,7 @@ export default function Articles() {
 
   return (
     <SharedLayout
+      hasBackButton={true}
       searchComponent={
         <div className="flex-1 relative">
           <div className="absolute left-4 top-4">
