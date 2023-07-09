@@ -79,19 +79,24 @@ export default function Radio() {
   const user = useUser();
   return (
     <div className="flex flex-col p-4 md:p-8 gap-4">
-      <Tab
-        currentId={type == "syariah" ? "syariah" : "rii"}
-        items={[
-          { id: "rii", title: "RII", href: "/radio" },
-          {
-            id: "syariah",
-            title: "Syariah",
-            href: "/radio?type=syariah",
-            hide: !user,
-            private: !isVerified,
-          },
-        ]}
-      />
+      <div
+        className="sticky right-0 mb-4 pt-2 pb-2 bg-base-100"
+        style={{ top: 65, zIndex: 1 }}
+      >
+        <Tab
+          currentId={type == "syariah" ? "syariah" : "rii"}
+          items={[
+            { id: "rii", title: "RII", href: "/radio" },
+            {
+              id: "syariah",
+              title: "Syariah",
+              href: "/radio?type=syariah",
+              hide: !user,
+              private: !isVerified,
+            },
+          ]}
+        />
+      </div>
       <RadioListWithFilter items={radios} teachers={teachers} type={type} />
     </div>
   );

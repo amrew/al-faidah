@@ -3,7 +3,13 @@ import { useMutation } from "react-query";
 import { BiMailSend } from "react-icons/bi";
 import { ImWarning } from "react-icons/im";
 import { useSupabase } from "~/hooks/useSupabase";
-import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
+import {
+  Form,
+  Link,
+  useActionData,
+  useLoaderData,
+  useNavigation,
+} from "@remix-run/react";
 import { BackButton } from "~/components/back-button";
 import {
   redirect,
@@ -20,11 +26,16 @@ export const loader = async ({ request }: LoaderArgs) => {
   if (loggedIn) {
     return redirect("/");
   }
-  return json({});
+
+  const url = new URL(request.url);
+  const messageType = url.searchParams.get("messageType");
+
+  return json({ messageType });
 };
 
 export const action = async ({ request }: ActionArgs) => {
   const { origin } = new URL(request.url);
+
   const { supabase, response } = createServerSupabase(request);
 
   const body = await request.formData();
@@ -87,6 +98,7 @@ export const meta: V2_MetaFunction = () => {
 export default function AuthRegister() {
   const supabase = useSupabase();
   const navigation = useNavigation();
+  const { messageType } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
 
   const googleMutation = useMutation(async () => {
@@ -109,21 +121,21 @@ export default function AuthRegister() {
           placeholder="Nama Lengkap"
           type="text"
           name="name"
-          // required
+          required
         />
         <input
           className="input input-bordered w-full"
           placeholder="Email"
           type="email"
           name="email"
-          // required
+          required
         />
         <input
           className="input input-bordered w-full"
           placeholder="Password"
           type="password"
           name="password"
-          // required
+          required
         />
       </div>
       <div className="flex flex-col w-full border-opacity-50">
@@ -160,7 +172,11 @@ export default function AuthRegister() {
               <p className="text-sm tracking-wide">
                 Sudah punya akun?{" "}
                 <Link
-                  to="/auth/login"
+                  to={
+                    messageType
+                      ? `/auth/login?messageType=${messageType}`
+                      : `/auth/login`
+                  }
                   className="text-primary transition duration-200 hover:underline"
                 >
                   Masuk disini

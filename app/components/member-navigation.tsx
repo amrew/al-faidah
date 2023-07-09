@@ -31,7 +31,7 @@ export function MemberNavigation() {
         </label>
         <ul
           tabIndex={0}
-          className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 gap-2 z-10"
+          className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 gap-2 z-50"
         >
           <li>
             <button onClick={() => logout()}>Logout</button>

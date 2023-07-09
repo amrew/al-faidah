@@ -139,7 +139,11 @@ export default function AuthLogin() {
                 <p className="text-sm tracking-wide">
                   Tidak punya akun?{" "}
                   <Link
-                    to="/auth/register"
+                    to={
+                      messageType
+                        ? `/auth/register?messageType=${messageType}`
+                        : `/auth/register`
+                    }
                     className="text-primary transition duration-200 hover:underline"
                   >
                     Daftar

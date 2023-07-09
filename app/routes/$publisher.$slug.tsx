@@ -2,7 +2,6 @@ import { json, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { ArticleDetailType } from "~/components/article-entity";
 import { ArticleDetail } from "~/components/article-item";
-import { BackButton } from "~/components/back-button";
 import { type V2_MetaFunction } from "@remix-run/node";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { SharedLayout } from "~/components/shared-layout";

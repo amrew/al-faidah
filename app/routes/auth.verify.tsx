@@ -5,10 +5,20 @@ import {
   redirect,
   type V2_MetaFunction,
   type ActionArgs,
+  type LoaderArgs,
 } from "@remix-run/node";
 import { BackButton } from "~/components/back-button";
 import { v4 as uuidv4 } from "uuid";
 import { createServerSupabase } from "~/clients/createServerSupabase";
+import { isLoggedIn } from "~/utils/authUtils.server";
+
+export const loader = async ({ request }: LoaderArgs) => {
+  const loggedIn = await isLoggedIn(request);
+  if (!loggedIn) {
+    return redirect("/auth/login");
+  }
+  return json({});
+};
 
 export const action = async ({ request }: ActionArgs) => {
   const { supabase, response } = createServerSupabase(request);

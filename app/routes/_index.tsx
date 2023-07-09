@@ -119,7 +119,10 @@ export default function Index() {
       <TwoColumn
         left={
           <>
-            <div className="sticky top-16 right-0 mb-4 pt-2 pb-2 bg-base-100 z-50">
+            <div
+              className="sticky right-0 mb-4 pt-2 pb-2 bg-base-100"
+              style={{ top: 65, zIndex: 1 }}
+            >
               <Tab
                 currentId={publisher}
                 items={[

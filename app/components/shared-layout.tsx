@@ -19,7 +19,10 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
 
   return (
     <div className={`h-full ${contentClassname}`}>
-      <header className="navbar border-b border-solid gap-2 bg-base-200 border-b-base-300 fixed top-0 left-0 right-0 z-50">
+      <div className="max-w-5xl mx-auto pb-36 sm:pb-20 pt-16 relative">
+        {props.children}
+      </div>
+      <header className="navbar border-b border-solid gap-2 bg-base-200 border-b-base-300 fixed top-0 left-0 right-0 z-10">
         {hasBackButton ? (
           <div className="sm:hidden">
             <BackButton withText={false} />
@@ -65,9 +68,6 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
           <MemberNavigation />
         </div>
       </header>
-      <div className="max-w-5xl mx-auto pb-36 sm:pb-20 pt-16 relative">
-        {props.children}
-      </div>
       <div className="fixed bottom-0 left-0 w-full">
         {props.footer}
         <Player />
