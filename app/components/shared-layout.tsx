@@ -1,10 +1,8 @@
 import { type PropsWithChildren, type ReactNode } from "react";
-import { HiMenuAlt2 } from "react-icons/hi";
-import { SideMenu } from "./sidemenu";
 import { MemberNavigation } from "./member-navigation";
 import { Player } from "./player";
-import { Link } from "@remix-run/react";
-import { BiSearch } from "react-icons/bi";
+import { Link, NavLink } from "@remix-run/react";
+import { BiHome, BiRadio, BiSearch } from "react-icons/bi";
 
 export type SharedLayoutProps = {
   footer?: ReactNode;
@@ -17,72 +15,50 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
   const hasSearchComponent = !!props.searchComponent;
 
   return (
-    <div className="drawer lg:drawer-open flex flex-row-reverse flex-1 h-full">
-      <input id="drawer-1" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content flex flex-col flex-1 h-full">
-        <header className="navbar border-b border-solid gap-2 bg-base-200 border-b-base-300">
-          <div className="flex-none">
-            <label
-              htmlFor="drawer-1"
-              className="btn-ghost btn-square btn drawer-button lg:hidden"
-            >
-              <HiMenuAlt2 size={20} />
-            </label>
-          </div>
-          {/*  */}
-          <div className="flex-none">
-            <Link
-              to="/"
-              className={`btn-ghost btn text-xl normal-case lg:hidden ${
-                hasSearchComponent ? "hidden" : ""
-              }`}
-            >
-              Al Faidah
-            </Link>
-          </div>
-          {props.searchComponent}
-          <div
-            className={`flex-1 justify-end ${
-              hasSearchComponent ? "hidden" : ""
-            }`}
-          >
-            <Link to="/cari" className="btn btn-ghost btn-circle btn-sm">
-              <BiSearch />
-            </Link>
-          </div>
-          <div
-            className={`flex-none gap-1 ${
-              hasSearchComponent ? "hidden md:block" : ""
-            }`}
-          >
-            <MemberNavigation />
-          </div>
-        </header>
-        <main
-          className={`flex flex-col flex-1 overflow-y-auto ${contentClassname}`}
+    <div className={contentClassname}>
+      <header className="navbar border-b border-solid gap-2 bg-base-200 border-b-base-300 sticky top-0 left-0 right-0 z-50">
+        <div className="flex-none">
+          <Link to="/" className={`btn-ghost btn text-xl normal-case`}>
+            Al Faidah
+          </Link>
+        </div>
+        <div className="flex-none">
+          <ul className="menu menu-sm menu-horizontal bg-base-200 rounded-box gap-2">
+            <li>
+              <NavLink to="/">
+                <BiHome size={20} />{" "}
+                <span className="hidden md:inline">Beranda</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/radio">
+                <BiRadio size={20} />{" "}
+                <span className="hidden md:inline">Radio</span>
+              </NavLink>
+            </li>
+          </ul>
+        </div>
+        {props.searchComponent}
+        <div
+          className={`flex-1 justify-end ${hasSearchComponent ? "hidden" : ""}`}
         >
-          {props.children}
-        </main>
-        <div>
-          {props.footer}
-          <Player />
+          <Link to="/cari" className="btn btn-ghost btn-circle btn-sm">
+            <BiSearch />
+          </Link>
         </div>
-      </div>
-      {/*  */}
-      <div className="drawer-side border-r border-base-300">
-        <label htmlFor="drawer-1" className="drawer-overlay"></label>
-        <div className="bg-base-200 h-full">
-          <div className="p-4">
-            <Link to="/" className="btn-ghost btn text-xl normal-case">
-              Al Faidah
-            </Link>
-          </div>
-          <SideMenu />
-          {/*  */}
+        <div
+          className={`flex-none gap-1 ${
+            hasSearchComponent ? "hidden md:block" : ""
+          }`}
+        >
+          <MemberNavigation />
         </div>
-        {/*  */}
+      </header>
+      <div className="max-w-5xl mx-auto pb-28">{props.children}</div>
+      <div className="fixed bottom-0 left-0 w-full">
+        {props.footer}
+        <Player />
       </div>
-      {/*  */}
     </div>
   );
 }

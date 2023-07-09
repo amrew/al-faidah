@@ -137,7 +137,7 @@ export default function Articles() {
                 ]}
               />
             </div>
-            <div className="flex flex-col gap-4">
+            <main className="flex flex-col gap-4">
               {publishers && publishers?.length > 0 ? (
                 publishers?.map((publisher) => (
                   <Link
@@ -169,7 +169,7 @@ export default function Articles() {
                   <p>Coba kata yang lebih umum</p>
                 </div>
               )}
-            </div>
+            </main>
             <Pagination
               page={page}
               totalPage={totalPage}

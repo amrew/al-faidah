@@ -321,19 +321,21 @@ export function ArticleDetail(
                 <h2 className="text-xl font-bold mb-2">Pertanyaan</h2>
                 <div className="p-4 bg-base-200 rounded-md max-w-2xl">
                   <div
-                    className={"prose prose-pre:whitespace-pre-wrap"}
+                    className={
+                      "prose lg:prose-lg prose-pre:whitespace-pre-wrap"
+                    }
                     dangerouslySetInnerHTML={{ __html: props.content }}
                   />
                 </div>
                 <h2 className="text-xl font-bold mt-4 mb-2">Jawaban</h2>
                 <div
-                  className={"prose prose-pre:whitespace-pre-wrap"}
+                  className={"prose lg:prose-lg prose-pre:whitespace-pre-wrap"}
                   dangerouslySetInnerHTML={{ __html: props.metadata.answer }}
                 />
               </div>
             ) : (
               <div
-                className={"prose prose-pre:whitespace-pre-wrap"}
+                className={"prose lg:prose-lg prose-pre:whitespace-pre-wrap"}
                 dangerouslySetInnerHTML={{ __html: props.content }}
               />
             )}

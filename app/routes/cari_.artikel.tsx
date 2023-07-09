@@ -55,7 +55,6 @@ const SearchBox = ({
   refine: (value: string) => void;
 }) => {
   const [value, setValue] = useState(keyword);
-  console.log(value, keyword);
 
   useDebounce(
     () => {
@@ -150,7 +149,9 @@ export default function Search() {
                   ]}
                 />
               </div>
-              <CustomHits />
+              <main>
+                <CustomHits />
+              </main>
             </>
           }
           right={null}

@@ -1,18 +1,19 @@
 import { FcGoogle } from "react-icons/fc";
-import { useState } from "react";
 import { useMutation } from "react-query";
 import { BiMailSend } from "react-icons/bi";
 import { ImWarning } from "react-icons/im";
 import { useSupabase } from "~/hooks/useSupabase";
-import { Link } from "@remix-run/react";
+import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
 import { BackButton } from "~/components/back-button";
 import {
   redirect,
+  json,
   type LoaderArgs,
   type V2_MetaFunction,
-  json,
+  type ActionArgs,
 } from "@remix-run/node";
 import { isLoggedIn } from "~/utils/authUtils.server";
+import { createServerSupabase } from "~/clients/createServerSupabase";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const loggedIn = await isLoggedIn(request);
@@ -22,32 +23,71 @@ export const loader = async ({ request }: LoaderArgs) => {
   return json({});
 };
 
+export const action = async ({ request }: ActionArgs) => {
+  const { origin } = new URL(request.url);
+  const { supabase, response } = createServerSupabase(request);
+
+  const body = await request.formData();
+
+  const name = body.get("name");
+  const email = body.get("email");
+  const password = body.get("password");
+
+  if (
+    typeof name !== "string" ||
+    typeof email !== "string" ||
+    typeof password !== "string" ||
+    !name ||
+    !email ||
+    !password
+  ) {
+    return json(
+      {
+        type: "error",
+        error: {
+          name: "ValidationError",
+          message: "Semua data harus diisi",
+        },
+      },
+      { status: 400 }
+    );
+  }
+
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        name,
+      },
+      emailRedirectTo: `${origin}/auth/callback`,
+    },
+  });
+
+  if (error) {
+    return json(
+      {
+        type: "error",
+        error: {
+          name: error.name,
+          message: error.message,
+        },
+      },
+      { status: 400 }
+    );
+  }
+
+  return json({ type: "success", error: null }, { headers: response.headers });
+};
+
 export const meta: V2_MetaFunction = () => {
   return [{ title: "Register - Al Faidah" }];
 };
 
 export default function AuthRegister() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
   const supabase = useSupabase();
-
-  const mutation = useMutation(async () => {
-    const result = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          name,
-        },
-        emailRedirectTo: `${location.origin}/auth/callback`,
-      },
-    });
-    if (result.error) {
-      throw result.error;
-    }
-  });
+  const navigation = useNavigation();
+  const actionData = useActionData<typeof action>();
 
   const googleMutation = useMutation(async () => {
     const result = await supabase.auth.signInWithOAuth({
@@ -62,47 +102,35 @@ export default function AuthRegister() {
   });
 
   const form = (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        mutation.mutate();
-      }}
-      className="space-y-4"
-    >
+    <Form method="post" className="space-y-4">
       <div className="space-y-4">
         <input
           className="input input-bordered w-full"
           placeholder="Nama Lengkap"
           type="text"
           name="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
+          // required
         />
         <input
           className="input input-bordered w-full"
           placeholder="Email"
           type="email"
           name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
+          // required
         />
         <input
           className="input input-bordered w-full"
           placeholder="Password"
           type="password"
           name="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
+          // required
         />
       </div>
       <div className="flex flex-col w-full border-opacity-50">
         <button
           type="submit"
           className="btn btn-primary w-full text-white"
-          disabled={mutation.isLoading}
+          disabled={navigation.state !== "idle"}
         >
           Daftar
         </button>
@@ -116,7 +144,7 @@ export default function AuthRegister() {
           <FcGoogle size={20} /> Google
         </button>
       </div>
-    </form>
+    </Form>
   );
 
   return (
@@ -125,7 +153,7 @@ export default function AuthRegister() {
         <div className="px-6 py-4 sm:hidden">
           <BackButton />
         </div>
-        <div className="rounded-m px-10 pt-4 sm:pt-10 pb-10">
+        <main className="rounded-m px-10 pt-4 sm:pt-10 pb-10">
           <div className="flex flex-col gap-2">
             <div>
               <h2 className="text-xl font-semibold">Daftar akun</h2>
@@ -140,14 +168,14 @@ export default function AuthRegister() {
               </p>
             </div>
           </div>
-          {mutation.error ? (
+          {actionData?.type === "error" && actionData?.error ? (
             <div className="alert alert-error mt-4 justify-start">
               <ImWarning />
               <span>Lengkapi data dengan benar</span>
             </div>
           ) : null}
           <div className="mt-4">
-            {mutation.isSuccess ? (
+            {actionData?.type === "success" ? (
               <div className="flex flex-1 flex-col text-center items-center">
                 <BiMailSend size={48} />
                 <p>Silahkan cek email anda untuk mengkonfirmasi akun.</p>
@@ -159,7 +187,7 @@ export default function AuthRegister() {
               form
             )}
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );

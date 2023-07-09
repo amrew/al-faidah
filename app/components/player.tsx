@@ -8,8 +8,8 @@ export function Player() {
   const { track, stop, isLoading, countDown, setCountDown } = useAudioContext();
   const hasTimer = typeof countDown !== "undefined";
   return track ? (
-    <>
-      <div className="p-4 border-t border-t-secondary-focus bg-secondary flex flex-1 flex-row gap-4 items-center">
+    <div className="p-4 border-t border-t-secondary-focus bg-secondary">
+      <div className="max-w-5xl mx-auto flex flex-1 flex-row gap-4 items-center">
         <img
           src={track.logoUrl}
           width={64}
@@ -58,6 +58,6 @@ export function Player() {
           setCountDown(Number(v));
         }}
       />
-    </>
+    </div>
   ) : null;
 }

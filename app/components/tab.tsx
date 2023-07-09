@@ -1,10 +1,13 @@
 import { Link, useNavigate } from "@remix-run/react";
+import { BiLock } from "react-icons/bi";
 
 export type TabProps = {
   items: Array<{
     id: string;
     title: string;
     href: string;
+    hide?: boolean;
+    private?: boolean;
   }>;
   currentId?: string;
 };
@@ -17,20 +20,24 @@ export function Tab({ items, currentId }: TabProps) {
 
   return (
     <>
-      <div className="flex-row flex-wrap hidden sm:flex">
-        {items?.map((item) => (
-          <div
-            className={`py-2 px-4 border-b-2 ${
-              currentId === item.id
-                ? "border-b-neutral-content font-bold"
-                : "border-b-base-200"
-            }`}
-            key={item.title}
-          >
-            <Link to={item.href}>{item.title}</Link>
-          </div>
-        ))}
-      </div>
+      <nav className="carousel hidden sm:flex">
+        {items
+          .filter((item) => !item.hide)
+          .map((item) => (
+            <div
+              className={`carousel-item py-2 px-4 border-b-2 ${
+                currentId === item.id
+                  ? "border-b-neutral-content font-bold"
+                  : "border-b-base-200"
+              }`}
+              key={item.title}
+            >
+              <Link to={item.href} className="flex flex-row gap-1">
+                {item.title} {item.private ? <BiLock /> : null}
+              </Link>
+            </div>
+          ))}
+      </nav>
       <select
         className="select select-primary w-full sm:hidden"
         value={currentId}
@@ -42,11 +49,13 @@ export function Tab({ items, currentId }: TabProps) {
           }
         }}
       >
-        {items.map((item) => (
-          <option key={item.title} value={item.id}>
-            {item.title}
-          </option>
-        ))}
+        {items
+          .filter((item) => !item.hide)
+          .map((item) => (
+            <option key={item.title} value={item.id}>
+              {item.title}
+            </option>
+          ))}
       </select>
     </>
   );

@@ -132,7 +132,9 @@ export default function Index() {
                 ]}
               />
             </div>
-            <ArticleList contents={contents || []} />
+            <main>
+              <ArticleList contents={contents || []} />
+            </main>
             <Pagination
               page={page}
               totalPage={totalPage}
@@ -192,7 +194,7 @@ export default function Index() {
               </div>
             </div>
             <div>
-              <div className="alert p-8">
+              <div className="alert p-4">
                 <div className="flex flex-col gap-2">
                   <h3 className="font-bold text-xl">Menulis di Al-Faidah</h3>
                   <div className="text-md">

@@ -104,10 +104,12 @@ export default function FavoriteArticles() {
                 ]}
               />
             </div>
-            <ArticleList
-              contents={contents || []}
-              onUnlikeCallback={() => revalidate()}
-            />
+            <main>
+              <ArticleList
+                contents={contents || []}
+                onUnlikeCallback={() => revalidate()}
+              />
+            </main>
             <Pagination
               page={page}
               totalPage={totalPage}

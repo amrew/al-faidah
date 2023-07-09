@@ -56,7 +56,7 @@ export default function Detail() {
       <div className="flex flex-row items-center px-4 pt-4 md:px-8">
         <BackButton />
       </div>
-      <div className="flex flex-row gap-4 p-4 md:px-8">
+      <main className="flex flex-row gap-4 p-4 md:px-8">
         <div>
           {item ? (
             <ArticleDetail
@@ -82,7 +82,7 @@ export default function Detail() {
             />
           ) : null}
         </div>
-      </div>
+      </main>
     </SharedLayout>
   );
 }

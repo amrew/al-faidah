@@ -4,6 +4,8 @@ import MiniSearch from "minisearch";
 import type { SearchResult } from "minisearch";
 import { sortRadios } from "./utils";
 import { RadioList, RadioListLoading } from "./radio-list";
+import { Tab } from "./tab";
+import { useUser } from "~/hooks/useSupabase";
 
 type FilterOption = {
   name: string;
@@ -11,6 +13,7 @@ type FilterOption = {
 };
 
 export type RadioListWithFilterProps = {
+  type: string;
   items: TrackInfo[];
   teachers?: FilterOption[];
   topics?: FilterOption[];
@@ -46,7 +49,8 @@ const defaultFilter = {
 };
 
 export function RadioListWithFilter(props: RadioListWithFilterProps) {
-  const { teachers = [], topics = [] } = props;
+  const user = useUser();
+  const { teachers = [], type = "rii" } = props;
 
   const [{ keyword, sortBy, teacher, topic }, setFilter] = useState<{
     keyword: string;
@@ -74,9 +78,6 @@ export function RadioListWithFilter(props: RadioListWithFilterProps) {
   const setTeacher = (teacher: string) => {
     setFilter((prev) => ({ ...prev, teacher }));
   };
-  const setTopic = (topic: string) => {
-    setFilter((prev) => ({ ...prev, topic }));
-  };
 
   const results = useMemo(() => {
     let radios: TrackInfo[] | SearchResult[] = props.items;
@@ -98,10 +99,20 @@ export function RadioListWithFilter(props: RadioListWithFilterProps) {
 
   return (
     <div className="flex flex-col p-4 md:p-8 gap-4">
-      <div className="flex flex-row justify-between items-center">
-        <h1 className="text-2xl font-bold">Radio</h1>
-      </div>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+      <Tab
+        currentId={type == "syariah" ? "syariah" : "rii"}
+        items={[
+          { id: "rii", title: "RII", href: "/radio" },
+          {
+            id: "syariah",
+            title: "Syariah",
+            href: "/radio?type=syariah",
+            hide: !user,
+            private: true,
+          },
+        ]}
+      />
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
         <input
           type="text"
           placeholder="Cari radio / judul..."
@@ -129,21 +140,10 @@ export function RadioListWithFilter(props: RadioListWithFilterProps) {
             </option>
           ))}
         </select>
-        <select
-          className="select select-bordered select-sm sm:select-md"
-          onChange={(event) => setTopic(event.target.value)}
-        >
-          <option value="">Semua Topic</option>
-          {topics.map((item) => (
-            <option key={item.keyword} value={item.keyword}>
-              {item.name}
-            </option>
-          ))}
-        </select>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      <main className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <RadioList items={results} />
-      </div>
+      </main>
     </div>
   );
 }
@@ -151,10 +151,18 @@ export function RadioListWithFilter(props: RadioListWithFilterProps) {
 export function RadioListWithFilterLoading() {
   return (
     <div className="flex flex-col p-4 md:p-8 gap-4">
-      <div className="flex flex-row justify-between items-center">
-        <h1 className="text-2xl font-bold">Radio</h1>
-      </div>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+      <Tab
+        items={[
+          { id: "rii", title: "RII", href: "/radio" },
+          {
+            id: "syariah",
+            title: "Syariah",
+            href: "/radio?type=syariah",
+            private: true,
+          },
+        ]}
+      />
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
         <input
           type="text"
           placeholder="Cari radio / judul..."
@@ -174,9 +182,9 @@ export function RadioListWithFilterLoading() {
           <option value="">Semua Topic</option>
         </select>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      <main className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <RadioListLoading count={7} />
-      </div>
+      </main>
     </div>
   );
 }

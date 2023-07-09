@@ -40,7 +40,7 @@ export default function FavoriteRadios() {
   return (
     <SharedLayout
       footer={
-        <div className="relative">
+        <div className="relative max-w-5xl mx-auto">
           <RefreshButton />
         </div>
       }
@@ -66,9 +66,9 @@ export default function FavoriteRadios() {
                 ]}
               />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <main className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <RadioList items={radios} favorite />
-            </div>
+            </main>
           </>
         }
         right={null}

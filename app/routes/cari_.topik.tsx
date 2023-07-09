@@ -120,26 +120,27 @@ export default function Articles() {
                 ]}
               />
             </div>
-            <div></div>
-            {taxonomies && taxonomies.length > 0 ? (
-              <div className="flex flex-row flex-wrap gap-2">
-                {taxonomies.map((item) => (
-                  <Link
-                    to={`/topik/${item.slug}`}
-                    key={item.id}
-                    className="btn btn-sm"
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <div>
-                <p>Pastikan kata pencarian tidak salah ketik</p>
-                <p>Coba kata lain</p>
-                <p>Coba kata yang lebih umum</p>
-              </div>
-            )}
+            <main>
+              {taxonomies && taxonomies.length > 0 ? (
+                <div className="flex flex-row flex-wrap gap-2">
+                  {taxonomies.map((item) => (
+                    <Link
+                      to={`/topik/${item.slug}`}
+                      key={item.id}
+                      className="btn btn-sm"
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div>
+                  <p>Pastikan kata pencarian tidak salah ketik</p>
+                  <p>Coba kata lain</p>
+                  <p>Coba kata yang lebih umum</p>
+                </div>
+              )}
+            </main>
           </>
         }
         right={null}

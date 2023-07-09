@@ -7,7 +7,7 @@ export default function Radio() {
   return (
     <SharedLayout
       footer={
-        <div className="relative">
+        <div className="relative max-w-5xl mx-auto">
           <RefreshButton />
         </div>
       }
