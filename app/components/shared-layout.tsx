@@ -63,11 +63,11 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
           <MemberNavigation />
         </div>
       </header>
-      <div className="max-w-5xl mx-auto pb-28">{props.children}</div>
+      <div className="max-w-5xl mx-auto pb-36 sm:pb-20">{props.children}</div>
       <div className="fixed bottom-0 left-0 w-full">
         {props.footer}
         <Player />
-        <div className="btm-nav btm-nav-sm border-t border-t-base-200 sm:hidden">
+        <div className="btm-nav btm-nav-sm border-t border-t-base-200 sm:hidden relative">
           <NavLink to="/" className="bg-white">
             <BiHome />
           </NavLink>
