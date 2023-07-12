@@ -1,10 +1,13 @@
 import dayjs from "dayjs";
 import { Link } from "@remix-run/react";
-import { BiCircle, BiLoader } from "react-icons/bi";
+import { BiChevronDown, BiChevronUp, BiCircle, BiLoader } from "react-icons/bi";
 import { FaShare } from "react-icons/fa";
 import { TbBookmarkPlus } from "react-icons/tb";
 import { BsBookmarkFill, BsShare } from "react-icons/bs";
 import { RWebShare } from "react-web-share";
+import * as cheerio from "cheerio";
+import { useMemo, useState } from "react";
+import { AudioList } from "./audio-list";
 
 export type ArticleItemProps = {
   title: string;
@@ -264,12 +267,84 @@ export function ArticleItemSmallLoading() {
   );
 }
 
+export function ArticleAudios() {}
+
 export function ArticleDetail(
   props: { sourceLink: string } & Omit<ArticleItemProps, "isFullContent">
 ) {
+  const [descShown, setDescVisibility] = useState(false);
   const createdAt = dayjs(props.createdAt).format("DD MMM YYYY");
-  return (
+  const description = props.metadata?.answer ? (
     <div>
+      <h2 className="text-xl font-bold mb-2">Pertanyaan</h2>
+      <div className="p-4 bg-base-200 rounded-md max-w-2xl">
+        <div
+          className={"prose lg:prose-lg prose-pre:whitespace-pre-wrap"}
+          dangerouslySetInnerHTML={{ __html: props.content }}
+        />
+      </div>
+      <h2 className="text-xl font-bold mt-4 mb-2">Jawaban</h2>
+      <div
+        className={"prose lg:prose-lg prose-pre:whitespace-pre-wrap"}
+        dangerouslySetInnerHTML={{ __html: props.metadata.answer }}
+      />
+    </div>
+  ) : (
+    <div
+      className={"prose lg:prose-lg prose-pre:whitespace-pre-wrap"}
+      dangerouslySetInnerHTML={{ __html: props.content }}
+    />
+  );
+
+  const imageNode = props.imageUrl ? (
+    <img
+      src={props.imageUrl}
+      alt={props.title}
+      className="w-full h-auto object-contain rounded-md"
+    />
+  ) : null;
+
+  const hasAudio = props.content.includes("<audio");
+  const $ = cheerio.load(props.content);
+
+  const audios = useMemo(() => {
+    if (hasAudio) {
+      const items = $("audio source").map((i, el) => {
+        return $(el);
+      });
+      return items
+        ?.map((i, el) => {
+          const src = $(el).attr("src");
+          const audioTag = $(el).parent();
+          const brTag = $(audioTag).prev();
+          // @ts-ignore
+          const text = brTag[0].prev?.data
+            ? // @ts-ignore
+              brTag[0].prev?.data.replace(/\n/, "")
+            : "";
+          return {
+            src: src || "",
+            title: props.title,
+            trackTitle: text,
+            logoUrl: props.publisher.logoUrl,
+          };
+        })
+        .toArray();
+    }
+    return undefined;
+  }, [$, hasAudio, props.publisher.logoUrl, props.title]);
+
+  const sourceNode = props.sourceLink ? (
+    <div className="alert alert-warning">
+      <div>Sumber Tulisan:</div>
+      <a href={props.sourceLink} target="_blank" rel="noreferrer">
+        {props.sourceLink}
+      </a>
+    </div>
+  ) : null;
+
+  return (
+    <div className="p-4 md:px-8 mt-6">
       <div className="flex flex-row gap-2 mb-2 items-center">
         <img
           src={props.publisher.logoUrl}
@@ -307,47 +382,41 @@ export function ArticleDetail(
                 </span>
               </Link>
             </div>
-            {props.imageUrl ? (
-              <div>
-                <img
-                  src={props.imageUrl}
-                  alt={props.title}
-                  className="w-full sm:max-w-xl md:max-w-2xl sm:w-auto h-auto object-cover"
-                />
-              </div>
-            ) : null}
-            {props.metadata?.answer ? (
-              <div>
-                <h2 className="text-xl font-bold mb-2">Pertanyaan</h2>
-                <div className="p-4 bg-base-200 rounded-md max-w-2xl">
-                  <div
-                    className={
-                      "prose lg:prose-lg prose-pre:whitespace-pre-wrap"
-                    }
-                    dangerouslySetInnerHTML={{ __html: props.content }}
-                  />
+            {hasAudio && audios ? (
+              <div className="flex flex-col sm:flex-row-reverse gap-4">
+                <div className="sm:w-1/2">
+                  <div className="sm:hidden mb-4 sm:mb-0">{imageNode}</div>
+                  <AudioList audios={audios} />
                 </div>
-                <h2 className="text-xl font-bold mt-4 mb-2">Jawaban</h2>
-                <div
-                  className={"prose lg:prose-lg prose-pre:whitespace-pre-wrap"}
-                  dangerouslySetInnerHTML={{ __html: props.metadata.answer }}
-                />
+                <div className="sm:w-1/2">
+                  <div className="hidden sm:block mb-4">{imageNode}</div>
+                  <div className="bg-base-200 rounded-md">
+                    <div className="p-2">
+                      <button
+                        className="btn btn-sm btn-ghost w-full"
+                        onClick={() => setDescVisibility((v) => !v)}
+                      >
+                        <div className="flex font-bold flex-1">Konten Asli</div>
+                        {descShown ? (
+                          <BiChevronUp size={18} />
+                        ) : (
+                          <BiChevronDown size={18} />
+                        )}
+                      </button>
+                    </div>
+                    {descShown ? (
+                      <div className="p-5">{description}</div>
+                    ) : null}
+                  </div>
+                  <div className="mt-4">{sourceNode}</div>
+                </div>
               </div>
             ) : (
-              <div
-                className={"prose lg:prose-lg prose-pre:whitespace-pre-wrap"}
-                dangerouslySetInnerHTML={{ __html: props.content }}
-              />
+              <>
+                {imageNode} {description} {sourceNode}
+              </>
             )}
           </div>
-          {props.sourceLink ? (
-            <div className="alert alert-warning">
-              <div>Sumber Tulisan:</div>
-              <a href={props.sourceLink} target="_blank" rel="noreferrer">
-                {props.sourceLink}
-              </a>
-            </div>
-          ) : null}
         </div>
       </div>
     </div>

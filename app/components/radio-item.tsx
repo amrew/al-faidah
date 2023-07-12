@@ -43,6 +43,7 @@ export function RadioItem({
       url: item.trackUrl,
       trackTitle: item.trackTitle,
       logoUrl: item.logoUrl,
+      type: "streaming",
     });
 
   const headerNode = (

@@ -8,7 +8,9 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const theme = url.searchParams.get("theme") || "cupcake";
 
   const id = params.id;
-  const radios = await getTracks();
+  const riiRadios = await getTracks();
+  const syariahRadios = await getTracks({ type: "syariah" });
+  const radios = [...riiRadios, ...syariahRadios];
   const track = radios.find((item) => item.alias === id);
 
   return json({
@@ -32,7 +34,6 @@ export const meta: V2_MetaFunction = ({ data }) => {
 
 export default function RadioEmbed() {
   const { id, track, radios, theme } = useLoaderData<typeof loader>();
-
   return (
     <main className="flex flex-col gap-2 h-full" data-theme={theme}>
       <RadioList

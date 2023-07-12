@@ -4,6 +4,7 @@ import { Howl } from "howler";
 import { usePrevious } from "react-use";
 
 type AudioTrack = {
+  type: "audio" | "streaming";
   name: string;
   trackTitle: string;
   url: string;
@@ -13,16 +14,22 @@ type AudioTrack = {
 export const AudioContext = createContext<{
   track: AudioTrack | undefined;
   isLoading: boolean;
-  play: (track: AudioTrack) => void;
+  play: (track: AudioTrack, list?: Array<AudioTrack>) => void;
   stop: () => void;
+  prev: () => void;
+  next: () => void;
   countDown?: number | undefined;
   setCountDown: Dispatch<SetStateAction<number | undefined>>;
+  duration: number;
 }>({
   track: undefined,
   isLoading: false,
   play: () => {},
   stop: () => {},
+  prev: () => {},
+  next: () => {},
   setCountDown: () => {},
+  duration: 0,
 });
 
 export const useAudioContext = () => {
@@ -31,8 +38,11 @@ export const useAudioContext = () => {
 
 export const AudioProvider = (props: PropsWithChildren) => {
   const [track, setTrack] = useState<AudioTrack>();
+  const [trackList, setTrackList] = useState<Array<AudioTrack>>([]);
+
   const [isLoading, setLoading] = useState(false);
   const [countDown, setCountDown] = useState<number>();
+  const [duration, setDuration] = useState<number>(0);
   const prevTrack = usePrevious(track);
 
   useEffect(() => {
@@ -44,6 +54,22 @@ export const AudioProvider = (props: PropsWithChildren) => {
         html5: true,
         onload: () => {
           setLoading(false);
+          if (track.type === "audio") {
+            setDuration(sound.duration());
+          }
+        },
+        onend: () => {
+          if (trackList) {
+            const currentTrackIndex = trackList.findIndex(
+              (item) => item.url === trackUrl
+            );
+            const nextTrack = trackList[currentTrackIndex + 1];
+            if (nextTrack) {
+              setTrack(nextTrack);
+            } else {
+              setTrack(undefined);
+            }
+          }
         },
       });
 
@@ -82,6 +108,39 @@ export const AudioProvider = (props: PropsWithChildren) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [track]);
 
+  useEffect(() => {
+    if (duration && track) {
+      const id = setInterval(() => {
+        setDuration((prev) => prev - 1);
+      }, 1000);
+      return () => {
+        clearInterval(id);
+      };
+    } else {
+      setDuration(0);
+    }
+  }, [duration, track]);
+
+  const prev = () => {
+    const currentTrackIndex = trackList.findIndex(
+      (item) => item.url === track?.url
+    );
+    const nextTrack = trackList[currentTrackIndex - 1];
+    if (nextTrack) {
+      setTrack(nextTrack);
+    }
+  };
+
+  const next = () => {
+    const currentTrackIndex = trackList.findIndex(
+      (item) => item.url === track?.url
+    );
+    const nextTrack = trackList[currentTrackIndex + 1];
+    if (nextTrack) {
+      setTrack(nextTrack);
+    }
+  };
+
   return (
     <AudioContext.Provider
       value={{
@@ -89,8 +148,16 @@ export const AudioProvider = (props: PropsWithChildren) => {
         isLoading,
         countDown,
         setCountDown,
-        play: (track) => setTrack(track),
+        play: (track, list) => {
+          setTrack(track);
+          if (list) {
+            setTrackList(list);
+          }
+        },
         stop: () => setTrack(undefined),
+        prev,
+        next,
+        duration,
       }}
     >
       {props.children}

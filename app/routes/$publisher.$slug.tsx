@@ -25,6 +25,13 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       .single(),
   ]);
 
+  if (!item) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Not Found",
+    });
+  }
+
   return json(
     {
       item,
@@ -50,35 +57,30 @@ export const meta: V2_MetaFunction = ({ data }) => {
 
 export default function Detail() {
   const { item } = useLoaderData<typeof loader>();
+
   return (
     <SharedLayout bottomNavShown={false} hasBackButton={true}>
-      <main className="flex flex-row gap-4 p-4 md:px-8">
-        <div>
-          {item ? (
-            <ArticleDetail
-              key={item.slug}
-              publisher={{
-                name: item.publishers.title,
-                logoUrl: item.publishers.logo_url,
-              }}
-              authorName={item.author?.name}
-              category={{
-                name: item.taxonomies.name,
-                categoryUrl: `/artikel/category/${item.taxonomies.slug}`,
-              }}
-              title={item.title}
-              content={item.description}
-              createdAt={item.created_at}
-              readDuration={item.read_stats.minutes}
-              detailUrl={`/artikel/${item.slug}`}
-              imageUrl={item.image?.full?.url}
-              sourceLink={item.link}
-              metadata={item.metadata}
-              link={item.link}
-            />
-          ) : null}
-        </div>
-      </main>
+      <ArticleDetail
+        key={item.slug}
+        publisher={{
+          name: item.publishers.title,
+          logoUrl: item.publishers.logo_url,
+        }}
+        authorName={item.author?.name}
+        category={{
+          name: item.taxonomies.name,
+          categoryUrl: `/artikel/category/${item.taxonomies.slug}`,
+        }}
+        title={item.title}
+        content={item.description}
+        createdAt={item.created_at}
+        readDuration={item.read_stats.minutes}
+        detailUrl={`/artikel/${item.slug}`}
+        imageUrl={item.image?.full?.url}
+        sourceLink={item.link}
+        metadata={item.metadata}
+        link={item.link}
+      />
     </SharedLayout>
   );
 }
