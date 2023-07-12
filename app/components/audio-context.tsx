@@ -125,9 +125,11 @@ export const AudioProvider = (props: PropsWithChildren) => {
     const currentTrackIndex = trackList.findIndex(
       (item) => item.url === track?.url
     );
-    const nextTrack = trackList[currentTrackIndex - 1];
-    if (nextTrack) {
-      setTrack(nextTrack);
+    if (currentTrackIndex !== -1) {
+      const nextTrack = trackList[currentTrackIndex - 1];
+      if (nextTrack) {
+        setTrack(nextTrack);
+      }
     }
   };
 
@@ -135,9 +137,11 @@ export const AudioProvider = (props: PropsWithChildren) => {
     const currentTrackIndex = trackList.findIndex(
       (item) => item.url === track?.url
     );
-    const nextTrack = trackList[currentTrackIndex + 1];
-    if (nextTrack) {
-      setTrack(nextTrack);
+    if (currentTrackIndex !== -1) {
+      const nextTrack = trackList[currentTrackIndex + 1];
+      if (nextTrack) {
+        setTrack(nextTrack);
+      }
     }
   };
 
@@ -152,6 +156,8 @@ export const AudioProvider = (props: PropsWithChildren) => {
           setTrack(track);
           if (list) {
             setTrackList(list);
+          } else {
+            setTrackList([]);
           }
         },
         stop: () => setTrack(undefined),

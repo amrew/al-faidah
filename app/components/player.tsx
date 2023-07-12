@@ -22,10 +22,20 @@ export function Player() {
     setCountDown,
     duration,
   } = useAudioContext();
+
   const [toastShown, setToastShown] = useState(false);
   const hasTimer = typeof countDown !== "undefined";
   return track ? (
-    <div className={`p-4 border-t border-t-secondary-focus bg-secondary`}>
+    <div
+      className={`p-4 border-t border-t-secondary-focus bg-secondary relative`}
+    >
+      {/* <input
+        type="range"
+        min={0}
+        max="100"
+        defaultValue="40"
+        className="range range-xs rounded-none absolute -top-2 left-0 w-full"
+      /> */}
       <div className="max-w-5xl mx-auto flex flex-1 flex-row gap-4 items-center">
         <img
           src={track.logoUrl}
@@ -73,10 +83,12 @@ export function Player() {
         <div>
           {!isLoading ? <PlayingAnimation className="bg-white" /> : null}
         </div>
-        <div className="flex flex-row gap-2 items-center">
-          <button className="btn btn-accent-content btn-sm" onClick={prev}>
-            <BiArrowToLeft size={20} />
-          </button>
+        <div className={`flex flex-row gap-2 items-center`}>
+          {track.type === "audio" ? (
+            <button className="btn btn-accent-content btn-sm" onClick={prev}>
+              <BiArrowToLeft size={20} />
+            </button>
+          ) : null}
           <button className="btn btn-accent-content" onClick={stop}>
             {isLoading ? (
               <BiLoader size={24} className="animate-spin text-content" />
@@ -84,9 +96,11 @@ export function Player() {
               <BiStop size={24} className="text-content" />
             )}
           </button>
-          <button className="btn btn-accent-content btn-sm" onClick={next}>
-            <BiArrowToRight size={20} />
-          </button>
+          {track.type === "audio" ? (
+            <button className="btn btn-accent-content btn-sm" onClick={next}>
+              <BiArrowToRight size={20} />
+            </button>
+          ) : null}
         </div>
       </div>
       <TimerModal
