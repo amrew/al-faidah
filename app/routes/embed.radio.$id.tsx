@@ -8,38 +8,44 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const theme = url.searchParams.get("theme") || "cupcake";
 
   const id = params.id;
-  const riiRadios = await getTracks();
-  const syariahRadios = await getTracks({ type: "syariah" });
+  const [riiRadios, syariahRadios] = await Promise.all([
+    getTracks(),
+    getTracks({ type: "syariah" }),
+  ]);
   const radios = [...riiRadios, ...syariahRadios];
   const track = radios.find((item) => item.alias === id);
+  const items = track ? [track] : radios.filter((item) => item.serial === id);
+
+  if (!items.length) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Not Found",
+    });
+  }
 
   return json({
-    id,
-    radios,
-    track,
+    items,
     theme,
   });
 };
 
 export const meta: V2_MetaFunction = ({ data }) => {
-  const { track } = data;
+  const { items } = data;
+  const [first] = items || [];
   return [
-    { title: `${track.name} - Radio Islam Indonesia` },
+    { title: `${first.name} - Al Faidah` },
     {
       name: "description",
-      content: `${track.name}`,
+      content: `${first.name}`,
     },
   ];
 };
 
 export default function RadioEmbed() {
-  const { id, track, radios, theme } = useLoaderData<typeof loader>();
+  const { items, theme } = useLoaderData<typeof loader>();
   return (
     <main className="flex flex-col gap-2 h-full" data-theme={theme}>
-      <RadioList
-        items={track ? [track] : radios.filter((item) => item.serial === id)}
-        embed
-      />
+      <RadioList items={items} embed />
     </main>
   );
 }
