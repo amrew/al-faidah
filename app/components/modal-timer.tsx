@@ -25,7 +25,7 @@ export function TimerModal(props: {
   return (
     <>
       <input type="checkbox" id="timer-modal" className="modal-toggle" />
-      <div className="modal z-10">
+      <div className="modal z-50">
         <div className="modal-box max-w-xs">
           <h3 className="font-bold text-xl">Timer</h3>
           <div className="py-4">

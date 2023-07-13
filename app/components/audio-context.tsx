@@ -1,5 +1,5 @@
 import type { Dispatch, PropsWithChildren, SetStateAction } from "react";
-import { createContext, useState, useContext, useEffect } from "react";
+import { createContext, useState, useContext, useEffect, useRef } from "react";
 import { Howl } from "howler";
 import { usePrevious } from "react-use";
 
@@ -11,25 +11,31 @@ type AudioTrack = {
   logoUrl: string;
 };
 
+type AudioState = "stopped" | "loading" | "playing";
+
 export const AudioContext = createContext<{
   track: AudioTrack | undefined;
-  isLoading: boolean;
+  audioState: AudioState;
   play: (track: AudioTrack, list?: Array<AudioTrack>) => void;
   stop: () => void;
   prev: () => void;
   next: () => void;
+  seek: (second: number) => void;
   countDown?: number | undefined;
   setCountDown: Dispatch<SetStateAction<number | undefined>>;
   duration: number;
+  maxDuration: number;
 }>({
   track: undefined,
-  isLoading: false,
+  audioState: "stopped",
   play: () => {},
   stop: () => {},
   prev: () => {},
   next: () => {},
+  seek: () => {},
   setCountDown: () => {},
   duration: 0,
+  maxDuration: 0,
 });
 
 export const useAudioContext = () => {
@@ -40,23 +46,32 @@ export const AudioProvider = (props: PropsWithChildren) => {
   const [track, setTrack] = useState<AudioTrack>();
   const [trackList, setTrackList] = useState<Array<AudioTrack>>([]);
 
-  const [isLoading, setLoading] = useState(false);
+  const [audioState, setAudioState] = useState<AudioState>("stopped");
+  const [metadata, setMetadata] = useState<{
+    maxDuration: number;
+    duration: number;
+  }>({ maxDuration: 0, duration: 0 });
+
   const [countDown, setCountDown] = useState<number>();
-  const [duration, setDuration] = useState<number>(0);
+
   const prevTrack = usePrevious(track);
+  const soundRef = useRef<Howl>();
 
   useEffect(() => {
     if (track?.url && track.url !== prevTrack?.url) {
       const trackUrl = track.url;
 
-      const sound = new Howl({
+      soundRef.current = new Howl({
         src: [trackUrl],
         html5: true,
         onload: () => {
-          setLoading(false);
-          if (track.type === "audio") {
-            setDuration(sound.duration());
+          if (track.type === "audio" && soundRef.current) {
+            setMetadata({
+              maxDuration: soundRef.current.duration(),
+              duration: 0,
+            });
           }
+          setAudioState("playing");
         },
         onend: () => {
           if (trackList) {
@@ -97,38 +112,43 @@ export const AudioProvider = (props: PropsWithChildren) => {
         });
       }
 
-      sound.play();
-      setLoading(true);
+      soundRef.current.play();
+      setAudioState("loading");
 
       return () => {
-        sound.stop();
-        setLoading(false);
+        soundRef.current?.stop();
+        setAudioState("stopped");
+        setMetadata({
+          maxDuration: 0,
+          duration: 0,
+        });
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [track]);
 
   useEffect(() => {
-    if (duration && track) {
+    if (audioState === "playing" && metadata.duration < metadata.maxDuration) {
       const id = setInterval(() => {
-        setDuration((prev) => prev - 1);
+        setMetadata((prev) => ({
+          ...prev,
+          duration: prev.duration + 1,
+        }));
       }, 1000);
       return () => {
         clearInterval(id);
       };
-    } else {
-      setDuration(0);
     }
-  }, [duration, track]);
+  }, [audioState]);
 
   const prev = () => {
     const currentTrackIndex = trackList.findIndex(
       (item) => item.url === track?.url
     );
     if (currentTrackIndex !== -1) {
-      const nextTrack = trackList[currentTrackIndex - 1];
-      if (nextTrack) {
-        setTrack(nextTrack);
+      const prevTrack = trackList[currentTrackIndex - 1];
+      if (prevTrack) {
+        setTrack(prevTrack);
       }
     }
   };
@@ -149,9 +169,13 @@ export const AudioProvider = (props: PropsWithChildren) => {
     <AudioContext.Provider
       value={{
         track,
-        isLoading,
+        prev,
+        next,
+        audioState,
         countDown,
         setCountDown,
+        duration: metadata.duration,
+        maxDuration: metadata.maxDuration,
         play: (track, list) => {
           setTrack(track);
           if (list) {
@@ -161,9 +185,15 @@ export const AudioProvider = (props: PropsWithChildren) => {
           }
         },
         stop: () => setTrack(undefined),
-        prev,
-        next,
-        duration,
+        seek: (second) => {
+          setMetadata((prev) => {
+            soundRef.current?.seek(second);
+            return {
+              ...prev,
+              duration: second,
+            };
+          });
+        },
       }}
     >
       {props.children}

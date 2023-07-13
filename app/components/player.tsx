@@ -9,7 +9,8 @@ import {
 import { PlayingAnimation } from "./playing-animation";
 import { CountDownView } from "./countdown";
 import { TimerModal } from "./modal-timer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDebounce } from "react-use";
 
 export function Player() {
   const {
@@ -17,25 +18,49 @@ export function Player() {
     stop,
     prev,
     next,
-    isLoading,
+    audioState,
     countDown,
+    maxDuration,
     setCountDown,
     duration,
+    seek,
   } = useAudioContext();
 
   const [toastShown, setToastShown] = useState(false);
   const hasTimer = typeof countDown !== "undefined";
+
+  const [seekSecond, setSeekSecond] = useState<number>();
+
+  useDebounce(
+    () => {
+      if (seekSecond) {
+        seek(seekSecond);
+        setSeekSecond(undefined);
+      }
+    },
+    200,
+    [seekSecond]
+  );
+
   return track ? (
     <div
       className={`p-4 border-t border-t-secondary-focus bg-secondary relative`}
     >
-      {/* <input
-        type="range"
-        min={0}
-        max="100"
-        defaultValue="40"
-        className="range range-xs rounded-none absolute -top-2 left-0 w-full"
-      /> */}
+      {track.type === "audio" && duration ? (
+        <input
+          type="range"
+          min={0}
+          max={maxDuration}
+          value={seekSecond || duration}
+          step={1}
+          className="range range-xs rounded-none absolute left-0 w-full"
+          style={{ top: -11 }}
+          onChange={(e) => {
+            const value = parseInt(e.target.value);
+            setSeekSecond(value);
+          }}
+        />
+      ) : null}
       <div className="max-w-5xl mx-auto flex flex-1 flex-row gap-4 items-center">
         <img
           src={track.logoUrl}
@@ -74,15 +99,19 @@ export function Player() {
           )
         ) : null}
         {duration ? (
-          <CountDownView
-            countDown={duration}
-            updateCountDown={() => {}}
-            onEnd={() => {}}
-          />
+          <div className="hidden sm:flex">
+            <CountDownView
+              countDown={maxDuration - duration}
+              updateCountDown={() => {}}
+              onEnd={() => {}}
+            />
+          </div>
         ) : null}
-        <div>
-          {!isLoading ? <PlayingAnimation className="bg-white" /> : null}
-        </div>
+        {track.type === "streaming" && audioState === "playing" ? (
+          <div>
+            <PlayingAnimation className="bg-white" />
+          </div>
+        ) : null}
         <div className={`flex flex-row gap-2 items-center`}>
           {track.type === "audio" ? (
             <button className="btn btn-accent-content btn-sm" onClick={prev}>
@@ -90,7 +119,7 @@ export function Player() {
             </button>
           ) : null}
           <button className="btn btn-accent-content" onClick={stop}>
-            {isLoading ? (
+            {audioState === "loading" ? (
               <BiLoader size={24} className="animate-spin text-content" />
             ) : (
               <BiStop size={24} className="text-content" />

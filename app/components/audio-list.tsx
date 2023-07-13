@@ -12,7 +12,7 @@ export type AudioListProps = {
 
 export function AudioList(props: AudioListProps) {
   const { audios } = props;
-  const { play, stop, isLoading, track } = useAudioContext();
+  const { play, stop, audioState, track } = useAudioContext();
   return (
     <div className="flex flex-col gap-4 sm:max-h-96 overflow-y-auto bg-base-300 p-4 rounded-md">
       {audios.map((item) => {
@@ -51,7 +51,7 @@ export function AudioList(props: AudioListProps) {
                       }
                 }
               >
-                {isActive && isLoading ? (
+                {isActive && audioState === "loading" ? (
                   <BiLoader size={18} color="white" className="animate-spin" />
                 ) : isActive ? (
                   <BiStop size={18} color="white" />

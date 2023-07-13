@@ -337,8 +337,13 @@ export function ArticleDetail(
   const sourceNode = props.sourceLink ? (
     <div className="alert alert-warning">
       <div>Sumber Tulisan:</div>
-      <a href={props.sourceLink} target="_blank" rel="noreferrer">
-        {props.sourceLink}
+      <a
+        href={props.sourceLink}
+        target="_blank"
+        rel="noreferrer"
+        className="line-clamp-1 underline"
+      >
+        {props.title}
       </a>
     </div>
   ) : null;
