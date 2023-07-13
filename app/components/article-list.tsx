@@ -42,7 +42,7 @@ export function ArticleList({
         articleSlug: item.slug,
       })}
       link={item.link}
-      imageUrl={item.image?.medium?.url}
+      imageUrl={item.image?.small?.url}
       toggleLikeLoading={isLoading(item.id)}
       onLikeClick={() => like(item.id)}
       onUnlikeClick={() => unlike(item.id)}

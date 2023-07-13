@@ -306,7 +306,7 @@ export function ArticleDetail(
     <img
       src={props.imageUrl}
       alt={props.title}
-      className="w-full h-auto object-contain rounded-md"
+      className="w-full h-96 object-cover rounded-md"
     />
   ) : null;
 

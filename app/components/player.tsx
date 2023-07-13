@@ -5,6 +5,8 @@ import {
   BiTimer,
   BiArrowToLeft,
   BiArrowToRight,
+  BiPlay,
+  BiPause,
 } from "react-icons/bi";
 import { PlayingAnimation } from "./playing-animation";
 import { CountDownView } from "./countdown";
@@ -24,6 +26,8 @@ export function Player() {
     setCountDown,
     duration,
     seek,
+    pause,
+    resume,
   } = useAudioContext();
 
   const [toastShown, setToastShown] = useState(false);
@@ -66,7 +70,7 @@ export function Player() {
           src={track.logoUrl}
           width={64}
           height={64}
-          className="w-10 h-10 sm:w-12 sm:h-12 rounded-md"
+          className="w-8 h-8 sm:w-12 sm:h-12 rounded-md"
           alt={track.name}
         />
         <div
@@ -112,21 +116,44 @@ export function Player() {
             <PlayingAnimation className="bg-white" />
           </div>
         ) : null}
-        <div className={`flex flex-row gap-2 items-center`}>
+        <div className={`flex flex-row gap-1 sm:gap-2 items-center`}>
           {track.type === "audio" ? (
-            <button className="btn btn-accent-content btn-sm" onClick={prev}>
+            <button
+              className="btn btn-accent-content btn-xs sm:btn-sm"
+              onClick={prev}
+            >
               <BiArrowToLeft size={20} />
             </button>
           ) : null}
-          <button className="btn btn-accent-content" onClick={stop}>
+          <button
+            className="btn btn-accent-content btn-sm sm:btn-md"
+            onClick={stop}
+          >
             {audioState === "loading" ? (
               <BiLoader size={24} className="animate-spin text-content" />
             ) : (
               <BiStop size={24} className="text-content" />
             )}
           </button>
+          {track.type === "audio" &&
+          audioState !== "stopped" &&
+          audioState !== "loading" ? (
+            <button
+              className="btn btn-accent-content btn-sm sm:btn-md"
+              onClick={audioState === "paused" ? resume : pause}
+            >
+              {audioState === "paused" ? (
+                <BiPlay size={24} />
+              ) : (
+                <BiPause size={24} />
+              )}
+            </button>
+          ) : null}
           {track.type === "audio" ? (
-            <button className="btn btn-accent-content btn-sm" onClick={next}>
+            <button
+              className="btn btn-accent-content btn-xs sm:btn-sm"
+              onClick={next}
+            >
               <BiArrowToRight size={20} />
             </button>
           ) : null}

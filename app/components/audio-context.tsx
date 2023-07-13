@@ -11,7 +11,7 @@ type AudioTrack = {
   logoUrl: string;
 };
 
-type AudioState = "stopped" | "loading" | "playing";
+type AudioState = "stopped" | "loading" | "playing" | "paused";
 
 export const AudioContext = createContext<{
   track: AudioTrack | undefined;
@@ -20,6 +20,8 @@ export const AudioContext = createContext<{
   stop: () => void;
   prev: () => void;
   next: () => void;
+  pause: () => void;
+  resume: () => void;
   seek: (second: number) => void;
   countDown?: number | undefined;
   setCountDown: Dispatch<SetStateAction<number | undefined>>;
@@ -33,6 +35,8 @@ export const AudioContext = createContext<{
   prev: () => {},
   next: () => {},
   seek: () => {},
+  pause: () => {},
+  resume: () => {},
   setCountDown: () => {},
   duration: 0,
   maxDuration: 0,
@@ -165,12 +169,24 @@ export const AudioProvider = (props: PropsWithChildren) => {
     }
   };
 
+  const pause = () => {
+    soundRef.current?.pause();
+    setAudioState("paused");
+  };
+
+  const resume = () => {
+    soundRef.current?.play();
+    setAudioState("playing");
+  };
+
   return (
     <AudioContext.Provider
       value={{
         track,
         prev,
         next,
+        pause,
+        resume,
         audioState,
         countDown,
         setCountDown,
