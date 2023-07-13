@@ -119,7 +119,10 @@ export function ArticleItem(props: ArticleItemProps) {
           }}
           sites={["whatsapp", "telegram", "mail", "copy"]}
         >
-          <button className={`btn btn-outline btn-sm btn-circle`}>
+          <button
+            className={`btn btn-outline btn-sm btn-circle`}
+            aria-label="Share"
+          >
             <BsShare />
           </button>
         </RWebShare>
@@ -129,6 +132,9 @@ export function ArticleItem(props: ArticleItemProps) {
               props.isLiked ? "btn-accent" : "btn-outline"
             }`}
             onClick={props.isLiked ? props.onUnlikeClick : props.onLikeClick}
+            aria-label={`${
+              props.isLiked ? "Hilangkan Artikel" : "Simpan Artikel"
+            }`}
           >
             {props.isLiked ? (
               <BsBookmarkFill className="text-white" />
@@ -400,6 +406,7 @@ export function ArticleDetail(
                       <button
                         className="btn btn-sm btn-ghost w-full"
                         onClick={() => setDescVisibility((v) => !v)}
+                        aria-label="Lihat konten asli"
                       >
                         <div className="flex font-bold flex-1">Konten Asli</div>
                         {descShown ? (

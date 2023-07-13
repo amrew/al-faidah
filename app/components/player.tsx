@@ -9,7 +9,7 @@ import {
 import { PlayingAnimation } from "./playing-animation";
 import { CountDownView } from "./countdown";
 import { TimerModal } from "./modal-timer";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDebounce } from "react-use";
 
 export function Player() {

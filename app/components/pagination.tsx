@@ -19,32 +19,57 @@ export function Pagination(props: PaginationProps) {
   return (
     <div className="join">
       <Link to={buildUrl(page - 1)} preventScrollReset={false}>
-        <button className="join-item btn" disabled={isFirstPage}>
+        <button
+          className="join-item btn"
+          disabled={isFirstPage}
+          aria-label="Halaman sebelumnya"
+        >
           <BiChevronLeft size={22} />
         </button>
       </Link>
       {page - 1 > 0 ? (
         <Link to={buildUrl(1)}>
-          <button className="join-item btn">1</button>
+          <button className="join-item btn" aria-label={`Halaman ${page - 1}`}>
+            1
+          </button>
         </Link>
       ) : null}
-      {page - 2 > 0 ? <button className="join-item btn">...</button> : null}
-      <button className="join-item btn btn-active btn-primary">{page}</button>
+      {page - 2 > 0 ? (
+        <button className="join-item btn" aria-label="Halaman lainnya">
+          ...
+        </button>
+      ) : null}
+      <button
+        className="join-item btn btn-active btn-primary"
+        aria-label="Halaman saat ini"
+      >
+        {page}
+      </button>
       {hasMorePage ? (
         <Link to={buildUrl(page + 1)}>
-          <button className="join-item btn">{page + 1}</button>
+          <button className="join-item btn" aria-label={`Halaman ${page + 1}`}>
+            {page + 1}
+          </button>
         </Link>
       ) : null}
       {page + 2 < totalPage ? (
-        <button className="join-item btn">...</button>
+        <button className="join-item btn" aria-label="Halaman lainnya">
+          ...
+        </button>
       ) : null}
       {page + 1 < totalPage ? (
         <Link to={buildUrl(totalPage)}>
-          <button className="join-item btn">{totalPage}</button>
+          <button className="join-item btn" aria-label={`Halaman ${page + 1}`}>
+            {totalPage}
+          </button>
         </Link>
       ) : null}
       <Link to={buildUrl(page + 1)}>
-        <button className="join-item btn" disabled={!hasMorePage}>
+        <button
+          className="join-item btn"
+          disabled={!hasMorePage}
+          aria-label="Halaman selanjutnya"
+        >
           <BiChevronRight size={22} />
         </button>
       </Link>

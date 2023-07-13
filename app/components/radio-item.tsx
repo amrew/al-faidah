@@ -29,7 +29,7 @@ export function RadioItem({
   onUnlikeClick,
   canBeSaved = true,
 }: RadioItemProps) {
-  const { track, play, stop, isLoading } = useAudioContext();
+  const { track, play, stop, audioState } = useAudioContext();
   const isActive = track?.url === item.trackUrl;
   const isLive = item.status === "LIVE";
 
@@ -112,6 +112,7 @@ export function RadioItem({
               <button
                 className={`btn btn-ghost btn-sm btn-circle`}
                 onClick={isLiked ? onUnlikeClick : onLikeClick}
+                aria-label={isLiked ? "Hilangkan Radio" : "Simpan Radio"}
               >
                 {isLiked ? (
                   <BsBookmarkFill size={16} className="text-accent" />
@@ -142,13 +143,16 @@ export function RadioItem({
             }}
             sites={["whatsapp", "telegram", "mail", "copy"]}
           >
-            <button className={`btn btn-ghost btn-sm btn-circle`}>
+            <button
+              className={`btn btn-ghost btn-sm btn-circle`}
+              aria-label="Share Radio"
+            >
               <BsShare size={16} />
             </button>
           </RWebShare>
         </div>
         <div className="flex flex-row gap-2 items-center">
-          {!isLoading && embed && isActive ? (
+          {audioState === "playing" && embed && isActive ? (
             <PlayingAnimation className="bg-accent" />
           ) : null}
           <button
@@ -156,8 +160,9 @@ export function RadioItem({
             className={`btn btn-sm ${
               isActive ? "btn-secondary" : "btn-primary"
             }`}
+            aria-label="Putar Radio"
           >
-            {isActive && isLoading ? (
+            {isActive && audioState === "loading" ? (
               <BiLoader size={24} color="white" className="animate-spin" />
             ) : isActive ? (
               <BiStop size={24} color="white" />
