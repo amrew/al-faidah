@@ -33,7 +33,10 @@ export const action = async ({ request }: ActionArgs) => {
   const body = await request.formData();
   const code = body.get("code");
 
+  console.log(code);
+
   if (typeof code !== "string") {
+    console.log("code is not string");
     return json(
       {
         error: {
@@ -51,7 +54,10 @@ export const action = async ({ request }: ActionArgs) => {
     .eq("invitation_code", code.toUpperCase())
     .single();
 
+  console.log(userProfile);
+
   if (error || !userProfile) {
+    console.log("error or not found");
     return json(
       {
         error: {
@@ -67,7 +73,8 @@ export const action = async ({ request }: ActionArgs) => {
 
   const { count } = await supabase
     .from("user_profiles")
-    .select("*", { count: "exact", head: true });
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", user.id);
 
   const data = {
     user_id: user.id,
@@ -77,7 +84,7 @@ export const action = async ({ request }: ActionArgs) => {
   };
 
   if (count === 0) {
-    await supabase.from("user_profiles").upsert(data).eq("user_id", user.id);
+    await supabase.from("user_profiles").insert(data).eq("user_id", user.id);
   } else {
     await supabase.from("user_profiles").update(data).eq("user_id", user.id);
   }
