@@ -127,7 +127,7 @@ export function RadioItem({
             <label
               htmlFor="modal-embed"
               onClick={onEmbedClick}
-              className={`btn btn-ghost btn-sm btn-circle`}
+              className={`btn btn-ghost btn-sm btn-circle hidden md:flex`}
             >
               <ImEmbed2 size={16} />
             </label>
