@@ -193,7 +193,7 @@ export function RadioItemPlayer({ item, embed }: RadioItemProps) {
   const isReachMax = useRef<boolean>(false);
 
   useEffect(() => {
-    if (audioState === "playing") {
+    if (audioState === "playing" && isActive) {
       const id = setInterval(() => {
         setFakeProgress((prev) => {
           if (!isReachMax.current) {
@@ -213,7 +213,7 @@ export function RadioItemPlayer({ item, embed }: RadioItemProps) {
         clearInterval(id);
       };
     }
-  }, [audioState]);
+  }, [audioState, isActive]);
 
   return (
     <div
