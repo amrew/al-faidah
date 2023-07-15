@@ -1,4 +1,11 @@
-import { BiHeadphone, BiPlay, BiStop, BiLoader } from "react-icons/bi";
+import {
+  BiHeadphone,
+  BiPlay,
+  BiStop,
+  BiLoader,
+  BiSkipPrevious,
+  BiSkipNext,
+} from "react-icons/bi";
 import { BsBookmark, BsBookmarkFill, BsShare } from "react-icons/bs";
 import { TbBookmarkPlus } from "react-icons/tb";
 import { ImEmbed2 } from "react-icons/im";
@@ -7,6 +14,8 @@ import type { TrackInfo } from "./radio-entity";
 import { useAudioContext } from "./audio-context";
 import { APP_URL } from "./utils";
 import { PlayingAnimation } from "./playing-animation";
+import { useEffect, useRef, useState } from "react";
+import { Link } from "@remix-run/react";
 
 export type RadioItemProps = {
   item: TrackInfo;
@@ -17,6 +26,7 @@ export type RadioItemProps = {
   onEmbedClick?: () => void;
   onLikeClick?: () => void;
   onUnlikeClick?: () => void;
+  type?: "small" | "big";
 };
 
 export function RadioItem({
@@ -85,26 +95,13 @@ export function RadioItem({
       className={`flex flex-1 flex-col border-base-300 rounded-md bg-base-100 shadow-sm ${
         embed ? "h-full justify-between border-4" : "border"
       }`}
-      key={item.id}
     >
       <div className={`px-4 py-3 flex justify-between`}>
-        {embed ? (
-          <a href="/radio" target="_blank">
-            {headerNode}
-          </a>
-        ) : (
-          headerNode
-        )}
+        <Link to={`/radio/${item.alias}`} target={embed ? "_blank" : "_self"}>
+          {headerNode}
+        </Link>
       </div>
-      <div className="px-4 flex-1">
-        {embed ? (
-          <a href="/radio" target="_blank">
-            {trackNode}
-          </a>
-        ) : (
-          trackNode
-        )}
-      </div>
+      <div className="px-4 flex-1">{trackNode}</div>
       <div className={`px-4 py-3 flex justify-between`}>
         <div className="flex flex-row gap-2 items-center">
           {canBeSaved ? (
@@ -170,6 +167,119 @@ export function RadioItem({
               <BiPlay size={24} color="white" />
             )}
           </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function RadioItemPlayer({ item, embed }: RadioItemProps) {
+  const { track, play, stop, audioState } = useAudioContext();
+  const isActive = track?.url === item.trackUrl;
+  const isLive = item.status === "LIVE";
+
+  const onStop = () => stop();
+
+  const onPlay = () =>
+    play({
+      name: item.name,
+      url: item.trackUrl,
+      trackTitle: item.trackTitle,
+      logoUrl: item.logoUrl,
+      type: "streaming",
+    });
+
+  const [fakeProgress, setFakeProgress] = useState(0);
+  const isReachMax = useRef<boolean>(false);
+
+  useEffect(() => {
+    if (audioState === "playing") {
+      const id = setInterval(() => {
+        setFakeProgress((prev) => {
+          if (!isReachMax.current) {
+            if (prev === 90) {
+              isReachMax.current = true;
+            }
+            return prev + 10;
+          } else {
+            if (prev < 100) {
+              return prev + 2;
+            }
+            return 96;
+          }
+        });
+      }, 1000);
+      return () => {
+        clearInterval(id);
+      };
+    }
+  }, [audioState]);
+
+  return (
+    <div
+      className={`w-full bg-base-200 h-full flex flex-col gap-4 ${
+        embed ? "border-base-300 border-4" : ""
+      }`}
+    >
+      <div className="flex flex-row bg-base-100 items-center gap-4 px-4 py-6 sm:px-8 sm:py-10 border-b border-b-base-300">
+        <div className="sm:w-20">
+          <div className="indicator">
+            <span className="indicator-item badge badge-xs badge-success"></span>
+            <div
+              className={`badge badge-sm ${
+                isLive ? "badge-error text-white" : ""
+              }`}
+            >
+              {isLive ? "Live" : "Online"}
+            </div>
+          </div>
+        </div>
+        <div className="flex-1 text-center">
+          <span className="font-bold line-clamp-1">{item.name}</span>
+        </div>
+        <div className="sm:w-20">
+          <div className="flex flex-row items-center gap-2 justify-end">
+            <BiHeadphone />
+            <strong className="text-xs">{item.listenerCount}</strong>
+          </div>
+        </div>
+      </div>
+      <div className="px-4 sm:px-8 flex justify-center items-center flex-1">
+        <img src={item.logoUrl} className="rounded-md" alt="" />
+      </div>
+      <div className="px-8 py-4 bg-base-100 flex flex-col gap-4 border-t border-t-base-300">
+        <div className="text-center">
+          <span className="font-semibold line-clamp-3">{item.trackTitle}</span>
+        </div>
+        <div className="text-center flex flex-col gap-4">
+          <div className="px-4">
+            <progress
+              className="progress"
+              value={fakeProgress}
+              max="100"
+            ></progress>
+          </div>
+          <div className="flex gap-2 justify-center items-center">
+            <button className="btn btn-primary btn-sm" disabled>
+              <BiSkipPrevious size={24} color="white" />
+            </button>
+            <button
+              onClick={isActive ? onStop : onPlay}
+              className={`btn ${isActive ? "btn-secondary" : "btn-primary"}`}
+              aria-label="Putar Radio"
+            >
+              {isActive && audioState === "loading" ? (
+                <BiLoader size={24} color="white" className="animate-spin" />
+              ) : isActive ? (
+                <BiStop size={24} color="white" />
+              ) : (
+                <BiPlay size={24} color="white" />
+              )}
+            </button>
+            <button className="btn btn-primary btn-sm" disabled>
+              <BiSkipNext size={24} color="white" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

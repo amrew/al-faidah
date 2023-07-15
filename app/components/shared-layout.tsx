@@ -11,15 +11,23 @@ export type SharedLayoutProps = {
   searchComponent?: ReactNode;
   bottomNavShown?: boolean;
   hasBackButton?: boolean;
+  playerShown?: boolean;
 };
 
 export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
-  const { contentClassname = "", bottomNavShown = true, hasBackButton } = props;
+  const {
+    hasBackButton,
+    contentClassname = "",
+    bottomNavShown = true,
+    playerShown = true,
+  } = props;
   const hasSearchComponent = !!props.searchComponent;
 
   return (
-    <div className={`h-full ${contentClassname}`}>
-      <div className="max-w-5xl mx-auto pb-36 sm:pb-20 pt-16 relative">
+    <div className="h-full">
+      <div
+        className={`max-w-5xl mx-auto pb-36 sm:pb-20 pt-16 relative ${contentClassname}`}
+      >
         {props.children}
       </div>
       <header className="navbar border-b border-solid gap-2 bg-base-200 border-b-base-300 fixed top-0 left-0 right-0 z-10">
@@ -70,7 +78,7 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
       </header>
       <div className="fixed bottom-0 left-0 w-full">
         {props.footer}
-        <Player />
+        {playerShown ? <Player /> : null}
         {bottomNavShown ? (
           <div className="btm-nav btm-nav-sm border-t border-t-base-200 sm:hidden relative">
             <NavLink to="/" className="bg-white">

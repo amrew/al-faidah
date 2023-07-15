@@ -6,6 +6,8 @@ export default function Radio() {
   const context = useOutletContext();
   return (
     <SharedLayout
+      contentClassname="h-full"
+      hasBackButton
       footer={
         <div className="relative max-w-5xl mx-auto">
           <RefreshButton />

@@ -31,7 +31,8 @@ export async function getTracks(params?: {
       listenerCount: Number(item.pendengar),
       status: item.status,
       trackTitle: item.judul,
-      trackUrl: `${RADIO_PROXY_URL}/radio/${ip}/${port}`,
+      trackUrl: `${RADIO_PROXY_URL}/stations/${ip}/${port}/radio.mp3?sid=1`,
+      statsUrl: `${RADIO_PROXY_URL}/stations/${ip}/${port}/stats?sid=1&json=1`,
     };
   });
 

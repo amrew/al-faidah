@@ -8,6 +8,7 @@ export type TrackInfo = {
   status: string;
   trackTitle: string;
   trackUrl: string;
+  statsUrl: string;
 };
 
 export type SortBy = "live" | "most" | "less" | "default";

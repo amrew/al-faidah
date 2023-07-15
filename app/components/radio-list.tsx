@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ModalEmbed } from "./modal-embed";
 import type { TrackInfo } from "./radio-entity";
-import { RadioItem, RadioItemLoading } from "./radio-item";
+import { RadioItem, RadioItemLoading, RadioItemPlayer } from "./radio-item";
 import { Link, useRevalidator } from "@remix-run/react";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { useToggleLike } from "~/hooks/useToggleLike";
@@ -9,13 +9,20 @@ import { useToggleLike } from "~/hooks/useToggleLike";
 export type RadioListProps = {
   items: TrackInfo[];
   favorite?: boolean;
+  disabledRefreshInterval?: boolean;
   refreshInterval?: number;
   embed?: boolean;
   canBeSaved?: boolean;
+  mode?: "player" | "card";
 };
 
 export function RadioList(props: RadioListProps) {
-  const { refreshInterval = 20000, canBeSaved } = props;
+  const {
+    mode = "card",
+    canBeSaved,
+    disabledRefreshInterval,
+    refreshInterval = 20000,
+  } = props;
   const { revalidate } = useRevalidator();
 
   const [selectedTrack, setSelectedTrack] = useState<TrackInfo>();
@@ -29,7 +36,7 @@ export function RadioList(props: RadioListProps) {
   const firstTime = useRef(true);
 
   useEffect(() => {
-    if (refreshInterval) {
+    if (!disabledRefreshInterval && refreshInterval) {
       let timer: NodeJS.Timer | undefined = undefined;
 
       const startLongPooling = () => {
@@ -57,7 +64,7 @@ export function RadioList(props: RadioListProps) {
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [disabledRefreshInterval]);
 
   // reduce the item rendered on the server side.
   useEffect(() => {
@@ -78,20 +85,24 @@ export function RadioList(props: RadioListProps) {
     <>
       {results.length > 0 ? (
         results.map((item, index) => {
+          const itemProps = {
+            item: item,
+            embed: props.embed,
+            isLiked: isLiked(item.id),
+            onEmbedClick: () => setSelectedTrack(item),
+            toggleLikeLoading: isLoading(item.id),
+            onLikeClick: () => like(item.id),
+            onUnlikeClick: () => unlike(item.id),
+            canBeSaved: canBeSaved,
+          };
           return (results.length > 10 && index < half) ||
             results.length < 10 ||
             renderOnClient ? (
-            <RadioItem
-              key={item.id}
-              item={item}
-              embed={props.embed}
-              isLiked={isLiked(item.id)}
-              onEmbedClick={() => setSelectedTrack(item)}
-              toggleLikeLoading={isLoading(item.id)}
-              onLikeClick={() => like(item.id)}
-              onUnlikeClick={() => unlike(item.id)}
-              canBeSaved={canBeSaved}
-            />
+            mode === "player" ? (
+              <RadioItemPlayer key={item.id} {...itemProps} />
+            ) : (
+              <RadioItem key={item.id} {...itemProps} />
+            )
           ) : null;
         })
       ) : (

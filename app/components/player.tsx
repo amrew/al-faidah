@@ -30,9 +30,7 @@ export function Player() {
     resume,
   } = useAudioContext();
 
-  const [toastShown, setToastShown] = useState(false);
   const hasTimer = typeof countDown !== "undefined";
-
   const [seekSecond, setSeekSecond] = useState<number>();
 
   useDebounce(
@@ -73,13 +71,7 @@ export function Player() {
           className="w-8 h-8 sm:w-12 sm:h-12 rounded-md"
           alt={track.name}
         />
-        <div
-          className={`flex-1 ${
-            toastShown ? "tooltip tooltip-open text-left" : ""
-          }`}
-          data-tip={track.trackTitle}
-          onClick={() => setToastShown((v) => !v)}
-        >
+        <div className="flex-1">
           <h1 className="font-bold sm:text-lg text-base-100 line-clamp-1">
             {track.name}
           </h1>

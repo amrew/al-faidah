@@ -2,10 +2,12 @@ import { getTracks } from "~/components/radio-service";
 import { RadioList } from "~/components/radio-list";
 import { json, type V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { useQuery } from "react-query";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
   const theme = url.searchParams.get("theme") || "cupcake";
+  const mode = url.searchParams.get("mode") || "card";
 
   const id = params.id;
   const [riiRadios, syariahRadios] = await Promise.all([
@@ -14,9 +16,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   ]);
   const radios = [...riiRadios, ...syariahRadios];
   const track = radios.find((item) => item.alias === id);
-  const items = track ? [track] : radios.filter((item) => item.serial === id);
 
-  if (!items.length) {
+  if (!track) {
     throw new Response(null, {
       status: 404,
       statusText: "Not Found",
@@ -24,28 +25,58 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   }
 
   return json({
-    items,
+    id,
+    track,
     theme,
+    mode,
   });
 };
 
 export const meta: V2_MetaFunction = ({ data }) => {
-  const { items } = data;
-  const [first] = items || [];
+  const { track } = data;
   return [
-    { title: `${first.name} - Al Faidah` },
+    { title: `${track.name} - Al Faidah` },
     {
       name: "description",
-      content: `${first.name}`,
+      content: `${track.name}`,
     },
   ];
 };
 
 export default function RadioEmbed() {
-  const { items, theme } = useLoaderData<typeof loader>();
+  const {
+    id,
+    track: serverTrack,
+    theme,
+    mode,
+  } = useLoaderData<typeof loader>();
+
+  const query = useQuery(
+    ["radio", id],
+    async () => {
+      const result = await fetch(`/api/track/${id}`);
+      const data = await result.json();
+      return data;
+    },
+    {
+      refetchInterval: 5000,
+      initialData: { track: serverTrack },
+    }
+  );
+
   return (
-    <main className="flex flex-col gap-2 h-full" data-theme={theme}>
-      <RadioList items={items} embed />
+    <main
+      className="flex flex-col justify-center items-center gap-2 h-full"
+      data-theme={theme}
+    >
+      <div className="h-full max-w-xl">
+        <RadioList
+          items={[query.data?.track]}
+          embed
+          mode={mode === "player" ? "player" : "card"}
+          disabledRefreshInterval
+        />
+      </div>
     </main>
   );
 }
