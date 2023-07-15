@@ -1,4 +1,8 @@
-import { type PropsWithChildren, type ReactNode } from "react";
+import {
+  type CSSProperties,
+  type PropsWithChildren,
+  type ReactNode,
+} from "react";
 import { MemberNavigation } from "./member-navigation";
 import { Player } from "./player";
 import { Link, NavLink } from "@remix-run/react";
@@ -7,7 +11,7 @@ import { BackButton } from "./back-button";
 
 export type SharedLayoutProps = {
   footer?: ReactNode;
-  contentClassname?: string;
+  contentStyle?: CSSProperties;
   searchComponent?: ReactNode;
   bottomNavShown?: boolean;
   hasBackButton?: boolean;
@@ -17,7 +21,7 @@ export type SharedLayoutProps = {
 export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
   const {
     hasBackButton,
-    contentClassname = "",
+    contentStyle,
     bottomNavShown = true,
     playerShown = true,
   } = props;
@@ -26,7 +30,8 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
   return (
     <div className="h-full">
       <div
-        className={`max-w-5xl mx-auto pb-36 sm:pb-20 pt-16 relative ${contentClassname}`}
+        className="max-w-5xl mx-auto pb-36 sm:pb-20 pt-16 relative"
+        style={contentStyle}
       >
         {props.children}
       </div>

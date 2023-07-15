@@ -69,7 +69,7 @@ export default function RadioEmbed() {
       className="flex flex-col justify-center items-center gap-2 h-full"
       data-theme={theme}
     >
-      <div className="h-full max-w-xl">
+      <div className="h-full max-w-3xl">
         <RadioList
           items={[query.data?.track]}
           embed

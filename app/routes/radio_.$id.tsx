@@ -56,7 +56,7 @@ export default function RadioDetail() {
       hasBackButton
       playerShown={false}
       bottomNavShown={false}
-      contentClassname="h-full pb-0"
+      contentStyle={{ height: "100%", paddingBottom: 0 }}
     >
       <main className="flex flex-col justify-center items-center flex-1 p-4 gap-4 h-full">
         <div className="max-w-lg h-full">
