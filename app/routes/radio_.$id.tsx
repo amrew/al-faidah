@@ -8,13 +8,17 @@ import { useQuery } from "react-query";
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params.id;
 
-  const radios = await getTracks();
+  const [riiRadios, syariahRadios] = await Promise.all([
+    getTracks(),
+    getTracks({ type: "syariah" }),
+  ]);
+  const radios = [...riiRadios, ...syariahRadios];
   const track = radios.find((item) => item.alias === id);
 
   if (!track) {
     throw new Response(null, {
       status: 404,
-      statusText: "Not Found",
+      statusText: "Radio tidak ditemukan",
     });
   }
 

@@ -7,10 +7,10 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@remix-run/css-bundle": "^1.17.1",
-    "@remix-run/node": "^1.17.1",
-    "@remix-run/react": "^1.17.1",
-    "@remix-run/vercel": "^1.17.1",
+    "@remix-run/css-bundle": "^1.18.1",
+    "@remix-run/node": "^1.18.1",
+    "@remix-run/react": "^1.18.1",
+    "@remix-run/vercel": "^1.18.1",
     "@supabase/auth-helpers-remix": "^0.2.1",
     "@supabase/supabase-js": "^2.26.0",
     "@vercel/edge-config": "^0.2.1",
@@ -42,9 +42,9 @@
     "wpapi": "^1.2.2"
   },
   "devDependencies": {
-    "@remix-run/dev": "^1.17.1",
-    "@remix-run/eslint-config": "^1.17.1",
-    "@remix-run/serve": "^1.17.1",
+    "@remix-run/dev": "^1.18.1",
+    "@remix-run/eslint-config": "^1.18.1",
+    "@remix-run/serve": "^1.18.1",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/typography": "^0.5.9",
     "@types/debounce": "^1.2.1",

@@ -7,15 +7,18 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  isRouteErrorResponse,
   useLoaderData,
   useNavigation,
   useRevalidator,
+  useRouteError,
 } from "@remix-run/react";
 import styles from "./tailwind.css";
 import { useEffect, useState } from "react";
 import { createBrowserClient } from "@supabase/auth-helpers-remix";
 import { Provider } from "./components/provider";
 import { createServerSupabase } from "./clients/createServerSupabase";
+import { BiChevronLeft } from "react-icons/bi";
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
@@ -136,6 +139,98 @@ export default function App() {
             />
           </>
         )}
+      </body>
+    </html>
+  );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  const renderErrorMessage = () => {
+    // when true, this is what used to go to `CatchBoundary`
+    if (isRouteErrorResponse(error)) {
+      return (
+        <div className="flex flex-col gap-6 max-w-md">
+          <h1 className="font-bold text-5xl text-base-content">
+            Uppsss... {error.status}
+          </h1>
+          <p className="text-2xl">{error.statusText}</p>
+          <div className="flex flex-col gap-2">
+            <p className="font-light">
+              Mohon periksa kembali link yang Anda tuju. Jika Anda meyakini ini
+              merupakan sebuah error, jangan ragu untuk menghubungi Admin Al
+              Faidah.
+            </p>
+            <p>Jazakumullah Khoiron</p>
+          </div>
+          <div>
+            <a href="/" className="btn btn-sm btn-error text-white">
+              <BiChevronLeft />
+              Kembali ke Beranda
+            </a>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className="flex flex-col gap-6 max-w-md">
+          <h1 className="font-bold text-5xl text-base-content">
+            Uppsss... 500
+          </h1>
+          <p className="text-2xl">Telah terjadi kesalahan pada sistem</p>
+          <div className="flex flex-col gap-2">
+            <p className="font-light">
+              Halaman ini tampaknya mengalami kesalahan. Anda bisa menghubungi
+              Admin Al Faidah jika memungkinkan.
+            </p>
+            <p>Jazakumullah Khoiron</p>
+          </div>
+          <div>
+            <a href="/" className="btn btn-sm btn-error text-white">
+              <BiChevronLeft />
+              Kembali ke Beranda
+            </a>
+          </div>
+        </div>
+      );
+    }
+  };
+
+  return (
+    <html lang="en" data-theme="cupcake">
+      <head>
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+        />
+        <link rel="manifest" href="/site.webmanifest" />
+        <meta charSet="utf-8" />
+        <meta
+          name="viewport"
+          content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+        />
+        <meta name="robots" content="noindex" />
+        <title>Error - Al Faidah</title>
+        <Links />
+      </head>
+      <body>
+        <div className="flex flex-col h-full justify-center items-center">
+          {renderErrorMessage()}
+        </div>
       </body>
     </html>
   );

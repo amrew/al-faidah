@@ -245,7 +245,13 @@ export function RadioItemPlayer({ item, embed }: RadioItemProps) {
         </div>
       </div>
       <div className="px-4 sm:px-8 flex justify-center items-center flex-1">
-        <img src={item.logoUrl} className="rounded-md" alt="" />
+        <img
+          src={item.logoUrl}
+          className="rounded-md w-20 h-20 object-contain"
+          alt={item.name}
+          width={80}
+          height={80}
+        />
       </div>
       <div className="px-8 py-4 bg-base-100 flex flex-col gap-4 border-t border-t-base-300">
         <div className="text-center">

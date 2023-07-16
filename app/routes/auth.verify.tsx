@@ -57,7 +57,6 @@ export const action = async ({ request }: ActionArgs) => {
   console.log(userProfile);
 
   if (error || !userProfile) {
-    console.log("error or not found");
     return json(
       {
         error: {
