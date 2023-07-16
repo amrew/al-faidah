@@ -151,7 +151,7 @@ export function ErrorBoundary() {
     // when true, this is what used to go to `CatchBoundary`
     if (isRouteErrorResponse(error)) {
       return (
-        <div className="flex flex-col gap-6 max-w-md">
+        <div className="flex flex-col gap-6 max-w-md p-6">
           <h1 className="font-bold text-5xl text-base-content">
             Uppsss... {error.status}
           </h1>
@@ -174,7 +174,7 @@ export function ErrorBoundary() {
       );
     } else {
       return (
-        <div className="flex flex-col gap-6 max-w-md">
+        <div className="flex flex-col gap-6 max-w-md p-6">
           <h1 className="font-bold text-5xl text-base-content">
             Uppsss... 500
           </h1>

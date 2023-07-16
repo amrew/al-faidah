@@ -1,7 +1,5 @@
-import { getAll } from "@vercel/edge-config";
 import { getTracks } from "~/components/radio-service";
 import { RadioListWithFilter } from "~/components/radio-list-with-filter";
-import type { FilterOption } from "~/components/radio-entity";
 import {
   json,
   type V2_MetaFunction,
@@ -22,6 +20,57 @@ export const meta: V2_MetaFunction = () => {
     },
   ];
 };
+
+const teachers = [
+  {
+    name: "Abdul Mu'thi Sutarman",
+    keyword: "abdul muthi sutarman",
+  },
+  {
+    name: "Abu Hamzah Shodiqun",
+    keyword: "shodiqun",
+  },
+  {
+    name: "Abu Hamzah Yusuf",
+    keyword: "hamzah yusuf",
+  },
+  {
+    name: "Abu Humayd Fauzi",
+    keyword: "humayd fauzi",
+  },
+  {
+    name: "Abu Nasim Mukhtar",
+    keyword: "nasim mukhtar",
+  },
+  {
+    name: "Afifuddin As-Sidawi",
+    keyword: "afifuddin",
+  },
+  {
+    name: "Ayip Syafruddin",
+    keyword: "ayip",
+  },
+  {
+    name: "Muhammad bin Umar Assewed",
+    keyword: "umar",
+  },
+  {
+    name: "Muhammad Rijal",
+    keyword: "rijal",
+  },
+  {
+    name: "Qomar Suaidi",
+    keyword: "qomar suaidi",
+  },
+  {
+    name: "Saiful Bahri",
+    keyword: "saiful bahri",
+  },
+  {
+    name: "Usamah bin Faishal Mahri",
+    keyword: "usamah mahri",
+  },
+];
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -58,10 +107,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     }
   }
 
-  const [radios, { teachers }] = await Promise.all([
-    getTracks({ type }),
-    getAll<{ teachers: FilterOption[]; topics: FilterOption[] }>(["teachers"]),
-  ]);
+  const radios = await getTracks({ type });
 
   return json(
     {
