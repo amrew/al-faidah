@@ -85,6 +85,13 @@ export const action = async ({ request }: ActionArgs) => {
       return redirect("/favorite/artikel", { headers: response.headers });
     case "syariah-radio":
       return redirect("/radio?type=syariah", { headers: response.headers });
+    case "gpt-summary":
+      const target = url.searchParams.get("target");
+      if (target?.match(/\/([\w-]+)\/([\w-]+)/g)) {
+        return redirect(target, {
+          headers: response.headers,
+        });
+      }
     default:
       return redirect("/", { headers: response.headers });
   }
@@ -99,6 +106,7 @@ const messageMap: Record<string, string> = {
   "article-like": "Login dulu sebelum menyimpan artikel",
   "favorite-page": "Login dulu sebelum melihat halaman favorit",
   "syariah-radio": 'Login dulu untuk mendengarkan "Radio Syariah"',
+  "gpt-summary": 'Login dulu untuk melihat "Rangkuman"',
 };
 
 export default function AuthLogin() {

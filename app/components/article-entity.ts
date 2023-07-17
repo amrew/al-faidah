@@ -39,6 +39,10 @@ export type ArticleSummaryType = {
     answer?: string;
     source?: string;
     link?: string;
+    gpt?: {
+      summary: string;
+      createdAt: string;
+    };
   } | null;
 };
 

@@ -23,8 +23,8 @@ export function ArticleList({
   return contents?.map((item) => (
     <ArticleItem
       key={item.id}
+      slug={item.slug}
       title={item.title}
-      isFullContent={false}
       content={item.summary}
       createdAt={item.created_at}
       readDuration={item.read_stats.minutes}
@@ -35,6 +35,7 @@ export function ArticleList({
       publisher={{
         name: item.publishers.title,
         logoUrl: item.publishers.logo_url,
+        slug: item.publishers.slug,
       }}
       authorName={item.author?.name}
       detailUrl={getArticleUrl({

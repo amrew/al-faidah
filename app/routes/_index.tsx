@@ -42,7 +42,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 
   const getContentCount = async () => {
-    let query = supabase
+    const query = supabase
       .from("contents")
       .select("id, publishers!inner( slug )", { count: "exact", head: true });
 
@@ -142,7 +142,7 @@ export default function Index() {
               page={page}
               totalPage={totalPage}
               buildUrl={(page) => {
-                let params: Record<string, string> = {};
+                const params: Record<string, string> = {};
                 if (publisher) {
                   params.publisher = publisher;
                 }
@@ -171,9 +171,11 @@ export default function Index() {
                           <ArticleItemSmall
                             key={item.id}
                             title={item.title}
+                            slug={item.slug}
                             publisher={{
                               name: item.publishers?.title,
                               logoUrl: item.publishers?.logo_url,
+                              slug: item.publishers?.slug,
                             }}
                             readDuration={item.read_stats?.minutes}
                             detailUrl={getArticleUrl({

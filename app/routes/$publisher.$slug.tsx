@@ -17,7 +17,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       .from("contents")
       .select<any, ArticleDetailType>(
         `id, title, slug, summary, description, link, image, created_at, 
-        read_stats, taxonomies( slug, name ), publishers!inner( title, logo_url, web_url ),
+        read_stats, taxonomies( slug, name ), publishers!inner( title, logo_url, web_url, slug ),
         author, metadata`
       )
       .eq("slug", slug)
@@ -62,9 +62,11 @@ export default function Detail() {
     <SharedLayout bottomNavShown={false} hasBackButton={true}>
       <ArticleDetail
         key={item.slug}
+        slug={item.slug}
         publisher={{
           name: item.publishers.title,
           logoUrl: item.publishers.logo_url,
+          slug: item.publishers.slug,
         }}
         authorName={item.author?.name}
         category={{

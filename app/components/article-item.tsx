@@ -1,6 +1,12 @@
 import dayjs from "dayjs";
-import { Link } from "@remix-run/react";
-import { BiChevronDown, BiChevronUp, BiCircle, BiLoader } from "react-icons/bi";
+import { Link, useNavigate } from "@remix-run/react";
+import {
+  BiChevronDown,
+  BiChevronRight,
+  BiChevronUp,
+  BiCircle,
+  BiLoader,
+} from "react-icons/bi";
 import { FaShare } from "react-icons/fa";
 import { TbBookmarkPlus } from "react-icons/tb";
 import { BsBookmarkFill, BsShare } from "react-icons/bs";
@@ -8,11 +14,17 @@ import { RWebShare } from "react-web-share";
 import * as cheerio from "cheerio";
 import { useMemo, useState } from "react";
 import { AudioList } from "./audio-list";
+import relativeTime from "dayjs/plugin/relativeTime";
+import "dayjs/locale/id";
+import { useUser } from "~/hooks/useSupabase";
+
+dayjs.extend(relativeTime);
+dayjs.locale("id");
 
 export type ArticleItemProps = {
+  slug: string;
   title: string;
   content: string;
-  isFullContent: boolean;
   createdAt: string;
   readDuration: number;
   imageUrl?: string;
@@ -23,6 +35,7 @@ export type ArticleItemProps = {
   publisher: {
     name: string;
     logoUrl: string;
+    slug: string;
   };
   authorName?: string;
   detailUrl: string;
@@ -30,6 +43,10 @@ export type ArticleItemProps = {
     answer?: string;
     source?: string;
     link?: string;
+    gpt?: {
+      summary: string;
+      createdAt: string;
+    };
   } | null;
   link: string;
   toggleLikeLoading?: boolean;
@@ -46,19 +63,18 @@ export function ArticleItem(props: ArticleItemProps) {
         dangerouslySetInnerHTML={{ __html: props.title.toLowerCase() }}
       />
       <div
-        className={`prose ${!props.isFullContent ? "line-clamp-3" : ""}`}
+        className="prose line-clamp-3"
         dangerouslySetInnerHTML={{ __html: props.content }}
       />
     </>
   );
-  const createdAt = dayjs(props.createdAt).format("DD MMM YYYY");
+
+  const date = dayjs(props.createdAt);
+  const fullFormat = date.format("DD MMM YYYY");
+  const fromNow = date.fromNow();
 
   const wrapWithLink = (node: React.ReactNode) => {
-    if (!props.isFullContent) {
-      return <Link to={props.detailUrl}>{node}</Link>;
-    } else {
-      return node;
-    }
+    return <Link to={props.detailUrl}>{node}</Link>;
   };
 
   return (
@@ -87,7 +103,9 @@ export function ArticleItem(props: ArticleItemProps) {
             <div className="gap-1 flex flex-col">{titleDescription}</div>
           )}
           <div className="flex flex-row gap-2 mt-1 items-center">
-            <span className="text-gray-600 text-sm">{createdAt}</span>
+            <div className="tooltip" data-tip={fullFormat}>
+              <span className="text-gray-600 text-sm">{fromNow}</span>
+            </div>
             <BiCircle size={6} className="text-gray-600" />
             <span className="text-gray-600 text-sm">
               baca {Math.ceil(props.readDuration)} menit
@@ -115,7 +133,7 @@ export function ArticleItem(props: ArticleItemProps) {
           data={{
             title: props.title,
             text: props.content,
-            url: props.link,
+            url: props.detailUrl,
           }}
           sites={["whatsapp", "telegram", "mail", "copy"]}
         >
@@ -148,11 +166,10 @@ export function ArticleItem(props: ArticleItemProps) {
           </button>
         )}
         <Link
-          to={props.link}
-          target="_blank"
+          to={props.detailUrl}
           className="btn btn-primary btn-sm text-white"
         >
-          Sumber <FaShare />
+          Selengkapnya <FaShare />
         </Link>
       </div>
     </div>
@@ -207,10 +224,7 @@ export function ArticleItemLoading() {
 }
 
 export function ArticleItemSmall(
-  props: Omit<
-    ArticleItemProps,
-    "content" | "isFullContent" | "createdAt" | "sourceLink"
-  >
+  props: Omit<ArticleItemProps, "content" | "createdAt" | "sourceLink">
 ) {
   return (
     <div className="border-b border-b-base-300 mb-2 pb-2">
@@ -273,13 +287,67 @@ export function ArticleItemSmallLoading() {
   );
 }
 
-export function ArticleAudios() {}
-
 export function ArticleDetail(
-  props: { sourceLink: string } & Omit<ArticleItemProps, "isFullContent">
+  props: { sourceLink: string } & ArticleItemProps
 ) {
   const [descShown, setDescVisibility] = useState(false);
-  const createdAt = dayjs(props.createdAt).format("DD MMM YYYY");
+  const user = useUser();
+  const navigate = useNavigate();
+
+  const date = dayjs(props.createdAt);
+  const fullFormat = date.format("DD MMM YYYY");
+  const fromNow = date.fromNow();
+
+  const gpt = props.metadata?.gpt;
+
+  const [summary, setSummary] = useState(gpt?.summary ?? "");
+  const [summaryState, setSummaryState] = useState<
+    "idle" | "fetching" | "done" | "error"
+  >(gpt?.summary ? "done" : "idle");
+
+  const getChatGPTSummary = () => {
+    if (!user) {
+      navigate(
+        `/auth/login?messageType=gpt-summary&target=/${props.publisher.slug}/${props.slug}`
+      );
+      return;
+    }
+
+    if (gpt?.summary) {
+      return;
+    }
+
+    const sse = new EventSource(
+      `/api/summary/${props.publisher.slug}/${props.slug}`
+    );
+    setSummary("");
+    setSummaryState("fetching");
+
+    sse.addEventListener("message", (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        setSummary((prev) => prev + data.text);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        if (data.finish) {
+          setSummaryState("done");
+          sse.close();
+        }
+      } catch (e) {}
+    });
+
+    sse.addEventListener("error", (event) => {
+      console.log("error: ", event);
+      setSummaryState("error");
+      sse.close();
+    });
+
+    sse.addEventListener("end", (event) => {
+      setSummaryState("done");
+      sse.close();
+    });
+  };
+
   const description = props.metadata?.answer ? (
     <div>
       <h2 className="text-xl font-bold mb-2">Pertanyaan</h2>
@@ -296,18 +364,72 @@ export function ArticleDetail(
       />
     </div>
   ) : (
-    <div
-      className={"prose lg:prose-lg prose-pre:whitespace-pre-wrap"}
-      dangerouslySetInnerHTML={{ __html: props.content }}
-    />
+    <>
+      {summaryState !== "idle" ? (
+        <>
+          <h3 className="font-bold text-lg flex flex-row gap-2 items-center">
+            Rangkuman
+            <div
+              className="tooltip"
+              data-tip="Bisa terjadi kesalahan kata/kalimat"
+            >
+              <span className="text-sm text-error">(* Eksperimen ChatGPT)</span>
+            </div>
+            {summaryState === "fetching" ? (
+              <BiLoader className="animate-spin" />
+            ) : null}
+          </h3>
+          <div className="prose lg:prose-lg mb-4 max-w-3xl bg-base-300 rounded-md">
+            <div
+              className="px-4 py-2"
+              dangerouslySetInnerHTML={{
+                __html: summary,
+              }}
+            />
+            {gpt?.createdAt ? (
+              <div className="px-6 pb-4 text-sm text-right">
+                dibuat {dayjs(gpt?.createdAt).fromNow()}
+              </div>
+            ) : null}
+          </div>
+        </>
+      ) : null}
+      <div className="relative h-80 overflow-hidden px-4 rounded-md max-w-3xl">
+        <div
+          className={"prose lg:prose-lg prose-pre:whitespace-pre-wrap"}
+          dangerouslySetInnerHTML={{ __html: props.content }}
+        />
+        <div className="absolute bottom-0 left-0 right-0 top-0 bg-gradient-to-t from-base-300 flex flex-col gap-2 justify-center items-center px-4">
+          {summaryState === "idle" ? (
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={getChatGPTSummary}
+            >
+              Lihat Rangkuman
+            </button>
+          ) : null}
+          <a
+            href={props.sourceLink}
+            target="_blank"
+            rel="noreferrer"
+            className="btn btn-accent btn-sm"
+          >
+            Baca di {props.publisher.name}
+            <BiChevronRight />
+          </a>
+        </div>
+      </div>
+    </>
   );
 
   const imageNode = props.imageUrl ? (
-    <img
-      src={props.imageUrl}
-      alt={props.title}
-      className="w-full h-96 object-cover rounded-md"
-    />
+    <div className="max-w-3xl">
+      <img
+        src={props.imageUrl}
+        alt={props.title}
+        className="w-full h-96 object-cover rounded-md"
+      />
+    </div>
   ) : null;
 
   const hasAudio = props.content.includes("<audio");
@@ -323,9 +445,11 @@ export function ArticleDetail(
           const src = $(el).attr("src");
           const audioTag = $(el).parent();
           const brTag = $(audioTag).prev();
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           const text = brTag[0].prev?.data
-            ? // @ts-ignore
+            ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
               brTag[0].prev?.data.replace(/\n/, "")
             : "";
           return {
@@ -341,7 +465,7 @@ export function ArticleDetail(
   }, [$, hasAudio, props.publisher.logoUrl, props.title]);
 
   const sourceNode = props.sourceLink ? (
-    <div className="alert alert-warning">
+    <div className="alert max-w-3xl">
       <div>Sumber Tulisan:</div>
       <a
         href={props.sourceLink}
@@ -381,7 +505,9 @@ export function ArticleDetail(
               dangerouslySetInnerHTML={{ __html: props.title.toLowerCase() }}
             />
             <div className="flex flex-row gap-2 mt-1 items-center">
-              <span className="text-gray-600 text-sm">{createdAt}</span>
+              <div className="tooltip" data-tip={fullFormat}>
+                <span className="text-gray-600 text-sm">{fromNow}</span>
+              </div>
               <BiCircle size={6} className="text-gray-600" />
               <span className="text-gray-600 text-sm">
                 baca {Math.ceil(props.readDuration)} menit

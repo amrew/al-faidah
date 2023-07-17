@@ -146,10 +146,11 @@ export default function App() {
 
 export function ErrorBoundary() {
   const error = useRouteError();
+  // when true, this is what used to go to `CatchBoundary`
+  const isErrorRoute = isRouteErrorResponse(error);
 
   const renderErrorMessage = () => {
-    // when true, this is what used to go to `CatchBoundary`
-    if (isRouteErrorResponse(error)) {
+    if (isErrorRoute) {
       return (
         <div className="flex flex-col gap-6 max-w-md p-6">
           <h1 className="font-bold text-5xl text-base-content">
@@ -224,7 +225,9 @@ export function ErrorBoundary() {
           content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
         />
         <meta name="robots" content="noindex" />
-        <title>Error - Al Faidah</title>
+        <title>
+          {isErrorRoute ? error.statusText : "Sistem Error"} - Al Faidah
+        </title>
         <Links />
       </head>
       <body>
