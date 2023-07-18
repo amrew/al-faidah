@@ -6,13 +6,14 @@ import {
   BiChevronUp,
   BiCircle,
   BiLoader,
+  BiNews,
 } from "react-icons/bi";
 import { FaShare } from "react-icons/fa";
 import { TbBookmarkPlus } from "react-icons/tb";
 import { BsBookmarkFill, BsShare } from "react-icons/bs";
 import { RWebShare } from "react-web-share";
 import * as cheerio from "cheerio";
-import { useMemo, useState } from "react";
+import { type PropsWithChildren, useMemo, useState } from "react";
 import { AudioList } from "./audio-list";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/id";
@@ -287,66 +288,178 @@ export function ArticleItemSmallLoading() {
   );
 }
 
+type SummaryGeneratorProps = {
+  hasAudio: boolean;
+  defaultSummary: string;
+  createdAt: string;
+  publisher: {
+    slug: string;
+    name: string;
+  };
+  slug: string;
+  sourceLink: string;
+};
+
+type SummaryState = {
+  type: "idle" | "fetching" | "done" | "error";
+  value: string;
+};
+
+export function SummaryGenerator(
+  props: PropsWithChildren<SummaryGeneratorProps>
+) {
+  const user = useUser();
+  const navigate = useNavigate();
+  const currentRoute = `/${props.publisher.slug}/${props.slug}`;
+  const [contentShown, setContentShown] = useState(false);
+
+  const [summaryState, setSummaryState] = useState<SummaryState>(
+    props.defaultSummary
+      ? { type: "done", value: props.defaultSummary }
+      : { type: "idle", value: "" }
+  );
+
+  const getChatGPTSummary = () => {
+    if (!user) {
+      navigate(`/auth/login?messageType=gpt-summary&target=${currentRoute}`);
+      return;
+    }
+
+    const sse = new EventSource(`/api/summary${currentRoute}`);
+
+    setSummaryState({
+      type: "fetching",
+      value: "",
+    });
+
+    sse.addEventListener("message", (event) => {
+      try {
+        const data = JSON.parse(event.data);
+
+        if (data.finish) {
+          setSummaryState((prev) => {
+            return {
+              type: "done",
+              value: prev.value + data.text,
+            };
+          });
+          sse.close();
+        } else {
+          setSummaryState((prev) => {
+            return {
+              type: "fetching",
+              value: prev.value + data.text,
+            };
+          });
+        }
+      } catch (e) {}
+    });
+
+    sse.addEventListener("error", (err) => {
+      console.log("error: ", err);
+      setSummaryState((prev) => ({
+        ...prev,
+        type: "error",
+      }));
+      sse.close();
+    });
+
+    sse.addEventListener("end", (event) => {
+      setSummaryState((prev) => ({
+        ...prev,
+        type: "done",
+      }));
+      sse.close();
+    });
+  };
+
+  const buttonSummary = (
+    <button
+      className="btn btn-primary btn-sm"
+      onClick={() => {
+        setContentShown(false);
+        getChatGPTSummary();
+      }}
+    >
+      Lihat Rangkuman
+      <BiNews />
+    </button>
+  );
+
+  return (
+    <>
+      {summaryState.type !== "idle" && summaryState.type !== "error" ? (
+        <>
+          <div>
+            <h3 className="font-bold text-lg flex flex-row gap-2 items-center">
+              Rangkuman
+              <span className="text-sm text-error">(Eksperimen)</span>
+              {summaryState.type === "fetching" ? (
+                <BiLoader className="animate-spin" />
+              ) : null}
+            </h3>
+            <span className="text-sm text-orange-500">
+              *Catatan: Rangkuman ini dibuat oleh <strong>ChatGPT</strong>,
+              belum tentu hasilnya selalu bagus.
+            </span>
+          </div>
+          <div className="prose lg:prose-lg mb-4 max-w-3xl bg-base-300 rounded-md">
+            <div
+              className="px-4 py-2"
+              dangerouslySetInnerHTML={{
+                __html: summaryState.value,
+              }}
+            />
+            {props.createdAt ? (
+              <div className="px-6 pb-4 text-sm text-right">
+                dibuat {dayjs(props.createdAt).fromNow()}
+              </div>
+            ) : null}
+          </div>
+        </>
+      ) : summaryState.type === "error" ? (
+        <div className="alert alert-error">Gagal mengambil rangkuman.</div>
+      ) : null}
+
+      {!props.hasAudio && !contentShown ? (
+        <div className="relative h-60 overflow-hidden px-4 rounded-md max-w-3xl">
+          {props.children}
+          <div className="absolute bottom-0 left-0 right-0 top-0 bg-gradient-to-t from-base-100 flex flex-row gap-2 justify-center items-end p-4">
+            {summaryState.type === "idle" ? buttonSummary : null}
+            <button
+              className="btn btn-accent btn-sm"
+              onClick={() => setContentShown(true)}
+            >
+              Selengkapnya
+              <BiChevronDown />
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="px-4">
+          {props.children}
+          <div className="mt-4">
+            {summaryState.type === "idle" ? buttonSummary : null}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 export function ArticleDetail(
   props: { sourceLink: string } & ArticleItemProps
 ) {
   const [descShown, setDescVisibility] = useState(false);
-  const user = useUser();
-  const navigate = useNavigate();
 
   const date = dayjs(props.createdAt);
   const fullFormat = date.format("DD MMM YYYY");
   const fromNow = date.fromNow();
 
+  const hasAudio = props.content.includes("<audio");
+  const $ = cheerio.load(props.content);
+
   const gpt = props.metadata?.gpt;
-
-  const [summary, setSummary] = useState(gpt?.summary ?? "");
-  const [summaryState, setSummaryState] = useState<
-    "idle" | "fetching" | "done" | "error"
-  >(gpt?.summary ? "done" : "idle");
-
-  const getChatGPTSummary = () => {
-    if (!user) {
-      navigate(
-        `/auth/login?messageType=gpt-summary&target=/${props.publisher.slug}/${props.slug}`
-      );
-      return;
-    }
-
-    if (gpt?.summary) {
-      return;
-    }
-
-    const sse = new EventSource(
-      `/api/summary/${props.publisher.slug}/${props.slug}`
-    );
-    setSummary("");
-    setSummaryState("fetching");
-
-    sse.addEventListener("message", (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        setSummary((prev) => prev + data.text);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        if (data.finish) {
-          setSummaryState("done");
-          sse.close();
-        }
-      } catch (e) {}
-    });
-
-    sse.addEventListener("error", (event) => {
-      console.log("error: ", event);
-      setSummaryState("error");
-      sse.close();
-    });
-
-    sse.addEventListener("end", (event) => {
-      setSummaryState("done");
-      sse.close();
-    });
-  };
 
   const description = props.metadata?.answer ? (
     <div>
@@ -364,62 +477,26 @@ export function ArticleDetail(
       />
     </div>
   ) : (
-    <>
-      {summaryState !== "idle" ? (
-        <>
-          <h3 className="font-bold text-lg flex flex-row gap-2 items-center">
-            Rangkuman
-            <div
-              className="tooltip"
-              data-tip="Bisa terjadi kesalahan kata/kalimat"
-            >
-              <span className="text-sm text-error">(* Eksperimen ChatGPT)</span>
-            </div>
-            {summaryState === "fetching" ? (
-              <BiLoader className="animate-spin" />
-            ) : null}
-          </h3>
-          <div className="prose lg:prose-lg mb-4 max-w-3xl bg-base-300 rounded-md">
-            <div
-              className="px-4 py-2"
-              dangerouslySetInnerHTML={{
-                __html: summary,
-              }}
-            />
-            {gpt?.createdAt ? (
-              <div className="px-6 pb-4 text-sm text-right">
-                dibuat {dayjs(gpt?.createdAt).fromNow()}
-              </div>
-            ) : null}
-          </div>
-        </>
-      ) : null}
-      <div className="relative h-80 overflow-hidden px-4 rounded-md max-w-3xl">
-        <div
-          className={"prose lg:prose-lg prose-pre:whitespace-pre-wrap"}
-          dangerouslySetInnerHTML={{ __html: props.content }}
-        />
-        <div className="absolute bottom-0 left-0 right-0 top-0 bg-gradient-to-t from-base-300 flex flex-col gap-2 justify-center items-center px-4">
-          {summaryState === "idle" ? (
-            <button
-              className="btn btn-primary btn-sm"
-              onClick={getChatGPTSummary}
-            >
-              Lihat Rangkuman
-            </button>
-          ) : null}
-          <a
-            href={props.sourceLink}
-            target="_blank"
-            rel="noreferrer"
-            className="btn btn-accent btn-sm"
-          >
-            Baca di {props.publisher.name}
-            <BiChevronRight />
-          </a>
-        </div>
-      </div>
-    </>
+    <div
+      className={"prose lg:prose-lg prose-pre:whitespace-pre-wrap"}
+      dangerouslySetInnerHTML={{ __html: props.content }}
+    />
+  );
+
+  const withSummary = (
+    <SummaryGenerator
+      hasAudio={hasAudio}
+      defaultSummary={gpt?.summary || ""}
+      createdAt={gpt?.createdAt || ""}
+      publisher={{
+        slug: props.publisher.slug,
+        name: props.publisher.name,
+      }}
+      slug={props.slug}
+      sourceLink={props.link}
+    >
+      {description}
+    </SummaryGenerator>
   );
 
   const imageNode = props.imageUrl ? (
@@ -431,9 +508,6 @@ export function ArticleDetail(
       />
     </div>
   ) : null;
-
-  const hasAudio = props.content.includes("<audio");
-  const $ = cheerio.load(props.content);
 
   const audios = useMemo(() => {
     if (hasAudio) {
@@ -543,7 +617,7 @@ export function ArticleDetail(
                       </button>
                     </div>
                     {descShown ? (
-                      <div className="p-5">{description}</div>
+                      <div className="p-5">{withSummary}</div>
                     ) : null}
                   </div>
                   <div className="mt-4">{sourceNode}</div>
@@ -551,7 +625,7 @@ export function ArticleDetail(
               </div>
             ) : (
               <>
-                {imageNode} {description} {sourceNode}
+                {imageNode} {withSummary} {sourceNode}
               </>
             )}
           </div>

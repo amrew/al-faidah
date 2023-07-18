@@ -24,12 +24,20 @@ const processData = function (
     }
     try {
       const parsed = JSON.parse(message);
-      const delta = parsed.choices[0].delta?.content;
-
-      if (delta) {
+      if (parsed.error) {
         sendObj({
-          text: delta,
+          text: "",
+          finishReason: parsed.error.message,
         });
+      } else {
+        const finishReason = parsed.choices[0].finish_reason;
+        const delta = parsed.choices[0].delta?.content;
+        if (delta) {
+          sendObj({
+            text: delta,
+            finishReason,
+          });
+        }
       }
     } catch (error) {
       console.error("Could not JSON parse stream message", message, error);
@@ -79,7 +87,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       model: "gpt-3.5-turbo",
       messages: messages,
       temperature: 0,
-      max_tokens: 1024,
+      max_tokens: 1200,
       stream: true,
     },
     { responseType: "stream" }
