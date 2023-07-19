@@ -2,7 +2,6 @@ import dayjs from "dayjs";
 import { Link, useNavigate } from "@remix-run/react";
 import {
   BiChevronDown,
-  BiChevronRight,
   BiChevronUp,
   BiCircle,
   BiLoader,
@@ -521,11 +520,11 @@ export function ArticleDetail(
           const brTag = $(audioTag).prev();
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          const text = brTag[0].prev?.data
+          const text = brTag[0]?.prev?.data
             ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
-              brTag[0].prev?.data.replace(/\n/, "")
-            : "";
+              brTag[0]?.prev?.data.replace(/\n/, "")
+            : props.title;
           return {
             src: src || "",
             title: props.title,
