@@ -3,7 +3,7 @@
   "sideEffects": false,
   "scripts": {
     "build": "remix build",
-    "dev": "remix dev --port 3001",
+    "dev": "remix dev",
     "typecheck": "tsc"
   },
   "dependencies": {

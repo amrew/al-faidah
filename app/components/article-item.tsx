@@ -57,19 +57,6 @@ export type ArticleItemProps = {
 };
 
 export function ArticleItem(props: ArticleItemProps) {
-  const titleDescription = (
-    <>
-      <h1
-        className="text-xl md:text-2xl font-bold line-clamp-2 capitalize"
-        dangerouslySetInnerHTML={{ __html: props.title.toLowerCase() }}
-      />
-      <div
-        className="prose line-clamp-3"
-        dangerouslySetInnerHTML={{ __html: props.content }}
-      />
-    </>
-  );
-
   const date = dayjs(props.createdAt);
   const fullFormat = date.format("DD MMM YYYY");
   const fromNow = date.fromNow();
@@ -77,6 +64,16 @@ export function ArticleItem(props: ArticleItemProps) {
   const wrapWithLink = (node: React.ReactNode) => {
     return <Link to={props.detailUrl}>{node}</Link>;
   };
+
+  const imageNode = props.imageUrl
+    ? wrapWithLink(
+        <img
+          src={props.imageUrl}
+          alt={props.title}
+          className="w-24 h-16 sm:w-48 sm:h-36 object-cover"
+        />
+      )
+    : null;
 
   return (
     <div className="border-b border-b-base-300 mb-8 pb-8">
@@ -101,7 +98,21 @@ export function ArticleItem(props: ArticleItemProps) {
       <div className="flex flex-row gap-4">
         <div className="flex flex-col flex-1 justify-between">
           {wrapWithLink(
-            <div className="gap-1 flex flex-col">{titleDescription}</div>
+            <div className="gap-1 flex flex-col">
+              <h1
+                className="text-xl md:text-2xl font-bold line-clamp-2 capitalize"
+                dangerouslySetInnerHTML={{ __html: props.title.toLowerCase() }}
+              />
+              <div className="flex flex-row gap-2">
+                <div>
+                  <div
+                    className="prose line-clamp-3"
+                    dangerouslySetInnerHTML={{ __html: props.content }}
+                  />
+                </div>
+                <div className="self-center flex sm:hidden">{imageNode}</div>
+              </div>
+            </div>
           )}
           <div className="flex flex-row gap-2 mt-1 items-center">
             <div className="tooltip" data-tip={fullFormat}>
@@ -111,23 +122,15 @@ export function ArticleItem(props: ArticleItemProps) {
             <span className="text-gray-600 text-sm">
               baca {Math.ceil(props.readDuration)} menit
             </span>
-            <BiCircle size={6} className="text-gray-600 hidden sm:block" />
-            <Link to={props.category.categoryUrl} className="hidden sm:block">
+            <BiCircle size={6} className="text-gray-600" />
+            <Link to={props.category.categoryUrl}>
               <span className="badge badge-secondary line-clamp-1 text-white">
                 {props.category.name}
               </span>
             </Link>
           </div>
         </div>
-        {props.imageUrl
-          ? wrapWithLink(
-              <img
-                src={props.imageUrl}
-                alt={props.title}
-                className="w-24 h-16 self-center sm:w-48 sm:h-36 object-cover"
-              />
-            )
-          : null}
+        <div className="h-full hidden sm:flex self-center">{imageNode}</div>
       </div>
       <div className="mt-4 flex flex-row gap-2">
         <RWebShare
