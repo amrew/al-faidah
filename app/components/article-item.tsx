@@ -4,6 +4,7 @@ import {
   BiChevronDown,
   BiChevronUp,
   BiCircle,
+  BiError,
   BiLoader,
   BiNews,
 } from "react-icons/bi";
@@ -310,7 +311,7 @@ export function SummaryGenerator(
   const user = useUser();
   const navigate = useNavigate();
   const currentRoute = `/${props.publisher.slug}/${props.slug}`;
-  const [contentShown, setContentShown] = useState(false);
+  const [contentShown, setContentShown] = useState(true);
 
   const [summaryState, setSummaryState] = useState<SummaryState>(
     props.defaultSummary
@@ -376,7 +377,6 @@ export function SummaryGenerator(
     <button
       className="btn btn-primary btn-sm"
       onClick={() => {
-        setContentShown(false);
         getChatGPTSummary();
       }}
     >
@@ -417,14 +417,25 @@ export function SummaryGenerator(
           </div>
         </>
       ) : summaryState.type === "error" ? (
-        <div className="alert alert-error">Gagal mengambil rangkuman.</div>
+        <div className="alert alert-error">
+          <BiError />
+          <div>
+            <strong>Gagal mengambil rangkuman.</strong>
+            <br /> Ada kesalahan pada sistem atau artikel terlalu panjang.
+          </div>
+        </div>
+      ) : null}
+
+      {!props.hasAudio ? (
+        <div className="mb-4">
+          {summaryState.type === "idle" ? buttonSummary : null}
+        </div>
       ) : null}
 
       {!props.hasAudio && !contentShown ? (
         <div className="relative h-60 overflow-hidden px-4 rounded-md max-w-3xl">
           {props.children}
           <div className="absolute bottom-0 left-0 right-0 top-0 bg-gradient-to-t from-base-100 flex flex-row gap-2 justify-center items-end p-4">
-            {summaryState.type === "idle" ? buttonSummary : null}
             <button
               className="btn btn-accent btn-sm"
               onClick={() => setContentShown(true)}
@@ -435,12 +446,7 @@ export function SummaryGenerator(
           </div>
         </div>
       ) : (
-        <div className="px-4">
-          {props.children}
-          <div className="mt-4">
-            {summaryState.type === "idle" ? buttonSummary : null}
-          </div>
-        </div>
+        <div className="px-4">{props.children}</div>
       )}
     </>
   );
