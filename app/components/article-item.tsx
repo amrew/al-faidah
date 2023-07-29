@@ -316,15 +316,22 @@ export function SummaryGenerator(
   const currentRoute = `/${props.publisher.slug}/${props.slug}`;
   const [contentShown, setContentShown] = useState(true);
 
-  const [summaryState, setSummaryState] = useState<SummaryState>(
-    props.defaultSummary
-      ? { type: "done", value: props.defaultSummary }
-      : { type: "idle", value: "" }
-  );
+  const [summaryState, setSummaryState] = useState<SummaryState>({
+    type: "idle",
+    value: "",
+  });
 
   const getChatGPTSummary = () => {
     if (!user) {
       navigate(`/auth/login?messageType=gpt-summary&target=${currentRoute}`);
+      return;
+    }
+
+    if (props.defaultSummary) {
+      setSummaryState({
+        type: "done",
+        value: props.defaultSummary,
+      });
       return;
     }
 

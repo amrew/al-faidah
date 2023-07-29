@@ -1,8 +1,7 @@
-import { json, type LoaderArgs } from "@remix-run/node";
+import { json, type LoaderArgs, type V2_MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { ArticleDetailType } from "~/components/article-entity";
 import { ArticleDetail } from "~/components/article-item";
-import { type V2_MetaFunction } from "@remix-run/node";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { SharedLayout } from "~/components/shared-layout";
 
@@ -49,8 +48,9 @@ export const meta: V2_MetaFunction = ({ data }) => {
       content: item.summary,
     },
     {
-      name: "robots",
-      content: "noindex",
+      tagName: "link",
+      rel: "canonical",
+      href: item.link,
     },
   ];
 };
