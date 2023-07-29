@@ -22,6 +22,7 @@ export type RadioItemProps = {
   embed?: boolean;
   isLiked?: boolean;
   canBeSaved?: boolean;
+  showAnimation?: boolean;
   toggleLikeLoading?: boolean;
   onEmbedClick?: () => void;
   onLikeClick?: () => void;
@@ -32,6 +33,7 @@ export type RadioItemProps = {
 export function RadioItem({
   item,
   embed,
+  showAnimation,
   isLiked,
   toggleLikeLoading,
   onEmbedClick,
@@ -149,7 +151,7 @@ export function RadioItem({
           </RWebShare>
         </div>
         <div className="flex flex-row gap-2 items-center">
-          {audioState === "playing" && embed && isActive ? (
+          {audioState === "playing" && showAnimation && isActive ? (
             <PlayingAnimation className="bg-accent" />
           ) : null}
           <button

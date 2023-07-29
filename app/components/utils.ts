@@ -12,7 +12,7 @@ export type ThemeName =
   | "autumn";
 
 export const themes: { name: ThemeName; color: string }[] = [
-  { name: "light", color: "bg-gray-100" },
+  { name: "light", color: "bg-gray-300" },
   { name: "cupcake", color: "bg-teal-400" },
   { name: "pastel", color: "bg-purple-200" },
   { name: "corporate", color: "bg-blue-500" },

@@ -1,5 +1,4 @@
 import { Outlet, useOutletContext } from "@remix-run/react";
-import { RefreshButton } from "~/components/refresh-button";
 import { SharedLayout } from "~/components/shared-layout";
 
 export default function Radio() {
@@ -7,11 +6,7 @@ export default function Radio() {
   return (
     <SharedLayout
       hasBackButton
-      footer={
-        <div className="relative max-w-5xl mx-auto">
-          <RefreshButton />
-        </div>
-      }
+      contentStyle={{ height: "100%", paddingBottom: 0 }}
     >
       <Outlet context={context} />
     </SharedLayout>

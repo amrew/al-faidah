@@ -9,6 +9,7 @@ import { useToggleLike } from "~/hooks/useToggleLike";
 export type RadioListProps = {
   items: TrackInfo[];
   favorite?: boolean;
+  showAnimationOnItem?: boolean;
   disabledRefreshInterval?: boolean;
   refreshInterval?: number;
   embed?: boolean;
@@ -101,7 +102,11 @@ export function RadioList(props: RadioListProps) {
             mode === "player" ? (
               <RadioItemPlayer key={item.id} {...itemProps} />
             ) : (
-              <RadioItem key={item.id} {...itemProps} />
+              <RadioItem
+                key={item.id}
+                {...itemProps}
+                showAnimation={props.showAnimationOnItem}
+              />
             )
           ) : null;
         })

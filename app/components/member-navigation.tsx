@@ -34,6 +34,9 @@ export function MemberNavigation() {
           className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 gap-2 z-50"
         >
           <li>
+            <Link to="/settings/embed">Embed Radio</Link>
+          </li>
+          <li>
             <button onClick={() => logout()}>Logout</button>
           </li>
         </ul>
