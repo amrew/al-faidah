@@ -18,6 +18,7 @@ import { AudioList } from "./audio-list";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/id";
 import { useUser } from "~/hooks/useSupabase";
+import striptags from "striptags";
 
 dayjs.extend(relativeTime);
 dayjs.locale("id");
@@ -65,15 +66,13 @@ export function ArticleItem(props: ArticleItemProps) {
     return <Link to={props.detailUrl}>{node}</Link>;
   };
 
-  const imageNode = props.imageUrl
-    ? wrapWithLink(
-        <img
-          src={props.imageUrl}
-          alt={props.title}
-          className="w-24 h-16 sm:w-48 sm:h-36 object-cover"
-        />
-      )
-    : null;
+  const imageNode = props.imageUrl ? (
+    <img
+      src={props.imageUrl}
+      alt={props.title}
+      className="w-24 h-16 sm:w-48 sm:h-36 object-cover"
+    />
+  ) : null;
 
   return (
     <div className="border-b border-b-base-300 mb-8 pb-8">
@@ -101,13 +100,17 @@ export function ArticleItem(props: ArticleItemProps) {
             <div className="gap-1 flex flex-col">
               <h1
                 className="text-xl md:text-2xl font-bold line-clamp-2 capitalize"
-                dangerouslySetInnerHTML={{ __html: props.title.toLowerCase() }}
+                dangerouslySetInnerHTML={{
+                  __html: striptags(props.title.toLowerCase()),
+                }}
               />
               <div className="flex flex-row gap-2">
                 <div>
                   <div
                     className="prose line-clamp-3"
-                    dangerouslySetInnerHTML={{ __html: props.content }}
+                    dangerouslySetInnerHTML={{
+                      __html: striptags(props.content),
+                    }}
                   />
                 </div>
                 <div className="self-center flex sm:hidden">{imageNode}</div>
@@ -130,7 +133,9 @@ export function ArticleItem(props: ArticleItemProps) {
             </Link>
           </div>
         </div>
-        <div className="h-full hidden sm:flex self-center">{imageNode}</div>
+        <div className="h-full hidden sm:flex self-center">
+          {wrapWithLink(imageNode)}
+        </div>
       </div>
       <div className="mt-4 flex flex-row gap-2">
         <RWebShare
@@ -385,7 +390,7 @@ export function SummaryGenerator(
 
   const buttonSummary = (
     <button
-      className="btn btn-primary btn-sm"
+      className="btn btn-accent btn-sm"
       onClick={() => {
         getChatGPTSummary();
       }}
@@ -412,7 +417,7 @@ export function SummaryGenerator(
               belum tentu hasilnya selalu bagus.
             </span>
           </div>
-          <div className="prose lg:prose-lg mb-4 max-w-3xl bg-base-300 rounded-md">
+          <div className="prose lg:prose-lg mb-4 max-w-2xl bg-base-300 rounded-md">
             <div
               className="px-4 py-2"
               dangerouslySetInnerHTML={{
@@ -443,7 +448,7 @@ export function SummaryGenerator(
       ) : null}
 
       {!props.hasAudio && !contentShown ? (
-        <div className="relative h-60 overflow-hidden px-4 rounded-md max-w-3xl">
+        <div className="relative h-60 overflow-hidden px-4 rounded-md max-w-2xl">
           {props.children}
           <div className="absolute bottom-0 left-0 right-0 top-0 bg-gradient-to-t from-base-100 flex flex-row gap-2 justify-center items-end p-4">
             <button
@@ -487,13 +492,13 @@ export function ArticleDetail(
       </div>
       <h2 className="text-xl font-bold mt-4 mb-2">Jawaban</h2>
       <div
-        className={"prose lg:prose-lg prose-pre:whitespace-pre-wrap"}
+        className={"prose lg:prose-lg max-w-2xl prose-pre:whitespace-pre-wrap"}
         dangerouslySetInnerHTML={{ __html: props.metadata.answer }}
       />
     </div>
   ) : (
     <div
-      className={"prose lg:prose-lg prose-pre:whitespace-pre-wrap"}
+      className={"prose lg:prose-lg max-w-2xl prose-pre:whitespace-pre-wrap"}
       dangerouslySetInnerHTML={{ __html: props.content }}
     />
   );
@@ -515,7 +520,7 @@ export function ArticleDetail(
   );
 
   const imageNode = props.imageUrl ? (
-    <div className="max-w-3xl">
+    <div className="max-w-2xl">
       <img
         src={props.imageUrl}
         alt={props.title}
@@ -554,7 +559,7 @@ export function ArticleDetail(
   }, [$, hasAudio, props.publisher.logoUrl, props.title]);
 
   const sourceNode = props.sourceLink ? (
-    <div className="alert max-w-3xl">
+    <div className="alert max-w-2xl">
       <div>Sumber Tulisan:</div>
       <a
         href={props.sourceLink}

@@ -105,9 +105,9 @@ export default function Articles() {
                     href: `/cari/publisher?q=${keyword}`,
                   },
                   {
-                    id: "topik",
-                    title: "Topik",
-                    href: `/cari/topik?q=${keyword}`,
+                    id: "tag",
+                    title: "Tag",
+                    href: `/cari/tag?q=${keyword}`,
                   },
                 ]}
               />

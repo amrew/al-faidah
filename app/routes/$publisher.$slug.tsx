@@ -71,7 +71,7 @@ export default function Detail() {
         authorName={item.author?.name}
         category={{
           name: item.taxonomies.name,
-          categoryUrl: `/artikel/category/${item.taxonomies.slug}`,
+          categoryUrl: `/tag/${item.taxonomies.slug}`,
         }}
         title={item.title}
         content={item.description}

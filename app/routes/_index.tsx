@@ -28,7 +28,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const getContents = async () => {
     let query = supabase.from("contents").select<any, ArticleSummaryType>(
       `id, title, slug, summary, image, created_at, link, 
-      read_stats, taxonomies( slug, name ), publishers!inner( title, slug, logo_url, web_url ), 
+      read_stats, taxonomies( slug, name ), publishers!inner( title, slug, logo_url, status ), 
       author`
     );
 
@@ -37,20 +37,24 @@ export const loader = async ({ request }: LoaderArgs) => {
     }
 
     return query
+      .eq("publishers.status", "active")
       .range(offset, offset + itemsPerPage - 1)
       .order("created_at", { ascending: false });
   };
 
   const getContentCount = async () => {
-    const query = supabase
+    let query = supabase
       .from("contents")
-      .select("id, publishers!inner( slug )", { count: "exact", head: true });
+      .select("id, publishers!inner( slug, status )", {
+        count: "exact",
+        head: true,
+      });
 
     if (publisher) {
-      return query.eq("publishers.slug", publisher);
+      query = query.eq("publishers.slug", publisher);
     }
 
-    return query;
+    return query.eq("publishers.status", "active");
   };
 
   const getEditorPicks = async () => {
@@ -70,7 +74,16 @@ export const loader = async ({ request }: LoaderArgs) => {
       .select<
         any,
         { id: number; title: string; slug: string; logo_url: string }
-      >("id, title, slug, logo_url");
+      >("id, title, slug, logo_url")
+      .eq("status", "active");
+  };
+
+  const getRecommendedTopics = async () => {
+    return supabase
+      .rpc("fetch_taxonomies_total_contents")
+      .eq("type", "category")
+      .order("total_contents", { ascending: false })
+      .range(0, 5);
   };
 
   const [{ data: contents }, { count }, { data: publishers }] =
@@ -86,6 +99,7 @@ export const loader = async ({ request }: LoaderArgs) => {
       page,
       totalPage,
       editorPicks: getEditorPicks(),
+      recommendedTopics: getRecommendedTopics(),
     },
     {
       headers: response.headers,
@@ -112,6 +126,7 @@ export default function Index() {
     page,
     totalPage,
     editorPicks: editorPicksPromise,
+    recommendedTopics: recommendedTopicsPromise,
   } = useLoaderData<typeof loader>();
 
   return (
@@ -185,7 +200,7 @@ export default function Index() {
                             link={item.link}
                             category={{
                               name: item.taxonomies?.name,
-                              categoryUrl: `/kategori/${item.taxonomies?.slug}`,
+                              categoryUrl: `/tag/${item.taxonomies?.slug}`,
                             }}
                           />
                         ))
@@ -198,7 +213,7 @@ export default function Index() {
                 </Link>
               </div>
             </div>
-            <div>
+            {/* <div>
               <div className="alert p-4">
                 <div className="flex flex-col gap-2">
                   <h3 className="font-bold text-xl">Menulis di Al-Faidah</h3>
@@ -210,19 +225,39 @@ export default function Index() {
                   </div>
                 </div>
               </div>
-            </div>
-            <h2 className="font-bold text-lg">Topik rekomendasi</h2>
+            </div> */}
+            <h2 className="font-bold text-lg">Tag rekomendasi</h2>
             <div>
               <div className="flex flex-row flex-wrap gap-2">
-                <button className="btn btn-sm">Sholat</button>
-                <button className="btn btn-sm">Puasa</button>
-                <button className="btn btn-sm">Zakat</button>
-                <button className="btn btn-sm">Aqidah</button>
-                <button className="btn btn-sm">Akhlak</button>
+                <Suspense fallback={<RecommendedTopicFallback />}>
+                  <Await
+                    resolve={recommendedTopicsPromise}
+                    errorElement={<RecommendedTopicFallback />}
+                  >
+                    {({ data: topics }) => {
+                      return topics?.map(
+                        (item: {
+                          id: string;
+                          slug: string;
+                          name: string;
+                          total_contents: number;
+                        }) => (
+                          <Link
+                            to={`/tag/${item.slug}`}
+                            key={item.slug}
+                            className="btn btn-sm"
+                          >
+                            {item.name}
+                          </Link>
+                        )
+                      );
+                    }}
+                  </Await>
+                </Suspense>
               </div>
               <div className="mt-2">
                 <Link to="/" className="text-primary">
-                  Lihat semua topik
+                  Lihat semua tag
                 </Link>
               </div>
             </div>
@@ -235,4 +270,11 @@ export default function Index() {
 
 const EditorPickFallback = () => {
   return [...Array(3)].map((_, i) => <ArticleItemSmallLoading key={i} />);
+};
+
+const RecommendedTopicFallback = () => {
+  return [...Array(3)].map((_, i) => (
+    // eslint-disable-next-line jsx-a11y/anchor-has-content
+    <button className="btn btn-sm" key={i}></button>
+  ));
 };

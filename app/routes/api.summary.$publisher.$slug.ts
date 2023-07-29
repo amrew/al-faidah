@@ -2,7 +2,8 @@ import { type LoaderArgs } from "@remix-run/node";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import type { ArticleDetailType } from "~/components/article-entity";
 import { Configuration, OpenAIApi } from "openai";
-import { eventStream } from "remix-utils";
+import { badRequest, eventStream } from "remix-utils";
+import striptags from "striptags";
 
 const processData = function (
   data: { toString: () => string },
@@ -71,6 +72,14 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     })
   );
 
+  const description = item?.metadata?.answer
+    ? `Pertanyaan: ${item.description}\n\nJawaban: ${item.metadata.answer}`
+    : item?.description;
+
+  if (!description) {
+    return badRequest("Missing description");
+  }
+
   const messages = [
     {
       role: "system" as const,
@@ -78,7 +87,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     },
     {
       role: "user" as const,
-      content: item?.description,
+      content: striptags(description),
     },
   ];
 

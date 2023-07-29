@@ -30,7 +30,7 @@ export function ArticleList({
       readDuration={item.read_stats.minutes}
       category={{
         name: item.taxonomies.name,
-        categoryUrl: `/kategori/${item.taxonomies.slug}`,
+        categoryUrl: `/tag/${item.taxonomies.slug}`,
       }}
       publisher={{
         name: item.publishers.title,

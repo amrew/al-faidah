@@ -11,7 +11,7 @@ import debounce from "debounce";
 export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
   const keyword = url.searchParams.get("q") || "";
-  const type = "topik";
+  const type = "tag";
 
   const { supabase, response } = createServerSupabase(request);
 
@@ -114,9 +114,9 @@ export default function Articles() {
                     href: `/cari/publisher?q=${q}`,
                   },
                   {
-                    id: "topik",
-                    title: "Topik",
-                    href: `/cari/topik?q=${q}`,
+                    id: "tag",
+                    title: "Tag",
+                    href: `/cari/tag?q=${q}`,
                   },
                 ]}
               />
@@ -126,7 +126,7 @@ export default function Articles() {
                 <div className="flex flex-row flex-wrap gap-2">
                   {taxonomies.map((item) => (
                     <Link
-                      to={`/topik/${item.slug}`}
+                      to={`/tag/${item.slug}`}
                       key={item.id}
                       className="btn btn-sm"
                     >

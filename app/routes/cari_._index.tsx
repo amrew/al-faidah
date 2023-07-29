@@ -83,9 +83,9 @@ export default function Search() {
                     href: `/cari/publisher?q=${q}`,
                   },
                   {
-                    id: "topik",
-                    title: "Topik",
-                    href: `/cari/topik?q=${q}`,
+                    id: "tag",
+                    title: "Tag",
+                    href: `/cari/tag?q=${q}`,
                   },
                 ]}
               />
