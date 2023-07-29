@@ -51,15 +51,18 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   };
 
   const getContentCount = async () => {
-    const query = supabase
+    let query = supabase
       .from("contents")
-      .select("id, taxonomies!inner( slug )", { count: "exact", head: true });
+      .select(
+        "id, taxonomies!inner( slug ), publishers!inner( slug, status )",
+        { count: "exact", head: true }
+      );
 
     if (topicSlug) {
-      return query.contains("terms", [topicSlug]);
+      query = query.contains("terms", [topicSlug]);
     }
 
-    return query;
+    return query.eq("publishers.status", "active");
   };
 
   const [
