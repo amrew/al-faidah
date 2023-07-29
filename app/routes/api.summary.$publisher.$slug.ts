@@ -2,8 +2,7 @@ import { type LoaderArgs } from "@remix-run/node";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import type { ArticleDetailType } from "~/components/article-entity";
 import { Configuration, OpenAIApi } from "openai";
-import { badRequest, eventStream } from "remix-utils";
-import { encode } from "gpt-3-encoder";
+import { eventStream } from "remix-utils";
 
 const processData = function (
   data: { toString: () => string },
@@ -66,12 +65,6 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       .single(),
   ]);
 
-  const encoded = encode(item?.description || "");
-  console.log(`Content length: /${publisherSlug}/${slug} : ${encoded.length}`);
-  if (encoded.length > 2000) {
-    return badRequest("Content too long");
-  }
-
   const openai = new OpenAIApi(
     new Configuration({
       apiKey: process.env.OPENAI_API_KEY,
@@ -94,7 +87,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       model: "gpt-3.5-turbo",
       messages: messages,
       temperature: 0,
-      max_tokens: 1200,
+      max_tokens: 2000,
       stream: true,
     },
     { responseType: "stream" }
