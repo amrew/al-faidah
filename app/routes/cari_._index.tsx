@@ -51,9 +51,7 @@ export default function Search() {
               (e) => {
                 const value = e.target.value;
                 const normalizedValue = value.replace(" ", "+");
-                navigate(`/cari/artikel?q=${normalizedValue}`, {
-                  replace: true,
-                });
+                navigate(`/cari/artikel?q=${normalizedValue}`);
               },
               500
             )}
