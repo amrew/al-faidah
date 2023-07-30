@@ -61,6 +61,7 @@ export function ArticleItem(props: ArticleItemProps) {
   const date = dayjs(props.createdAt);
   const fullFormat = date.format("DD MMM YYYY");
   const fromNow = date.fromNow();
+  const [imageShown, setImageVisibility] = useState(true);
 
   const wrapWithLink = (node: React.ReactNode) => {
     return <Link to={props.detailUrl}>{node}</Link>;
@@ -71,6 +72,7 @@ export function ArticleItem(props: ArticleItemProps) {
       src={props.imageUrl}
       alt={props.title}
       className="w-24 h-16 sm:w-48 sm:h-36 object-cover"
+      onError={() => setImageVisibility(false)}
     />
   ) : null;
 
@@ -113,7 +115,9 @@ export function ArticleItem(props: ArticleItemProps) {
                     }}
                   />
                 </div>
-                <div className="self-center flex sm:hidden">{imageNode}</div>
+                {imageShown ? (
+                  <div className="self-center flex sm:hidden">{imageNode}</div>
+                ) : null}
               </div>
             </div>
           )}
@@ -133,9 +137,11 @@ export function ArticleItem(props: ArticleItemProps) {
             </Link>
           </div>
         </div>
-        <div className="h-full hidden sm:flex self-center">
-          {wrapWithLink(imageNode)}
-        </div>
+        {imageShown ? (
+          <div className="h-full hidden sm:flex self-center">
+            {wrapWithLink(imageNode)}
+          </div>
+        ) : null}
       </div>
       <div className="mt-4 flex flex-row gap-2">
         <RWebShare
