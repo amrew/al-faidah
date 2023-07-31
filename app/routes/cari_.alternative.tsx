@@ -30,7 +30,7 @@ export const loader = async ({ request }: LoaderArgs) => {
       supabase
         .from("contents")
         .select<any, ArticleSummaryType>(
-          `id, title, slug, summary, image, created_at, read_stats, link,
+          `id, title, slug, summary, image, created_at, read_stats, terms, link,
           taxonomies( slug, name ), publishers( title, logo_url, web_url ), author`
         )
         .textSearch("fts", `${searchParams}`)

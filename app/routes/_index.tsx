@@ -28,7 +28,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const getContents = async () => {
     let query = supabase.from("contents").select<any, ArticleSummaryType>(
       `id, title, slug, summary, image, created_at, link, 
-      read_stats, taxonomies( slug, name ), publishers!inner( title, slug, logo_url, status ), 
+      read_stats, terms, taxonomies( slug, name ), publishers!inner( title, slug, logo_url, status ), 
       author`
     );
 
@@ -198,10 +198,7 @@ export default function Index() {
                               articleSlug: item.slug,
                             })}
                             link={item.link}
-                            category={{
-                              name: item.taxonomies?.name,
-                              categoryUrl: `/tag/${item.taxonomies?.slug}`,
-                            }}
+                            terms={item.terms}
                           />
                         ))
                       }

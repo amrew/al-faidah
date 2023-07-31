@@ -20,10 +20,7 @@ export type ArticleSummaryType = {
   read_stats: {
     minutes: number;
   };
-  taxonomies: {
-    slug: string;
-    name: string;
-  };
+  terms: string[];
   publishers: {
     title: string;
     logo_url: string;

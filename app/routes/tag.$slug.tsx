@@ -36,7 +36,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const getContents = async () => {
     let query = supabase.from("contents").select<any, ArticleSummaryType>(
       `id, title, slug, summary, image, created_at, link, 
-      read_stats, taxonomies!inner( slug, name ), publishers!inner( title, slug, logo_url, web_url ), 
+      read_stats, terms, taxonomies!inner( slug, name ), publishers!inner( title, slug, logo_url, web_url ), 
       author`
     );
 
@@ -147,7 +147,7 @@ export default function Index() {
                     key={topic.slug}
                     className="btn btn-sm"
                   >
-                    {topic.name}
+                    {topic.name.replace(/&amp;/g, "&")}
                   </Link>
                 ))}
               </div>

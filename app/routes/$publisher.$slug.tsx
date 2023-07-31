@@ -16,7 +16,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       .from("contents")
       .select<any, ArticleDetailType>(
         `id, title, slug, summary, description, link, image, created_at, 
-        read_stats, taxonomies( slug, name ), publishers!inner( title, logo_url, web_url, slug ),
+        read_stats, terms, taxonomies( slug, name ), publishers!inner( title, logo_url, web_url, slug ),
         author, metadata`
       )
       .eq("slug", slug)
@@ -69,10 +69,7 @@ export default function Detail() {
           slug: item.publishers.slug,
         }}
         authorName={item.author?.name}
-        category={{
-          name: item.taxonomies.name,
-          categoryUrl: `/tag/${item.taxonomies.slug}`,
-        }}
+        terms={item.terms}
         title={item.title}
         content={item.description}
         createdAt={item.created_at}

@@ -28,10 +28,7 @@ export function ArticleList({
       content={item.summary}
       createdAt={item.created_at}
       readDuration={item.read_stats.minutes}
-      category={{
-        name: item.taxonomies.name,
-        categoryUrl: `/tag/${item.taxonomies.slug}`,
-      }}
+      terms={item.terms}
       publisher={{
         name: item.publishers.title,
         logoUrl: item.publishers.logo_url,

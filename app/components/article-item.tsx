@@ -30,10 +30,7 @@ export type ArticleItemProps = {
   createdAt: string;
   readDuration: number;
   imageUrl?: string;
-  category: {
-    name: string;
-    categoryUrl: string;
-  };
+  terms: string[];
   publisher: {
     name: string;
     logoUrl: string;
@@ -109,7 +106,7 @@ export function ArticleItem(props: ArticleItemProps) {
               <div className="flex flex-row gap-2">
                 <div>
                   <div
-                    className="prose line-clamp-3"
+                    className="prose line-clamp-2"
                     dangerouslySetInnerHTML={{
                       __html: striptags(props.content),
                     }}
@@ -129,12 +126,17 @@ export function ArticleItem(props: ArticleItemProps) {
             <span className="text-gray-600 text-sm">
               baca {Math.ceil(props.readDuration)} menit
             </span>
-            <BiCircle size={6} className="text-gray-600" />
-            <Link to={props.category.categoryUrl}>
-              <span className="badge badge-secondary line-clamp-1 text-white">
-                {props.category.name}
-              </span>
-            </Link>
+          </div>
+          <div className="flex flex-row flex-wrap gap-2 mt-2">
+            {props.terms.slice(0, 2).map((term) => (
+              <Link
+                key={term}
+                to={`/tag/${term}`}
+                className="link link-secondary font-bold btn-xs no-underline"
+              >
+                #{term}
+              </Link>
+            ))}
           </div>
         </div>
         {imageShown ? (
@@ -537,21 +539,28 @@ export function ArticleDetail(
 
   const audios = useMemo(() => {
     if (hasAudio) {
-      const items = $("audio source").map((i, el) => {
+      let elements = $("audio source").length ? $("audio source") : $("audio");
+
+      const items = elements.map((i, el) => {
         return $(el);
       });
+
       return items
         ?.map((i, el) => {
           const src = $(el).attr("src");
           const audioTag = $(el).parent();
           const brTag = $(audioTag).prev();
+          const trackTitleDefault = `${props.title} ${
+            items.length > 1 ? i + 1 : ""
+          }`;
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           const text = brTag[0]?.prev?.data
             ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
-              brTag[0]?.prev?.data.replace(/\n/, "")
-            : props.title;
+              brTag[0]?.prev?.data.replace(/\n/, "").trim() ||
+              `${trackTitleDefault}`
+            : `${trackTitleDefault}`;
           return {
             src: src || "",
             title: props.title,
@@ -577,6 +586,20 @@ export function ArticleDetail(
       </a>
     </div>
   ) : null;
+
+  const tagsNode = (
+    <div className="flex flex-row flex-wrap gap-2">
+      {props.terms.map((term) => (
+        <Link
+          key={term}
+          to={`/tag/${term}`}
+          className="link link-secondary font-bold no-underline"
+        >
+          #{term}
+        </Link>
+      ))}
+    </div>
+  );
 
   return (
     <div className="p-4 md:px-8 mt-6">
@@ -612,12 +635,6 @@ export function ArticleDetail(
               <span className="text-gray-600 text-sm">
                 baca {Math.ceil(props.readDuration)} menit
               </span>
-              <BiCircle size={6} className="text-gray-600 hidden sm:block" />
-              <Link to={props.category.categoryUrl}>
-                <span className="badge badge-secondary line-clamp-1 text-white">
-                  {props.category.name}
-                </span>
-              </Link>
             </div>
             {hasAudio && audios ? (
               <div className="flex flex-col sm:flex-row-reverse gap-4">
@@ -645,13 +662,14 @@ export function ArticleDetail(
                     {descShown ? (
                       <div className="p-5">{withSummary}</div>
                     ) : null}
+                    <div className="px-5 pb-4">{tagsNode}</div>
                   </div>
                   <div className="mt-4">{sourceNode}</div>
                 </div>
               </div>
             ) : (
               <>
-                {imageNode} {withSummary} {sourceNode}
+                {imageNode} {withSummary} {tagsNode} {sourceNode}
               </>
             )}
           </div>
