@@ -2,27 +2,46 @@ import { getTracks } from "~/components/radio-service";
 import { RadioList } from "~/components/radio-list";
 import { json, type V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { useQuery } from "react-query";
 import { Player } from "~/components/player";
 import { useAudioContext } from "~/components/audio-context";
+import { createServerSupabase } from "~/clients/createServerSupabase";
+import { useQuery } from "react-query";
 
-export const loader = async ({ request }: LoaderArgs) => {
-  const url = new URL(request.url);
-  const theme = url.searchParams.get("theme") || "cupcake";
-  const ids = url.searchParams.get("ids") || "";
-  const idsArray = ids.split(" ");
+export const loader = async ({ request, params }: LoaderArgs) => {
+  const id = params.id;
 
-  const radios = await getTracks();
+  if (!id) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Radio tidak ditemukan",
+    });
+  }
+
+  const { supabase, response } = createServerSupabase(request);
+  const [{ data: radio }, radios] = await Promise.all([
+    await supabase
+      .from("radios")
+      .select("id, title, theme, items")
+      .eq("id", id)
+      .single(),
+    getTracks(),
+  ]);
+
+  const theme = radio?.theme || "cupcake";
+  const ids = radio?.items || [];
 
   const items = radios.filter((item) => {
-    return idsArray.includes(item.alias);
+    return ids.includes(item.alias);
   });
 
-  return json({
-    ids,
-    items,
-    theme,
-  });
+  return json(
+    {
+      ids,
+      items,
+      theme,
+    },
+    { headers: response.headers }
+  );
 };
 
 export const meta: V2_MetaFunction = ({ data }) => {
@@ -30,13 +49,14 @@ export const meta: V2_MetaFunction = ({ data }) => {
 };
 
 export default function RadiosEmbed() {
-  const { ids, items: serverItems, theme } = useLoaderData<typeof loader>();
+  const { items: serverItems, theme } = useLoaderData<typeof loader>();
   const { track } = useAudioContext();
+  const ids = serverItems.map((item) => item.alias);
 
   const query = useQuery(
     ["radio", ids],
     async () => {
-      const result = await fetch(`/api/tracks?ids=${ids}`);
+      const result = await fetch(`/api/radios?ids=${ids.join(",")}`);
       const data = await result.json();
       return data;
     },

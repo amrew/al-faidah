@@ -75,7 +75,7 @@ export function ModalEmbed({ track }: ModalEmbedProps) {
                 <code>
                   {track
                     ? generateIFrameTemplate(
-                        `${APP_URL}/embed/radio/${track.alias}?theme=${theme}&mode=${mode}`,
+                        `${APP_URL}/e/radio/${track.alias}?theme=${theme}&mode=${mode}`,
                         mode === "player"
                           ? { width: "320", height: "480" }
                           : { width: "320", height: "220" }

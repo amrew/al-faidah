@@ -1,154 +1,234 @@
 import { getTracks } from "~/components/radio-service";
-import { json, type V2_MetaFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import { type ThemeName, themes, APP_URL } from "~/components/utils";
+import {
+  json,
+  redirect,
+  type LoaderArgs,
+  type V2_MetaFunction,
+  type ActionArgs,
+} from "@remix-run/node";
+import { Form, useLoaderData, useNavigation } from "@remix-run/react";
+import { type ThemeName, themes } from "~/components/utils";
 import { useState } from "react";
 import { BiCheck } from "react-icons/bi";
 import { RadioList } from "~/components/radio-list";
+import { createServerSupabase } from "~/clients/createServerSupabase";
+import { v4 as uuidv4 } from "uuid";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: "Settings Embed - Al Faidah" }];
 };
 
-export const loader = async () => {
+export const loader = async ({ request }: LoaderArgs) => {
   const radios = await getTracks();
-  return json({
-    radios,
-  });
+  const url = new URL(request.url);
+  const id = url.searchParams.get("id");
+
+  const { supabase, response } = createServerSupabase(request);
+
+  const { data: currentItem } = await supabase
+    .from("radios")
+    .select("id, title, items, theme")
+    .eq("id", id)
+    .single();
+
+  return json(
+    {
+      id,
+      currentItem,
+      radios,
+    },
+    { headers: response.headers }
+  );
 };
 
-function generateIFrameTemplate(
-  src: string,
-  dimensions: { width?: string; height?: string }
-) {
-  return `<iframe 
-  src="${src}"
-  scrolling="no"
-  frameborder="0" 
-  ${dimensions.width ? `width="${dimensions.width}"` : ""}
-  ${dimensions.height ? `height="${dimensions.height}"` : ""}></iframe>`;
-}
+export const action = async ({ request }: ActionArgs) => {
+  const url = new URL(request.url);
+  const { supabase, response } = createServerSupabase(request);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const body = await request.formData();
+
+  const title = body.get("title");
+  const items = body.get("items");
+  const theme = body.get("theme");
+
+  if (
+    typeof title !== "string" ||
+    typeof items !== "string" ||
+    typeof theme !== "string" ||
+    !title ||
+    !items ||
+    !theme
+  ) {
+    return json(
+      {
+        error: {
+          name: "ValidationError",
+          message: "Email dan password harus diisi",
+        },
+      },
+      { status: 400 }
+    );
+  }
+
+  const id = url.searchParams.get("id") || uuidv4().split("-")[0].toUpperCase();
+
+  const { error } = await supabase.from("radios").upsert({
+    id,
+    theme,
+    title,
+    user_id: user?.id,
+    items: items.split(","),
+  });
+
+  if (error) {
+    return json(
+      {
+        error: {
+          name: error.code,
+          message: error.message,
+        },
+      },
+      { status: 400 }
+    );
+  }
+
+  return redirect("/settings/app", { headers: response.headers });
+};
 
 export default function Radio() {
-  const { radios } = useLoaderData<typeof loader>();
-  const [theme, setTheme] = useState<ThemeName>("cupcake");
-  const [tab, setTab] = useState<"preview" | "code">("preview");
+  const { radios, currentItem } = useLoaderData<typeof loader>();
+  const navigation = useNavigation();
 
-  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
-  // get radio ids from checkedItems that are true
+  const [theme, setTheme] = useState<ThemeName>(
+    currentItem?.theme || "cupcake"
+  );
+  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>(
+    currentItem?.items.reduce(
+      (acc: string[], v: string) => ({
+        ...acc,
+        [v]: true,
+      }),
+      {}
+    ) || {}
+  );
+
   const radioIds = Object.keys(checkedItems).filter((key) => {
     return checkedItems[key];
   });
 
   return (
-    <div className="h-full">
-      <div className="px-4 md:px-8 pt-4">
-        <h3 className="text-lg font-bold text-neutral mb-4">Theme</h3>
-        <div className="carousel gap-2">
-          {themes.map((item) => (
-            <button
-              key={item.name}
-              className={`btn btn-ghost btn-xs text-white carousel-item ${item.color}`}
-              onClick={() => setTheme(item.name)}
-            >
-              {item.name === "dracula" ? "dark" : item.name}
-              {item.name === theme ? <BiCheck size={20} /> : null}
-            </button>
-          ))}
-        </div>
-      </div>
+    <Form method="post" className="h-full">
       <div className="flex flex-1 flex-row p-4 md:p-8 gap-8 h-5/6">
-        <div className="w-1/3 flex flex-col gap-4 overflow-y-auto h-full">
-          {radios
-            .sort((a, b) => {
-              return a.name.localeCompare(b.name);
-            })
-            .map((item) => {
-              return (
-                <div
-                  key={item.id}
-                  className="flex flex-row gap-3 items-center border-base-300 rounded-md bg-base-100 shadow-sm border p-2"
-                >
-                  <img
-                    src={item.logoUrl}
-                    alt={item.name}
-                    className="w-10 h-10 rounded-md"
-                    width={80}
-                    height={80}
-                  />
-                  <h2
-                    className={`flex-1 line-clamp-1 font-semibold text-md text-base-content`}
-                  >
-                    {item.name}
-                  </h2>
-                  <input
-                    type="checkbox"
-                    name={item.alias}
-                    checked={checkedItems[item.alias]}
-                    className="checkbox"
-                    onChange={(event) => {
-                      setCheckedItems((prev) => ({
-                        ...prev,
-                        [event.target.name]: event.target.checked,
-                      }));
-                    }}
-                  />
-                </div>
-              );
-            })}
-        </div>
-        <div className="flex flex-col gap-2">
-          <button
-            className={`btn btn-sm ${tab === "preview" ? "btn-accent" : ""}`}
-            onClick={() => setTab("preview")}
-          >
-            Preview
-          </button>
-          <button
-            className={`btn btn-sm ${tab === "code" ? "btn-accent" : ""}`}
-            onClick={() => setTab("code")}
-          >
-            Kode
-          </button>
+        <div className="w-1/3 h-full">
+          <div className="form-control w-full max-w-xs">
+            <label className="label">
+              <span className="label-text font-bold">Nama Radio</span>
+            </label>
+            <input
+              name="title"
+              type="text"
+              defaultValue={currentItem?.title}
+              placeholder="Isi nama radio..."
+              className="input input-bordered w-full max-w-xs rounded-md"
+              required
+            />
+          </div>
+          <div className="mt-2">
+            <label className="label">
+              <span className="label-text font-bold">Pilih Radio</span>
+            </label>
+            <div className="overflow-y-auto h-96 flex flex-col gap-4">
+              {radios
+                .sort((a, b) => {
+                  return a.name.localeCompare(b.name);
+                })
+                .map((item) => {
+                  return (
+                    <div
+                      key={item.id}
+                      className="flex flex-row gap-3 items-center border-base-300 rounded-md bg-base-100 shadow-sm border p-2"
+                    >
+                      <img
+                        src={item.logoUrl}
+                        alt={item.name}
+                        className="w-10 h-10 rounded-md"
+                        width={80}
+                        height={80}
+                      />
+                      <h2
+                        className={`flex-1 line-clamp-1 font-semibold text-md text-base-content`}
+                      >
+                        {item.name}
+                      </h2>
+                      <input
+                        type="checkbox"
+                        name={item.alias}
+                        checked={checkedItems[item.alias]}
+                        className="checkbox"
+                        onChange={(event) => {
+                          setCheckedItems((prev) => ({
+                            ...prev,
+                            [event.target.name]: event.target.checked,
+                          }));
+                        }}
+                      />
+                    </div>
+                  );
+                })}
+            </div>
+            <div className="mt-4">
+              <input type="hidden" name="theme" value={theme} />
+              <input type="hidden" name="items" value={radioIds.join(",")} />
+              <button
+                className="btn btn-accent"
+                type="submit"
+                disabled={navigation.state !== "idle"}
+              >
+                Simpan
+              </button>
+            </div>
+          </div>
         </div>
         <div className="flex flex-col gap-4">
-          {tab === "preview" ? (
-            <div className="mockup-phone">
-              <div className="camera"></div>
-              <div className="display">
-                <div
-                  className="artboard artboard-demo phone-1 overflow-y-auto justify-start pt-8"
-                  data-theme={theme}
+          <div>
+            <div className="carousel gap-2 mt-4">
+              {themes.map((item) => (
+                <button
+                  type="button"
+                  key={item.name}
+                  className={`btn btn-ghost btn-xs text-white carousel-item ${item.color}`}
+                  onClick={() => setTheme(item.name)}
                 >
-                  <div className="flex flex-col gap-2 mx-2">
-                    <RadioList
-                      items={radios.filter((item) => {
-                        return checkedItems[item.alias];
-                      })}
-                      embed
-                      disabledRefreshInterval
-                    />
-                  </div>
+                  {item.name === "dracula" ? "dark" : item.name}
+                  {item.name === theme ? <BiCheck size={20} /> : null}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="mockup-phone">
+            <div className="camera"></div>
+            <div className="display">
+              <div
+                className="artboard artboard-demo phone-1 overflow-y-auto justify-start pt-8"
+                data-theme={theme}
+              >
+                <div className="flex flex-col gap-2 mx-2">
+                  <RadioList
+                    items={radios.filter((item) => {
+                      return checkedItems[item.alias];
+                    })}
+                    embed
+                    disabledRefreshInterval
+                  />
                 </div>
               </div>
             </div>
-          ) : null}
-          {tab === "code" ? (
-            <div className="mockup-code w-80">
-              <pre>
-                <code>
-                  {generateIFrameTemplate(
-                    `${APP_URL}/e/radios?theme=${theme}&ids=${radioIds.join(
-                      "+"
-                    )}`,
-                    { width: "320", height: "480" }
-                  )}
-                </code>
-              </pre>
-            </div>
-          ) : null}
+          </div>
         </div>
       </div>
-    </div>
+    </Form>
   );
 }

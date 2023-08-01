@@ -4,9 +4,13 @@ import { getTracks } from "~/components/radio-service";
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
   const ids = url.searchParams.get("ids") || "";
-  const idsArray = ids.split(" ");
+  const idsArray = ids.split(",");
 
-  const radios = await getTracks();
+  const [riiRadios, syariahRadios] = await Promise.all([
+    getTracks(),
+    getTracks({ type: "syariah" }),
+  ]);
+  const radios = [...riiRadios, ...syariahRadios];
 
   const items = radios.filter((item) => {
     return idsArray.includes(item.alias);

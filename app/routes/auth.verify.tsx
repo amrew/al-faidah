@@ -33,10 +33,7 @@ export const action = async ({ request }: ActionArgs) => {
   const body = await request.formData();
   const code = body.get("code");
 
-  console.log(code);
-
   if (typeof code !== "string") {
-    console.log("code is not string");
     return json(
       {
         error: {
@@ -53,8 +50,6 @@ export const action = async ({ request }: ActionArgs) => {
     .select("user_id")
     .eq("invitation_code", code.toUpperCase())
     .single();
-
-  console.log(userProfile);
 
   if (error || !userProfile) {
     return json(
@@ -109,16 +104,18 @@ export default function AuthLogin() {
           <main className="rounded-m px-10 pt-4 sm:pt-10 pb-10">
             <div className="flex flex-col gap-2">
               <div>
-                <h2 className="text-xl font-semibold">Masukkan Kode Akses</h2>
+                <h2 className="text-xl font-semibold">
+                  Masukkan Kode Verifikasi
+                </h2>
                 <p className="text-sm tracking-wide">
-                  untuk bisa mengakses Radio Syariah
+                  untuk bisa mengakses halaman tersebut
                 </p>
               </div>
             </div>
             {actionData?.error ? (
               <div className="alert alert-error mt-4 justify-start">
                 <ImWarning />
-                <span>Kode Akses Tidak Ditemukan</span>
+                <span>Kode Verifikasi Tidak Ditemukan</span>
               </div>
             ) : null}
             <div className="mt-4 space-y-4">
@@ -143,7 +140,7 @@ export default function AuthLogin() {
             </div>
             <div className="alert mt-4 justify-start">
               <ImInfo />
-              <span>Dapatkan kode akses dari teman kamu</span>
+              <span>Dapatkan kode verifikasi dari teman kamu</span>
             </div>
           </main>
         </div>

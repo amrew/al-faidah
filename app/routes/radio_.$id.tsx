@@ -45,7 +45,7 @@ export default function RadioDetail() {
   const query = useQuery(
     ["radio", id],
     async () => {
-      const result = await fetch(`/api/track/${id}`);
+      const result = await fetch(`/api/radio/${id}`);
       const data = await result.json();
       return data;
     },
