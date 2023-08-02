@@ -102,7 +102,11 @@ export const loader = async ({ request }: LoaderArgs) => {
       recommendedTopics: getRecommendedTopics(),
     },
     {
-      headers: response.headers,
+      headers: {
+        ...response.headers,
+        "Cache-Control":
+          "public, max-age=60, s-maxage=120, stale-while-revalidate",
+      },
     }
   );
 };
