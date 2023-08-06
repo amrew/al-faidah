@@ -126,7 +126,11 @@ export function RadioListWithFilter(props: RadioListWithFilterProps) {
         </select>
       </div>
       <main className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <RadioList items={results} canBeSaved={type === "rii"} />
+        <RadioList
+          items={results}
+          canBeSaved={type === "rii"}
+          getDetailUrl={(item) => `/radio/${item.alias}`}
+        />
       </main>
     </>
   );

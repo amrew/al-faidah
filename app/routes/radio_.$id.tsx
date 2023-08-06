@@ -1,4 +1,4 @@
-import { getTracks } from "~/components/radio-service";
+import { getAllTracks } from "~/components/radio-service";
 import { RadioList } from "~/components/radio-list";
 import { type LoaderArgs, json, type V2_MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
@@ -8,11 +8,7 @@ import { useQuery } from "react-query";
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params.id;
 
-  const [riiRadios, syariahRadios] = await Promise.all([
-    getTracks(),
-    getTracks({ type: "syariah" }),
-  ]);
-  const radios = [...riiRadios, ...syariahRadios];
+  const radios = await getAllTracks();
   const track = radios.find((item) => item.alias === id);
 
   if (!track) {
@@ -68,6 +64,7 @@ export default function RadioDetail() {
             mode="player"
             items={[query.data?.track]}
             disabledRefreshInterval
+            getDetailUrl={(item) => `/e/radio/${item.alias}`}
           />
         </div>
       </main>

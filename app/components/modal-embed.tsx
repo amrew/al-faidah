@@ -98,9 +98,9 @@ export function ModalEmbed({ track }: ModalEmbedProps) {
             <div data-theme={theme}>
               {track ? (
                 mode === "player" ? (
-                  <RadioItemPlayer item={track} embed />
+                  <RadioItemPlayer item={track} detailUrl="#" embed />
                 ) : (
-                  <RadioItem item={track} embed />
+                  <RadioItem item={track} detailUrl="#" embed />
                 )
               ) : null}
             </div>

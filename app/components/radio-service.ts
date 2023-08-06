@@ -39,6 +39,14 @@ export async function getTracks(params?: {
   return sortRadios(tracks, sortBy);
 }
 
+export async function getAllTracks() {
+  const [riiRadios, syariahRadios] = await Promise.all([
+    getTracks(),
+    getTracks({ type: "syariah" }),
+  ]);
+  return [...syariahRadios, ...riiRadios];
+}
+
 export async function getRadio(id: string) {
   const result = await fetch(`${RII_URL}/jupuk.php?ambil=radet&id_radet=${id}`);
   const data: RadioInfo[] = await result.json();

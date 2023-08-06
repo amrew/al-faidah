@@ -8,6 +8,7 @@ import { useToggleLike } from "~/hooks/useToggleLike";
 
 export type RadioListProps = {
   items: TrackInfo[];
+  getDetailUrl: (item: TrackInfo) => string | undefined;
   favorite?: boolean;
   showAnimationOnItem?: boolean;
   disabledRefreshInterval?: boolean;
@@ -86,16 +87,19 @@ export function RadioList(props: RadioListProps) {
     <>
       {results.length > 0 ? (
         results.map((item, index) => {
+          const detailUrl = props.getDetailUrl(item);
           const itemProps = {
-            item: item,
+            item,
+            canBeSaved,
+            detailUrl,
             embed: props.embed,
             isLiked: isLiked(item.id),
             onEmbedClick: () => setSelectedTrack(item),
             toggleLikeLoading: isLoading(item.id),
             onLikeClick: () => like(item.id),
             onUnlikeClick: () => unlike(item.id),
-            canBeSaved: canBeSaved,
           };
+
           return (results.length > 10 && index < half) ||
             results.length < 10 ||
             renderOnClient ? (

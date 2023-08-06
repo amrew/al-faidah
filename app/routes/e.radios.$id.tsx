@@ -1,4 +1,4 @@
-import { getTracks } from "~/components/radio-service";
+import { getAllTracks } from "~/components/radio-service";
 import { RadioList } from "~/components/radio-list";
 import { json, type V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
@@ -21,23 +21,32 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const [{ data: radio }, radios] = await Promise.all([
     await supabase
       .from("radios")
-      .select("id, title, theme, items")
+      .select("id, title, theme, items, header_shown")
       .eq("id", id)
       .single(),
-    getTracks(),
+    getAllTracks(),
   ]);
 
   const theme = radio?.theme || "cupcake";
   const ids = radio?.items || [];
 
+  const mapIds: Record<string, boolean> = {};
   const items = radios.filter((item) => {
-    return ids.includes(item.alias);
+    if (mapIds[item.alias]) {
+      return false;
+    }
+    const isExists = ids.includes(item.alias);
+    if (isExists) {
+      mapIds[item.alias] = true;
+    }
+    return isExists;
   });
 
   return json(
     {
       ids,
       items,
+      radio,
       theme,
     },
     { headers: response.headers }
@@ -45,11 +54,12 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export const meta: V2_MetaFunction = ({ data }) => {
-  return [{ title: `Radio List - Al Faidah` }];
+  const { radio } = data;
+  return [{ title: radio.title }];
 };
 
 export default function RadiosEmbed() {
-  const { items: serverItems, theme } = useLoaderData<typeof loader>();
+  const { items: serverItems, radio, theme } = useLoaderData<typeof loader>();
   const { track } = useAudioContext();
   const ids = serverItems.map((item) => item.alias);
 
@@ -68,14 +78,28 @@ export default function RadiosEmbed() {
 
   return (
     <main
-      className="flex flex-col items-center gap-2 h-full"
+      className={`flex flex-col items-center gap-2 h-full ${
+        radio.header_shown ? "pt-16" : ""
+      }`}
       data-theme={theme}
     >
+      {radio.header_shown ? (
+        <header className="navbar border-b border-solid gap-2 bg-base-200 border-b-base-300 fixed top-0 left-0 right-0 z-10">
+          <div className={`flex-none px-4`}>
+            <span className="font-bold text-lg">{radio.title}</span>
+          </div>
+        </header>
+      ) : null}
       <div
-        className="w-full sm:w-80 flex flex-col gap-2 p-2 overflow-y-auto"
+        className="w-full sm:w-96 flex flex-col gap-2 p-2 overflow-y-auto"
         style={{ paddingBottom: track ? 85 : 8 }}
       >
-        <RadioList items={query.data.items} embed disabledRefreshInterval />
+        <RadioList
+          items={query.data.items}
+          embed
+          disabledRefreshInterval
+          getDetailUrl={() => undefined}
+        />
       </div>
       <div className="fixed bottom-0 left-0 w-full">
         <Player />

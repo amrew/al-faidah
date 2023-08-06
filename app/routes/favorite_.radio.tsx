@@ -67,7 +67,11 @@ export default function FavoriteRadios() {
               />
             </div>
             <main className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <RadioList items={radios} favorite />
+              <RadioList
+                favorite
+                items={radios}
+                getDetailUrl={(item) => `/radio/${item.alias}`}
+              />
             </main>
           </>
         }

@@ -1,4 +1,4 @@
-import { getTracks } from "~/components/radio-service";
+import { getAllTracks } from "~/components/radio-service";
 import { RadioList } from "~/components/radio-list";
 import { json, type V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
@@ -10,11 +10,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const mode = url.searchParams.get("mode") || "card";
 
   const id = params.id;
-  const [riiRadios, syariahRadios] = await Promise.all([
-    getTracks(),
-    getTracks({ type: "syariah" }),
-  ]);
-  const radios = [...riiRadios, ...syariahRadios];
+  const radios = await getAllTracks();
   const track = radios.find((item) => item.alias === id);
 
   if (!track) {
@@ -68,16 +64,17 @@ export default function RadioEmbed() {
 
   return (
     <main
-      className="flex flex-col justify-center items-center gap-2 h-full"
+      className="flex flex-col items-center gap-2 h-full"
       data-theme={theme}
     >
-      <div className="h-full max-w-3xl">
+      <div className="w-full sm:w-96 flex flex-col gap-2 p-2 overflow-y-auto h-full">
         <RadioList
           items={[query.data?.track]}
           embed
           mode={mode === "player" ? "player" : "card"}
           disabledRefreshInterval
           showAnimationOnItem={true}
+          getDetailUrl={() => undefined}
         />
       </div>
     </main>

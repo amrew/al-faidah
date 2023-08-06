@@ -1,10 +1,10 @@
 import { json, type LoaderArgs } from "@remix-run/node";
-import { getTracks } from "~/components/radio-service";
+import { getAllTracks } from "~/components/radio-service";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params.id;
 
-  const radios = await getTracks();
+  const radios = await getAllTracks();
   const track = radios.find((item) => item.alias === id);
 
   if (!track) {

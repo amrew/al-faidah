@@ -21,13 +21,14 @@ export type RadioItemProps = {
   item: TrackInfo;
   embed?: boolean;
   isLiked?: boolean;
+  detailUrl?: string;
+  shareUrl?: string;
   canBeSaved?: boolean;
   showAnimation?: boolean;
   toggleLikeLoading?: boolean;
   onEmbedClick?: () => void;
   onLikeClick?: () => void;
   onUnlikeClick?: () => void;
-  type?: "small" | "big";
 };
 
 export function RadioItem({
@@ -35,17 +36,19 @@ export function RadioItem({
   embed,
   showAnimation,
   isLiked,
+  detailUrl,
+  shareUrl,
+  canBeSaved = true,
   toggleLikeLoading,
   onEmbedClick,
   onLikeClick,
   onUnlikeClick,
-  canBeSaved = true,
 }: RadioItemProps) {
   const { track, play, stop, audioState } = useAudioContext();
   const isActive = track?.url === item.trackUrl;
   const isLive = item.status === "LIVE";
 
-  const shareUrl = `${APP_URL}/radio/${item.alias}`;
+  const shareLink = shareUrl || `${APP_URL}/radio/${item.alias}`;
   const shareDescription = `Yuk simak kajian: ${item.trackTitle} di ${item.name}`;
 
   const onStop = () => stop();
@@ -95,13 +98,11 @@ export function RadioItem({
   return (
     <div
       className={`flex flex-1 flex-col border-base-300 rounded-md bg-base-100 shadow-sm ${
-        embed ? "h-full justify-between border-4" : "border"
+        embed ? "h-full justify-between border" : "border"
       }`}
     >
       <div className={`px-4 py-3 flex justify-between`}>
-        <Link to={`/radio/${item.alias}`} target={embed ? "_blank" : "_self"}>
-          {headerNode}
-        </Link>
+        {detailUrl ? <Link to={detailUrl}>{headerNode}</Link> : headerNode}
       </div>
       <div className="px-4 flex-1">{trackNode}</div>
       <div className={`px-4 py-3 flex justify-between`}>
@@ -138,7 +139,7 @@ export function RadioItem({
             data={{
               title: item.name,
               text: shareDescription,
-              url: shareUrl,
+              url: shareLink,
             }}
             sites={["whatsapp", "telegram", "mail", "copy"]}
           >
@@ -223,7 +224,7 @@ export function RadioItemPlayer({ item, embed }: RadioItemProps) {
         embed ? "border-base-300 border-4" : ""
       }`}
     >
-      <div className="flex flex-row bg-base-100 items-center gap-4 px-4 py-6 sm:px-8 sm:py-10 border-b border-b-base-300">
+      <div className="flex flex-row bg-base-100 items-center gap-4 px-4 py-6 sm:py-10 border-b border-b-base-300">
         <div className="sm:w-20">
           <div className="indicator">
             <span className="indicator-item badge badge-xs badge-success"></span>

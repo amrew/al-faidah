@@ -222,6 +222,7 @@ export default function Radio() {
                     })}
                     embed
                     disabledRefreshInterval
+                    getDetailUrl={() => "#"}
                   />
                 </div>
               </div>
