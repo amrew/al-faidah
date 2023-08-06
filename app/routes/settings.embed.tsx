@@ -7,7 +7,7 @@ import {
   type ActionArgs,
 } from "@remix-run/node";
 import { Form, useLoaderData, useNavigation } from "@remix-run/react";
-import { type ThemeName, themes } from "~/components/utils";
+import { type ThemeName, themes, QUOTA_CREATION } from "~/components/utils";
 import { useState } from "react";
 import { BiCheck } from "react-icons/bi";
 import { RadioList } from "~/components/radio-list";
@@ -47,6 +47,35 @@ export const action = async ({ request }: ActionArgs) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  const getRadiosCount = async () => {
+    const { count } = await supabase
+      .from("radios")
+      .select("id, title, theme, items", { count: "exact", head: true })
+      .eq("user_id", user?.id);
+    return count;
+  };
+
+  const getUserProfile = async () => {
+    const { data: userProfile } = await supabase
+      .from("user_profiles")
+      .select("is_verified, role_id")
+      .eq("user_id", user?.id)
+      .single();
+    return userProfile;
+  };
+
+  const [count, userProfile] = await Promise.all([
+    getRadiosCount(),
+    getUserProfile(),
+  ]);
+
+  if (
+    !userProfile ||
+    (userProfile?.role_id !== 1 && (count || 0) >= QUOTA_CREATION)
+  ) {
+    return redirect("/settings/app", { headers: response.headers });
+  }
 
   const body = await request.formData();
 

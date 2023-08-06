@@ -2,6 +2,8 @@ import type { SortBy, TrackInfo } from "./radio-entity";
 
 export const APP_URL = "https://al-faidah.com";
 
+export const QUOTA_CREATION = 2;
+
 export type ThemeName =
   | "light"
   | "cupcake"

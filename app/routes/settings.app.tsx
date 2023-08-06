@@ -7,7 +7,7 @@ import {
 import { Link, NavLink, useLoaderData, useNavigate } from "@remix-run/react";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { TwoColumn } from "~/components/two-column";
-import { APP_URL } from "~/components/utils";
+import { APP_URL, QUOTA_CREATION } from "~/components/utils";
 import { useSupabase } from "~/hooks/useSupabase";
 
 export const meta: V2_MetaFunction = () => {
@@ -22,12 +22,13 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   let userProfile: {
     is_verified: boolean;
-  } | null = { is_verified: false };
+    role_id: number | null;
+  } | null = { is_verified: false, role_id: null };
 
   if (user) {
     const { data } = await supabase
       .from("user_profiles")
-      .select("is_verified")
+      .select("is_verified, role_id")
       .eq("user_id", user.id)
       .single();
 
@@ -35,6 +36,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   }
 
   const isVerified = userProfile?.is_verified;
+  const roleId = userProfile?.role_id;
 
   if (!isVerified) {
     return redirect("/auth/verify", {
@@ -50,6 +52,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   return json(
     {
       radios,
+      roleId,
     },
     { headers: response.headers }
   );
@@ -68,7 +71,8 @@ function generateIFrameTemplate(
 }
 
 export default function SettingsApp() {
-  const { radios } = useLoaderData<typeof loader>();
+  const { radios, roleId } = useLoaderData<typeof loader>();
+  const radiosLength = radios?.length || 0;
 
   const supabase = useSupabase();
   const navigate = useNavigate();
@@ -93,18 +97,30 @@ export default function SettingsApp() {
       }
       left={
         <div className="flex flex-col gap-4">
-          <h1 className="text-xl font-bold">Radio</h1>
-          {!radios?.length ? (
+          <div className="flex flex-row gap-2 justify-between items-center">
+            <h1 className="text-xl font-bold">Radio</h1>
+            <h1 className="text-xs">
+              Kuota {radiosLength} / {roleId ? "∞" : QUOTA_CREATION}
+            </h1>
+          </div>
+          {roleId === 1 || radiosLength < QUOTA_CREATION ? (
             <div>
               <Link to="/settings/embed" className="btn btn-primary btn-sm">
                 Buat Radio
               </Link>
             </div>
           ) : null}
-          <div>
-            {radios?.map((item) => (
-              <div key={item.id} className="collapse bg-base-200">
-                <input type="radio" name="my-accordion-1" checked />
+          <div className="flex flex-col gap-4">
+            {radios?.map((item, index) => (
+              <div
+                key={item.id}
+                className="collapse collapse-arrow bg-base-200"
+              >
+                <input
+                  type="radio"
+                  name="my-accordion-1"
+                  defaultChecked={index === 0}
+                />
                 <div className="collapse-title text-xl font-medium">
                   {item?.title}
                 </div>
