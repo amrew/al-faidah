@@ -128,7 +128,7 @@ export function ArticleItem(props: ArticleItemProps) {
             </span>
           </div>
           <div className="flex flex-row flex-wrap gap-2 mt-2">
-            {props.terms.slice(0, 2).map((term) => (
+            {props.terms?.slice(0, 2).map((term) => (
               <Link
                 key={term}
                 to={`/tag/${term}`}

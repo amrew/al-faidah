@@ -123,6 +123,7 @@ export default function Search() {
         }
       >
         <TwoColumn
+          reversed
           left={
             <>
               <h1 className="text-xl md:text-3xl mt-2 mb-4">
