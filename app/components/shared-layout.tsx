@@ -1,17 +1,14 @@
-import {
-  type CSSProperties,
-  type PropsWithChildren,
-  type ReactNode,
-} from "react";
+import { type PropsWithChildren, type ReactNode } from "react";
 import { MemberNavigation } from "./member-navigation";
 import { Player } from "./player";
 import { Link, NavLink } from "@remix-run/react";
 import { BiHome, BiMicrophone, BiRadio, BiSearch } from "react-icons/bi";
 import { BackButton } from "./back-button";
+import { twMerge } from "tailwind-merge";
 
 export type SharedLayoutProps = {
   footer?: ReactNode;
-  contentStyle?: CSSProperties;
+  contentClassName?: string;
   searchComponent?: ReactNode;
   bottomNavShown?: boolean;
   hasBackButton?: boolean;
@@ -21,7 +18,7 @@ export type SharedLayoutProps = {
 export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
   const {
     hasBackButton,
-    contentStyle,
+    contentClassName,
     bottomNavShown = true,
     playerShown = true,
   } = props;
@@ -30,8 +27,10 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
   return (
     <div className="h-full">
       <div
-        className="max-w-5xl mx-auto pb-36 sm:pb-20 pt-16 relative"
-        style={contentStyle}
+        className={twMerge(
+          "max-w-7xl mx-auto pb-36 sm:pb-20 pt-16 relative",
+          contentClassName
+        )}
       >
         {props.children}
       </div>

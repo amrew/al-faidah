@@ -4,51 +4,17 @@ import type { ArticleDetailType } from "~/components/article-entity";
 import { Configuration, OpenAIApi } from "openai";
 import { badRequest, eventStream } from "remix-utils";
 import striptags from "striptags";
+import { processData } from "~/components/utils";
 
-const processData = function (
-  data: { toString: () => string },
-  sendObj: (params: Record<string, any>) => void
-) {
-  const lines = data
-    .toString()
-    .split("\n")
-    .filter((line: string) => line.trim() !== "");
+export const loader = async ({ request }: LoaderArgs) => {
+  const url = new URL(request.url);
 
-  for (const line of lines) {
-    const message = line.toString().replace(/^data: /, "");
-    if (message === "[DONE]") {
-      sendObj({
-        text: "",
-        finish: true,
-      });
-      return;
-    }
-    try {
-      const parsed = JSON.parse(message);
-      if (parsed.error) {
-        sendObj({
-          text: "",
-          finishReason: parsed.error.message,
-        });
-      } else {
-        const finishReason = parsed.choices[0].finish_reason;
-        const delta = parsed.choices[0].delta?.content;
-        if (delta) {
-          sendObj({
-            text: delta,
-            finishReason,
-          });
-        }
-      }
-    } catch (error) {
-      console.error("Could not JSON parse stream message", message, error);
-    }
+  const slug = url.searchParams.get("slug") || "";
+  const publisherSlug = url.searchParams.get("publisher") || "";
+
+  if (!slug || !publisherSlug) {
+    return badRequest("Missing parameters");
   }
-};
-
-export const loader = async ({ request, params }: LoaderArgs) => {
-  const slug = params.slug;
-  const publisherSlug = params.publisher;
 
   const { supabase, response } = createServerSupabase(
     request,
@@ -73,7 +39,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   );
 
   const description = item?.metadata?.answer
-    ? `Pertanyaan: ${item.description}\n\nJawaban: ${item.metadata.answer}`
+    ? item.metadata.answer
     : item?.description;
 
   if (!description) {
@@ -83,7 +49,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const messages = [
     {
       role: "system" as const,
-      content: `Buat rangkuman dari artikel, ambil point-pointnya maksimal 5 kalimat dengan kalimat yang singkat tapi jelas. Format HTML. <ul><li>point 1</li><li>point 2</li></ul>`,
+      content: `Buat rangkuman dari artikel, ambil point-pointnya maksimal 5 kalimat dengan kalimat yang singkat tapi jelas. Format HTML. contoh: <ul><li>point 1</li><li>point 2</li></ul>`,
     },
     {
       role: "user" as const,
@@ -96,7 +62,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       model: "gpt-3.5-turbo",
       messages: messages,
       temperature: 0,
-      max_tokens: 2000,
+      max_tokens: 2048,
       stream: true,
     },
     { responseType: "stream" }

@@ -1,6 +1,10 @@
+import { twMerge } from "tailwind-merge";
+
 export type TwoColumnProps = {
   left: React.ReactNode;
+  leftClassName?: string;
   right: React.ReactNode;
+  rightClassName?: string;
   reversed?: boolean;
 };
 
@@ -13,9 +17,18 @@ export function TwoColumn(props: TwoColumnProps) {
           : "flex-col md:flex-row"
       }`}
     >
-      <div className="w-full md:w-7/12 xl:w-8/12">{props.left}</div>
+      <div
+        className={twMerge("w-full md:w-7/12 xl:w-8/12", props.leftClassName)}
+      >
+        {props.left}
+      </div>
       {props.right ? (
-        <div className="w-full md:w-5/12 xl:w-4/12">
+        <div
+          className={twMerge(
+            "w-full md:w-5/12 xl:w-4/12",
+            props.rightClassName
+          )}
+        >
           <div className="flex flex-col gap-4 sticky top-16 py-4">
             {props.right}
           </div>

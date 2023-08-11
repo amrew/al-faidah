@@ -59,7 +59,11 @@ export default function Detail() {
   const { item } = useLoaderData<typeof loader>();
 
   return (
-    <SharedLayout bottomNavShown={false} hasBackButton={true}>
+    <SharedLayout
+      bottomNavShown={false}
+      hasBackButton={true}
+      contentClassName="max-w-2xl"
+    >
       <ArticleDetail
         key={item.slug}
         slug={item.slug}

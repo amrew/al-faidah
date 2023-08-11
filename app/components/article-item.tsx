@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { Link, useNavigate } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import {
   BiChevronDown,
   BiChevronUp,
@@ -16,9 +16,9 @@ import * as cheerio from "cheerio";
 import { type PropsWithChildren, useMemo, useState } from "react";
 import { AudioList } from "./audio-list";
 import relativeTime from "dayjs/plugin/relativeTime";
-import "dayjs/locale/id";
-import { useUser } from "~/hooks/useSupabase";
 import striptags from "striptags";
+import { useCompletion } from "./utils";
+import "dayjs/locale/id";
 
 dayjs.extend(relativeTime);
 dayjs.locale("id");
@@ -316,91 +316,24 @@ type SummaryGeneratorProps = {
   sourceLink: string;
 };
 
-type SummaryState = {
-  type: "idle" | "fetching" | "done" | "error";
-  value: string;
-};
-
 export function SummaryGenerator(
   props: PropsWithChildren<SummaryGeneratorProps>
 ) {
-  const user = useUser();
-  const navigate = useNavigate();
-  const currentRoute = `/${props.publisher.slug}/${props.slug}`;
   const [contentShown, setContentShown] = useState(true);
 
-  const [summaryState, setSummaryState] = useState<SummaryState>({
-    type: "idle",
-    value: "",
+  const { state: summaryState, fetch: getGPTSummary } = useCompletion({
+    url: `/api/completion/summary`,
+    result: props.defaultSummary,
   });
-
-  const getChatGPTSummary = () => {
-    if (!user) {
-      navigate(`/auth/login?messageType=gpt-summary&target=${currentRoute}`);
-      return;
-    }
-
-    if (props.defaultSummary) {
-      setSummaryState({
-        type: "done",
-        value: props.defaultSummary,
-      });
-      return;
-    }
-
-    const sse = new EventSource(`/api/summary${currentRoute}`);
-
-    setSummaryState({
-      type: "fetching",
-      value: "",
-    });
-
-    sse.addEventListener("message", (event) => {
-      try {
-        const data = JSON.parse(event.data);
-
-        if (data.finish) {
-          setSummaryState((prev) => {
-            return {
-              type: "done",
-              value: prev.value + data.text,
-            };
-          });
-          sse.close();
-        } else {
-          setSummaryState((prev) => {
-            return {
-              type: "fetching",
-              value: prev.value + data.text,
-            };
-          });
-        }
-      } catch (e) {}
-    });
-
-    sse.addEventListener("error", (err) => {
-      console.log("error: ", err);
-      setSummaryState((prev) => ({
-        ...prev,
-        type: "error",
-      }));
-      sse.close();
-    });
-
-    sse.addEventListener("end", (event) => {
-      setSummaryState((prev) => ({
-        ...prev,
-        type: "done",
-      }));
-      sse.close();
-    });
-  };
 
   const buttonSummary = (
     <button
       className="btn btn-accent btn-sm"
       onClick={() => {
-        getChatGPTSummary();
+        getGPTSummary({
+          slug: props.slug,
+          publisher: props.publisher.slug,
+        });
       }}
     >
       Lihat Rangkuman
@@ -469,7 +402,7 @@ export function SummaryGenerator(
           </div>
         </div>
       ) : (
-        <div className="px-4">{props.children}</div>
+        <div>{props.children}</div>
       )}
     </>
   );

@@ -64,3 +64,7 @@ body.navigate-loading main {
 .prose iframe {
   width: 100%;
 }
+
+.rti--container {
+  border-color: hsl(var(--b2));
+}
