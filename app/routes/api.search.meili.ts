@@ -10,16 +10,16 @@ export async function loader({ request }: LoaderArgs) {
     apiKey: process.env.MEILI_MASTER_KEY!,
   });
 
-  await client
-    .index("contents")
-    .updateRankingRules([
-      "attribute",
-      "words",
-      "exactness",
-      "proximity",
-      "typo",
-      "sort",
-    ]);
+  // await client
+  //   .index("contents")
+  //   .updateRankingRules([
+  //     "attribute",
+  //     "words",
+  //     "exactness",
+  //     "proximity",
+  //     "typo",
+  //     "sort",
+  //   ]);
 
   return json(await client.index("contents").search(q));
 }
