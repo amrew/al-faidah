@@ -1,6 +1,6 @@
 import { defer, type LoaderArgs, type V2_MetaFunction } from "@remix-run/node";
 import { SharedLayout } from "~/components/shared-layout";
-import type { ArticleSummaryType } from "~/components/article-entity";
+import type { ArticleType } from "~/components/article-entity";
 import { Link, useLoaderData } from "@remix-run/react";
 import { Pagination } from "~/components/pagination";
 import { createServerSupabase } from "~/clients/createServerSupabase";
@@ -34,7 +34,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   };
 
   const getContents = async () => {
-    let query = supabase.from("contents").select<any, ArticleSummaryType>(
+    let query = supabase.from("contents").select<any, ArticleType>(
       `id, title, slug, summary, image, created_at, link, 
       read_stats, terms, taxonomies!inner( slug, name ), publishers!inner( title, slug, logo_url, web_url ), 
       author`

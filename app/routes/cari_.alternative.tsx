@@ -1,4 +1,4 @@
-import type { ArticleSummaryType } from "~/components/article-entity";
+import type { ArticleType } from "~/components/article-entity";
 import { json, type V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Pagination } from "~/components/pagination";
@@ -29,7 +29,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     await Promise.all([
       supabase
         .from("contents")
-        .select<any, ArticleSummaryType>(
+        .select<any, ArticleType>(
           `id, title, slug, summary, image, created_at, read_stats, terms, link,
           taxonomies( slug, name ), publishers( title, logo_url, web_url ), author`
         )

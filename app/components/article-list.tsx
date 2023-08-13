@@ -1,10 +1,10 @@
 import { getArticleUrl } from "~/utils/linkUtils";
-import type { ArticleSummaryType } from "./article-entity";
+import type { ArticleType } from "./article-entity";
 import { ArticleItem } from "./article-item";
 import { useToggleLike } from "~/hooks/useToggleLike";
 
 export type ArticleListProps = {
-  contents: ArticleSummaryType[];
+  contents: ArticleType[];
   onLikeCallback?: () => void;
   onUnlikeCallback?: () => void;
 };

@@ -1,6 +1,6 @@
 import { type LoaderArgs } from "@remix-run/node";
 import { createServerSupabase } from "~/clients/createServerSupabase";
-import type { ArticleDetailType } from "~/components/article-entity";
+import type { ArticleType } from "~/components/article-entity";
 import { Configuration, OpenAIApi } from "openai";
 import { badRequest, eventStream } from "remix-utils";
 import striptags from "striptags";
@@ -24,7 +24,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const [{ data: item }] = await Promise.all([
     supabase
       .from("contents")
-      .select<any, ArticleDetailType>(
+      .select<any, ArticleType>(
         `id, description, metadata, publishers!inner( slug )`
       )
       .eq("slug", slug)

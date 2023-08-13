@@ -4,7 +4,7 @@ import {
   ArticleItemSmallLoading,
 } from "~/components/article-item";
 import { SharedLayout } from "~/components/shared-layout";
-import type { ArticleSummaryType } from "~/components/article-entity";
+import type { ArticleType } from "~/components/article-entity";
 import { Tab } from "~/components/tab";
 import { Await, Link, useLoaderData } from "@remix-run/react";
 import { Pagination } from "~/components/pagination";
@@ -26,7 +26,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const { supabase, response } = createServerSupabase(request);
 
   const getContents = async () => {
-    let query = supabase.from("contents").select<any, ArticleSummaryType>(
+    let query = supabase.from("contents").select<any, ArticleType>(
       `id, title, slug, summary, image, created_at, link, 
       read_stats, terms, taxonomies( slug, name ), publishers!inner( title, slug, logo_url, status ), 
       author`
@@ -60,7 +60,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const getEditorPicks = async () => {
     return supabase
       .from("contents")
-      .select<any, ArticleSummaryType>(
+      .select<any, ArticleType>(
         `id, title, slug, read_stats, taxonomies( slug, name ), publishers!inner( title, slug, logo_url )`
       )
       .eq("recommended", 1)

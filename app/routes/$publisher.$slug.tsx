@@ -1,6 +1,6 @@
 import { json, type LoaderArgs, type V2_MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import type { ArticleDetailType } from "~/components/article-entity";
+import type { ArticleType } from "~/components/article-entity";
 import { ArticleDetail } from "~/components/article-item";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { SharedLayout } from "~/components/shared-layout";
@@ -14,7 +14,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const [{ data: item }] = await Promise.all([
     supabase
       .from("contents")
-      .select<any, ArticleDetailType>(
+      .select<any, ArticleType>(
         `id, title, slug, summary, description, link, image, created_at, 
         read_stats, terms, taxonomies( slug, name ), publishers!inner( title, logo_url, web_url, slug ),
         author, metadata`

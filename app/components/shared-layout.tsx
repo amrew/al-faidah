@@ -28,7 +28,7 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
     <div className="h-full">
       <div
         className={twMerge(
-          "max-w-7xl mx-auto pb-36 sm:pb-20 pt-16 relative",
+          "max-w-5xl mx-auto pb-36 sm:pb-20 pt-16 relative",
           contentClassName
         )}
       >

@@ -30,8 +30,6 @@ export const loader = async ({ request }: LoaderArgs) => {
     SUPABASE_URL: process.env.SUPABASE_URL!,
     SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY!,
     GA_ID: process.env.GA_ID!,
-    ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID!,
-    ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY!,
   };
 
   const { supabase, response } = createServerSupabase(request);

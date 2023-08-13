@@ -10,11 +10,12 @@ export type ImageType = {
   small: ImageProps | null;
 };
 
-export type ArticleSummaryType = {
+export type ArticleType = {
   id: string;
   title: string;
   slug: string;
   summary: string;
+  description: string;
   image: ImageType | null;
   created_at: string;
   read_stats: {
@@ -42,8 +43,3 @@ export type ArticleSummaryType = {
     };
   } | null;
 };
-
-export type ArticleDetailType = {
-  description: string;
-  link: string;
-} & Omit<ArticleSummaryType, "summary">;
