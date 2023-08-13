@@ -24,6 +24,13 @@ export const loader = async ({ request }: LoaderArgs) => {
     data: { user },
   } = await supabase.auth.getUser();
 
+  if (!user || (user && user.id !== process.env.USER_ID)) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Halaman tidak ditemukan",
+    });
+  }
+
   let userProfile: {
     is_verified: boolean;
     role_id: number | null;
@@ -67,6 +74,13 @@ export const action = async ({ request }: ActionArgs) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  if (!user || (user && user.id !== process.env.USER_ID)) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Halaman tidak ditemukan",
+    });
+  }
 
   const body = await request.formData();
 
