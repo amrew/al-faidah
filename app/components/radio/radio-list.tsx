@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ModalEmbed } from "./modal-embed";
+import { ModalEmbed } from "../modal/modal-embed";
 import type { TrackInfo } from "./radio-entity";
 import { RadioItem, RadioItemLoading, RadioItemPlayer } from "./radio-item";
 import { Link, useRevalidator } from "@remix-run/react";

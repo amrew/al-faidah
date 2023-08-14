@@ -1,11 +1,11 @@
 import { defer, type LoaderArgs, type V2_MetaFunction } from "@remix-run/node";
 import { SharedLayout } from "~/components/shared-layout";
-import type { ArticleType } from "~/components/article-entity";
+import type { ArticleType } from "~/components/article/article-entity";
 import { Link, useLoaderData } from "@remix-run/react";
 import { Pagination } from "~/components/pagination";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { TwoColumn } from "~/components/two-column";
-import { ArticleList } from "~/components/article-list";
+import { ArticleList } from "~/components/article/article-list";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const topicSlug = params.slug;

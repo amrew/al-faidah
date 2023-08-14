@@ -1,13 +1,13 @@
 import { SharedLayout } from "~/components/shared-layout";
 import { json, type V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
-import type { ArticleType } from "~/components/article-entity";
+import type { ArticleType } from "~/components/article/article-entity";
 import { BiLoader, BiSearch } from "react-icons/bi";
 import { useDebounce } from "react-use";
 import { useState } from "react";
 import { TwoColumn } from "~/components/two-column";
 import { Tab } from "~/components/tab";
 import { useLoaderData, useNavigate } from "@remix-run/react";
-import { ArticleList } from "~/components/article-list";
+import { ArticleList } from "~/components/article/article-list";
 import { useQuery } from "react-query";
 
 export const loader = async ({ request }: LoaderArgs) => {

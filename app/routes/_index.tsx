@@ -2,9 +2,9 @@ import { defer, type LoaderArgs, type V2_MetaFunction } from "@remix-run/node";
 import {
   ArticleItemSmall,
   ArticleItemSmallLoading,
-} from "~/components/article-item";
+} from "~/components/article/article-item";
 import { SharedLayout } from "~/components/shared-layout";
-import type { ArticleType } from "~/components/article-entity";
+import type { ArticleType } from "~/components/article/article-entity";
 import { Tab } from "~/components/tab";
 import { Await, Link, useLoaderData } from "@remix-run/react";
 import { Pagination } from "~/components/pagination";
@@ -12,7 +12,7 @@ import { createServerSupabase } from "~/clients/createServerSupabase";
 import { TwoColumn } from "~/components/two-column";
 import { Suspense } from "react";
 import { getArticleUrl } from "~/utils/linkUtils";
-import { ArticleList } from "~/components/article-list";
+import { ArticleList } from "~/components/article/article-list";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);

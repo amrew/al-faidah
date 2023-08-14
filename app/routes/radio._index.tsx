@@ -1,5 +1,5 @@
-import { getTracks } from "~/components/radio-service";
-import { RadioListWithFilter } from "~/components/radio-list-with-filter";
+import { getTracks } from "~/components/radio/radio-service.server";
+import { RadioListWithFilter } from "~/components/radio/radio-list-with-filter";
 import {
   json,
   type V2_MetaFunction,

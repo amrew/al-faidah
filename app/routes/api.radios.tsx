@@ -1,5 +1,5 @@
 import { json, type LoaderArgs } from "@remix-run/node";
-import { getAllTracks } from "~/components/radio-service";
+import { getAllTracks } from "~/components/radio/radio-service.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);

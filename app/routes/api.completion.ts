@@ -5,7 +5,7 @@ import {
   type ChatCompletionRequestMessage,
 } from "openai";
 import { badRequest, eventStream } from "remix-utils";
-import { processData } from "~/components/utils";
+import { processData } from "~/utils/streamUtils";
 
 const systemMap: Record<string, ChatCompletionRequestMessage> = {
   title: {

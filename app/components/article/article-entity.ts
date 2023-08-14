@@ -12,12 +12,19 @@ export type ImageType = {
 
 export type ArticleType = {
   id: string;
-  title: string;
+  publisher_id: string;
+  status: "publish" | "draft";
+  created_at: string;
+  updated_at: string;
+  user_id: string;
+  original_id: string;
   slug: string;
+  title: string;
+  type_id: string;
   summary: string;
   description: string;
+  recommended: number;
   image: ImageType | null;
-  created_at: string;
   read_stats: {
     minutes: number;
   };
@@ -33,7 +40,7 @@ export type ArticleType = {
     name: string;
   } | null;
   link: string;
-  metadata?: {
+  metadata: {
     answer?: string;
     source?: string;
     link?: string;
@@ -41,5 +48,9 @@ export type ArticleType = {
       summary: string;
       createdAt: string;
     };
+  } | null;
+  gpt: {
+    summary: string;
+    createdAt: string;
   } | null;
 };

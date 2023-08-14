@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import type { SortBy, TrackInfo } from "./radio-entity";
 import MiniSearch from "minisearch";
 import type { SearchResult } from "minisearch";
-import { sortRadios } from "./utils";
+import { sortRadios } from "~/utils/radioUtils";
 import { RadioList } from "./radio-list";
 
 type FilterOption = {

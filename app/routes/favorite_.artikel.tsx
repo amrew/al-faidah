@@ -1,4 +1,4 @@
-import type { ArticleType } from "~/components/article-entity";
+import type { ArticleType } from "~/components/article/article-entity";
 import {
   json,
   type V2_MetaFunction,
@@ -11,7 +11,7 @@ import { createServerSupabase } from "~/clients/createServerSupabase";
 import { SharedLayout } from "~/components/shared-layout";
 import { TwoColumn } from "~/components/two-column";
 import { Tab } from "~/components/tab";
-import { ArticleList } from "~/components/article-list";
+import { ArticleList } from "~/components/article/article-list";
 import { isLoggedIn } from "~/utils/authUtils.server";
 
 export const loader = async ({ request }: LoaderArgs) => {

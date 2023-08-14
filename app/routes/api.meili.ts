@@ -1,6 +1,6 @@
 import { json, redirect, type LoaderArgs } from "@remix-run/node";
 import { createServerSupabase } from "~/clients/createServerSupabase";
-import type { ArticleType } from "~/components/article-entity";
+import type { ArticleType } from "~/components/article/article-entity";
 import { MeiliSearch } from "meilisearch";
 import striptags from "striptags";
 

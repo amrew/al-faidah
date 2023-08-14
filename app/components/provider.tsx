@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { AudioProvider } from "./audio-context";
+import { AudioProvider } from "./audio/audio-context";
 
 const queryClient = new QueryClient();
 

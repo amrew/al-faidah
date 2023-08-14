@@ -1,4 +1,4 @@
-import { useAudioContext } from "./audio-context";
+import { useAudioContext } from "./audio/audio-context";
 import {
   BiStop,
   BiLoader,
@@ -10,7 +10,7 @@ import {
 } from "react-icons/bi";
 import { PlayingAnimation } from "./playing-animation";
 import { CountDownView } from "./countdown";
-import { TimerModal } from "./modal-timer";
+import { TimerModal } from "./modal/modal-timer";
 import { useState } from "react";
 import { useDebounce } from "react-use";
 

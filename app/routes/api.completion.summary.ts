@@ -1,10 +1,10 @@
 import { type LoaderArgs } from "@remix-run/node";
 import { createServerSupabase } from "~/clients/createServerSupabase";
-import type { ArticleType } from "~/components/article-entity";
+import type { ArticleType } from "~/components/article/article-entity";
 import { Configuration, OpenAIApi } from "openai";
 import { badRequest, eventStream } from "remix-utils";
 import striptags from "striptags";
-import { processData } from "~/components/utils";
+import { processData } from "~/utils/streamUtils";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);

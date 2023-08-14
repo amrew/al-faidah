@@ -1,5 +1,5 @@
-import { getAllTracks } from "~/components/radio-service";
-import { RadioList } from "~/components/radio-list";
+import { getAllTracks } from "~/components/radio/radio-service.server";
+import { RadioList } from "~/components/radio/radio-list";
 import { json, type V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useQuery } from "react-query";

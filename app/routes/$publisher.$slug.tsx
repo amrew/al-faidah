@@ -1,7 +1,7 @@
 import { json, type LoaderArgs, type V2_MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import type { ArticleType } from "~/components/article-entity";
-import { ArticleDetail } from "~/components/article-item";
+import type { ArticleType } from "~/components/article/article-entity";
+import { ArticleDetail } from "~/components/article/article-item";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { SharedLayout } from "~/components/shared-layout";
 

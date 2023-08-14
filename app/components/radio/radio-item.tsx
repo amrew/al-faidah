@@ -11,9 +11,9 @@ import { TbBookmarkPlus } from "react-icons/tb";
 import { ImEmbed2 } from "react-icons/im";
 import { RWebShare } from "react-web-share";
 import type { TrackInfo } from "./radio-entity";
-import { useAudioContext } from "./audio-context";
-import { APP_URL } from "./utils";
-import { PlayingAnimation } from "./playing-animation";
+import { useAudioContext } from "../audio/audio-context";
+import { APP_URL } from "../../utils/constant";
+import { PlayingAnimation } from "../playing-animation";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@remix-run/react";
 

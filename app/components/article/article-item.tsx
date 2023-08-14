@@ -14,10 +14,10 @@ import { BsBookmarkFill, BsShare } from "react-icons/bs";
 import { RWebShare } from "react-web-share";
 import * as cheerio from "cheerio";
 import { type PropsWithChildren, useMemo, useState } from "react";
-import { AudioList } from "./audio-list";
+import { AudioList } from "~/components/audio/audio-list";
 import relativeTime from "dayjs/plugin/relativeTime";
 import striptags from "striptags";
-import { useCompletion } from "./utils";
+import { useCompletion } from "~/hooks/useCompletion";
 import "dayjs/locale/id";
 
 dayjs.extend(relativeTime);

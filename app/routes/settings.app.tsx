@@ -7,7 +7,7 @@ import {
 import { Link, NavLink, useLoaderData, useNavigate } from "@remix-run/react";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { TwoColumn } from "~/components/two-column";
-import { APP_URL, QUOTA_CREATION } from "~/components/utils";
+import { APP_URL, QUOTA_CREATION } from "~/utils/constant";
 import { useSupabase } from "~/hooks/useSupabase";
 
 export const meta: V2_MetaFunction = () => {

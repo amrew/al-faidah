@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-
 import { BiArrowBack } from "react-icons/bi";
 
 type Props = {

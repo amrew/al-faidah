@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { EditorForm } from "~/components/editor-form.client";
 import { TwoColumn } from "~/components/two-column";
-import { useCompletion } from "~/components/utils";
+import { useCompletion } from "~/hooks/useCompletion";
 import slugify from "slugify";
 import { BiLoader } from "react-icons/bi";
 import { TagsInput } from "react-tag-input-component";
@@ -13,7 +13,7 @@ import {
 } from "@remix-run/node";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { Form, useLoaderData, useNavigation } from "@remix-run/react";
-import { ArticleItem } from "~/components/article-item";
+import { ArticleItem } from "~/components/article/article-item";
 import invariant from "tiny-invariant";
 import readingTime from "reading-time";
 import { v4 as uuidv4 } from "uuid";

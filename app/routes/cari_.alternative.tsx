@@ -1,4 +1,4 @@
-import type { ArticleType } from "~/components/article-entity";
+import type { ArticleType } from "~/components/article/article-entity";
 import { json, type V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Pagination } from "~/components/pagination";
@@ -7,7 +7,7 @@ import { SharedLayout } from "~/components/shared-layout";
 import { TwoColumn } from "~/components/two-column";
 import { Tab } from "~/components/tab";
 import { TaxonomiesResult } from "~/components/taxonomies-result";
-import { ArticleList } from "~/components/article-list";
+import { ArticleList } from "~/components/article/article-list";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);

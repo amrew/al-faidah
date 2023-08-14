@@ -1,7 +1,6 @@
-import type { TrackInfo } from "./radio-entity";
-import { RadioItem, RadioItemPlayer } from "./radio-item";
-import type { ThemeName } from "./utils";
-import { APP_URL, themes } from "./utils";
+import type { TrackInfo } from "../radio/radio-entity";
+import { RadioItem, RadioItemPlayer } from "../radio/radio-item";
+import { APP_URL, themes, type ThemeName } from "../../utils/constant";
 import { useState } from "react";
 import { BiCheck } from "react-icons/bi";
 

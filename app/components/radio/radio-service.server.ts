@@ -1,5 +1,5 @@
 import type { RadioInfo, TrackInfo } from "./radio-entity";
-import { sortRadios } from "./utils";
+import { sortRadios } from "../../utils/radioUtils";
 
 const RII_URL = process.env.RII_URL;
 const SYARIAH_URL = process.env.SYARIAH_URL;

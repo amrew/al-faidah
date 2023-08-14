@@ -1,5 +1,5 @@
-import { getTracks } from "~/components/radio-service";
-import { RadioList } from "~/components/radio-list";
+import { getTracks } from "~/components/radio/radio-service.server";
+import { RadioList } from "~/components/radio/radio-list";
 import {
   type LoaderArgs,
   json,

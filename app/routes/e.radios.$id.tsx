@@ -1,9 +1,9 @@
-import { getAllTracks } from "~/components/radio-service";
-import { RadioList } from "~/components/radio-list";
+import { getAllTracks } from "~/components/radio/radio-service.server";
+import { RadioList } from "~/components/radio/radio-list";
 import { json, type V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Player } from "~/components/player";
-import { useAudioContext } from "~/components/audio-context";
+import { useAudioContext } from "~/components/audio/audio-context";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { useQuery } from "react-query";
 
