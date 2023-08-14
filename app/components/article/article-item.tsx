@@ -507,16 +507,39 @@ export function ArticleDetail(
   }, [$, hasAudio, props.publisher.logoUrl, props.title]);
 
   const sourceNode = props.sourceLink ? (
-    <div className="alert max-w-2xl">
-      <div>Sumber Tulisan:</div>
-      <a
-        href={props.sourceLink}
-        target="_blank"
-        rel="noreferrer"
-        className="line-clamp-1 underline"
-      >
-        {props.title}
-      </a>
+    <div>
+      <div className="alert max-w-2xl grid-flow-row grid-cols-1">
+        {props.authorName ? (
+          <div>
+            <div className="font-bold">Oleh:</div>
+            <div>{props.authorName}</div>
+          </div>
+        ) : null}
+        {props.metadata?.source ? (
+          <div>
+            <div className="font-bold">Rujukan:</div>
+            <a
+              href={props.metadata.link}
+              target="_blank"
+              rel="noreferrer"
+              className="line-clamp-1 underline"
+            >
+              {props.metadata.source}
+            </a>
+          </div>
+        ) : null}
+        <div>
+          <div className="font-bold">Sumber Tulisan:</div>
+          <a
+            href={props.sourceLink}
+            target="_blank"
+            rel="noreferrer"
+            className="line-clamp-1 underline"
+          >
+            {props.title}
+          </a>
+        </div>
+      </div>
     </div>
   ) : null;
 
