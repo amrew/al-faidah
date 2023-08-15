@@ -42,7 +42,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 export const meta: V2_MetaFunction = ({ data }) => {
   const { item } = data;
   return [
-    { title: `${item.title} - Al Faidah` },
+    { title: `${item.title} - Radio Islam` },
     {
       name: "description",
       content: item.summary,

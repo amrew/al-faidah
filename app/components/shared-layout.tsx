@@ -13,6 +13,7 @@ export type SharedLayoutProps = {
   bottomNavShown?: boolean;
   hasBackButton?: boolean;
   playerShown?: boolean;
+  disableContainer?: boolean;
 };
 
 export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
@@ -21,20 +22,25 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
     contentClassName,
     bottomNavShown = true,
     playerShown = true,
+    disableContainer,
   } = props;
   const hasSearchComponent = !!props.searchComponent;
 
   return (
     <div className="h-full">
-      <div
-        className={twMerge(
-          "max-w-5xl mx-auto pb-36 sm:pb-20 pt-16 relative",
-          contentClassName
-        )}
-      >
-        {props.children}
-      </div>
-      <header className="navbar border-b border-solid gap-2 bg-base-200 border-b-base-300 fixed top-0 left-0 right-0 z-10">
+      {!disableContainer ? (
+        <div
+          className={twMerge(
+            "max-w-5xl mx-auto pb-36 sm:pb-20 pt-16 relative",
+            contentClassName
+          )}
+        >
+          {props.children}
+        </div>
+      ) : (
+        props.children
+      )}
+      <header className="navbar gap-2 bg-neutral fixed top-0 left-0 right-0 z-10">
         {hasBackButton ? (
           <div className="sm:hidden">
             <BackButton withText={false} />
@@ -43,8 +49,11 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
         <div
           className={`flex-none ${hasSearchComponent ? "hidden sm:flex" : ""}`}
         >
-          <Link to="/" className={`btn-ghost btn text-xl normal-case`}>
-            Al Faidah
+          <Link
+            to="/"
+            className={`btn-ghost btn text-xl normal-case text-neutral-content`}
+          >
+            Radio Islam
           </Link>
         </div>
         <div className="flex-none hidden sm:flex">
@@ -64,10 +73,7 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
         <div
           className={`flex-1 justify-end ${hasSearchComponent ? "hidden" : ""}`}
         >
-          <Link
-            to="/cari"
-            className={`btn btn-ghost btn-circle btn-sm hidden sm:flex `}
-          >
+          <Link to="/cari" className={`btn btn-circle btn-sm hidden sm:flex `}>
             <BiSearch />
           </Link>
         </div>
@@ -79,7 +85,7 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
           <MemberNavigation />
         </div>
       </header>
-      <div className="fixed bottom-0 left-0 w-full">
+      <div className="fixed bottom-0 left-0 w-full z-10">
         {props.footer}
         {playerShown ? <Player /> : null}
         {bottomNavShown ? (

@@ -13,7 +13,7 @@ import { useUser } from "~/hooks/useSupabase";
 
 export const meta: V2_MetaFunction = () => {
   return [
-    { title: "Radio - Al Faidah" },
+    { title: "Radio - Radio Islam" },
     {
       name: "description",
       content: "Berisi kajian Asatidzah Ahlus Sunnah Wal Jama'ah",

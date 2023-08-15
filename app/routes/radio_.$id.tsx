@@ -27,7 +27,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 export const meta: V2_MetaFunction = ({ data }) => {
   const { track } = data;
   return [
-    { title: `${track.name} - Al Faidah` },
+    { title: `${track.name} - Radio Islam` },
     {
       name: "description",
       content: track.name,

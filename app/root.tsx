@@ -81,7 +81,7 @@ export default function App() {
   }, [serverAccessToken, supabase, revalidate]);
 
   return (
-    <html lang="en" data-theme="cupcake">
+    <html lang="en" data-theme="rii">
       <head>
         <link
           rel="apple-touch-icon"
@@ -181,7 +181,7 @@ export function ErrorBoundary() {
           <div className="flex flex-col gap-2">
             <p className="font-light">
               Halaman ini tampaknya mengalami kesalahan. Anda bisa menghubungi
-              Admin Al Faidah jika memungkinkan.
+              Admin Radio Islam jika memungkinkan.
             </p>
             <p>Jazakumullah Khoiron</p>
           </div>
@@ -197,7 +197,7 @@ export function ErrorBoundary() {
   };
 
   return (
-    <html lang="en" data-theme="cupcake">
+    <html lang="en" data-theme="rii">
       <head>
         <link
           rel="apple-touch-icon"
@@ -224,7 +224,7 @@ export function ErrorBoundary() {
         />
         <meta name="robots" content="noindex" />
         <title>
-          {isErrorRoute ? error.statusText : "Sistem Error"} - Al Faidah
+          {isErrorRoute ? error.statusText : "Sistem Error"} - Radio Islam
         </title>
         <Links />
       </head>

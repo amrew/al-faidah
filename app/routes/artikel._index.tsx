@@ -7,7 +7,7 @@ import { ArticleList } from "~/components/article/article-list";
 
 export const meta: V2_MetaFunction = () => {
   return [
-    { title: "Al Faidah - Kajian Islam" },
+    { title: "Radio Islam - Kajian Islam" },
     {
       name: "description",
       content:

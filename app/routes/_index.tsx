@@ -13,6 +13,10 @@ import { TwoColumn } from "~/components/two-column";
 import { Suspense } from "react";
 import { getArticleUrl } from "~/utils/linkUtils";
 import { ArticleList } from "~/components/article/article-list";
+import { Container } from "~/components/container";
+import { getTracks } from "~/components/radio/radio-service.server";
+import { RadioList } from "~/components/radio/radio-list";
+import { BiChevronRight } from "react-icons/bi";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -100,6 +104,7 @@ export const loader = async ({ request }: LoaderArgs) => {
       totalPage,
       editorPicks: getEditorPicks(),
       recommendedTopics: getRecommendedTopics(),
+      radios: (await getTracks({ sortBy: "most" })).slice(0, 2),
     },
     {
       headers: {
@@ -113,7 +118,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export const meta: V2_MetaFunction = () => {
   return [
-    { title: "Al Faidah - Kajian Islam" },
+    { title: "Radio Islam - Kajian Islam" },
     {
       name: "description",
       content:
@@ -131,90 +136,132 @@ export default function Index() {
     totalPage,
     editorPicks: editorPicksPromise,
     recommendedTopics: recommendedTopicsPromise,
+    radios,
   } = useLoaderData<typeof loader>();
 
   return (
-    <SharedLayout>
-      <TwoColumn
-        left={
-          <>
-            <div
-              className="sticky right-0 mb-4 pt-2 pb-2 bg-base-100"
-              style={{ top: 65, zIndex: 1 }}
-            >
-              <Tab
-                currentId={publisher}
-                items={[
-                  { id: "", title: "Beranda", href: "/" },
-                  ...(publishers?.map((item) => ({
-                    id: item.slug,
-                    title: item.title,
-                    href: `/?publisher=${item.slug}`,
-                  })) || []),
-                ]}
-              />
+    <SharedLayout disableContainer>
+      <div
+        className="hero mt-16 main-content"
+        style={{
+          backgroundImage:
+            "url(https://fmpdtfhmuqxfzmaxxsge.supabase.co/storage/v1/object/public/al-faidah/bg-rii-1.jpg)",
+        }}
+      >
+        <div className="hero-overlay bg-opacity-60"></div>
+        <div className="hero-content text-neutral-content pt-16 pb-16 flex-col lg:flex-row gap-8">
+          <div className="max-w-lg">
+            <h1 className="mb-5 text-5xl font-bold">Radio Islam Indonesia</h1>
+            <p className="mb-2 text-xl">
+              Radionya Muslimin se-Nusantara telah hadir untuk Android dan Web.
+            </p>
+            <p className="mb-5">
+              Menebar dakwah Islam yang rahmatan 'lil 'alamin sesuai dengan
+              pemahaman dan jalan para salaf
+            </p>
+            <div className="flex flex-row gap-2">
+              <a href="https://play.google.com/store/apps/details?id=dev.oasemedia.radioislamindonesia&pli=1">
+                <img
+                  alt="Get it on Google Play"
+                  src="https://fmpdtfhmuqxfzmaxxsge.supabase.co/storage/v1/object/public/al-faidah/google-play-badge-1.png"
+                  width={240}
+                  height={92}
+                />
+              </a>
             </div>
-            <main>
-              <ArticleList contents={contents || []} />
-            </main>
-            <Pagination
-              page={page}
-              totalPage={totalPage}
-              buildUrl={(page) => {
-                const params: Record<string, string> = {};
-                if (publisher) {
-                  params.publisher = publisher;
-                }
-                if (page) {
-                  params.page = String(page);
-                }
-                const searchParams = new URLSearchParams(params);
-                return `/?${searchParams.toString()}`;
-              }}
+          </div>
+          <div className="grid grid-cols-1 gap-4 w-full lg:w-80 overflow-y-auto hide-scrollbar">
+            <RadioList
+              items={radios}
+              getDetailUrl={(item) => `/radio/${item.alias}}`}
             />
-          </>
-        }
-        right={
-          <>
-            <div>
-              <h2 className="font-bold text-lg">Pilihan Editor</h2>
-              <div className="mt-2">
-                <div className="flex flex-col gap-2">
-                  <Suspense fallback={<EditorPickFallback />}>
-                    <Await
-                      resolve={editorPicksPromise}
-                      errorElement={<EditorPickFallback />}
-                    >
-                      {({ data: editorPicks }) =>
-                        editorPicks?.map((item) => (
-                          <ArticleItemSmall
-                            key={item.id}
-                            title={item.title}
-                            slug={item.slug}
-                            publisher={{
-                              name: item.publishers?.title,
-                              logoUrl: item.publishers?.logo_url,
-                              slug: item.publishers?.slug,
-                            }}
-                            readDuration={item.read_stats?.minutes}
-                            detailUrl={getArticleUrl({
-                              publisherSlug: item.publishers.slug,
-                              articleSlug: item.slug,
-                            })}
-                            link={item.link}
-                            terms={item.terms}
-                          />
-                        ))
-                      }
-                    </Await>
-                  </Suspense>
-                </div>
-                <Link to="/" className="text-primary">
-                  Lihat semua
-                </Link>
+            <Link to="/radio" className="btn">
+              Lihat Semua <BiChevronRight size={20} />
+            </Link>
+          </div>
+        </div>
+      </div>
+      <Container className="mt-2 pb-36 sm:pb-20">
+        <TwoColumn
+          left={
+            <>
+              <div
+                className="sticky right-0 mb-4 pt-2 pb-2 bg-base-100"
+                style={{ top: 64, zIndex: 1 }}
+              >
+                <Tab
+                  currentId={publisher}
+                  items={[
+                    { id: "", title: "Beranda", href: "/" },
+                    ...(publishers?.map((item) => ({
+                      id: item.slug,
+                      title: item.title,
+                      href: `/?publisher=${item.slug}`,
+                    })) || []),
+                  ]}
+                />
               </div>
-            </div>
-            {/* <div>
+              <main>
+                <ArticleList contents={contents || []} />
+              </main>
+              <Pagination
+                page={page}
+                totalPage={totalPage}
+                buildUrl={(page) => {
+                  const params: Record<string, string> = {};
+                  if (publisher) {
+                    params.publisher = publisher;
+                  }
+                  if (page) {
+                    params.page = String(page);
+                  }
+                  const searchParams = new URLSearchParams(params);
+                  return `/?${searchParams.toString()}`;
+                }}
+              />
+            </>
+          }
+          right={
+            <>
+              <div>
+                <h2 className="font-bold text-lg">Pilihan Editor</h2>
+                <div className="mt-2">
+                  <div className="flex flex-col gap-2">
+                    <Suspense fallback={<EditorPickFallback />}>
+                      <Await
+                        resolve={editorPicksPromise}
+                        errorElement={<EditorPickFallback />}
+                      >
+                        {({ data: editorPicks }) =>
+                          editorPicks?.map((item) => (
+                            <ArticleItemSmall
+                              key={item.id}
+                              title={item.title}
+                              slug={item.slug}
+                              publisher={{
+                                name: item.publishers?.title,
+                                logoUrl: item.publishers?.logo_url,
+                                slug: item.publishers?.slug,
+                              }}
+                              readDuration={item.read_stats?.minutes}
+                              detailUrl={getArticleUrl({
+                                publisherSlug: item.publishers.slug,
+                                articleSlug: item.slug,
+                              })}
+                              link={item.link}
+                              terms={item.terms}
+                            />
+                          ))
+                        }
+                      </Await>
+                    </Suspense>
+                  </div>
+                  {/* <Link to="/" className="text-primary">
+                    Lihat semua
+                  </Link> */}
+                </div>
+              </div>
+              {/* <div>
               <div className="alert p-4">
                 <div className="flex flex-col gap-2">
                   <h3 className="font-bold text-xl">Menulis di Al-Faidah</h3>
@@ -227,44 +274,45 @@ export default function Index() {
                 </div>
               </div>
             </div> */}
-            <h2 className="font-bold text-lg">Tag rekomendasi</h2>
-            <div>
-              <div className="flex flex-row flex-wrap gap-2">
-                <Suspense fallback={<RecommendedTopicFallback />}>
-                  <Await
-                    resolve={recommendedTopicsPromise}
-                    errorElement={<RecommendedTopicFallback />}
-                  >
-                    {({ data: topics }) => {
-                      return topics?.map(
-                        (item: {
-                          id: string;
-                          slug: string;
-                          name: string;
-                          total_contents: number;
-                        }) => (
-                          <Link
-                            to={`/tag/${item.slug}`}
-                            key={item.slug}
-                            className="btn btn-sm"
-                          >
-                            {item.name}
-                          </Link>
-                        )
-                      );
-                    }}
-                  </Await>
-                </Suspense>
+              <h2 className="font-bold text-lg">Tag rekomendasi</h2>
+              <div>
+                <div className="flex flex-row flex-wrap gap-2">
+                  <Suspense fallback={<RecommendedTopicFallback />}>
+                    <Await
+                      resolve={recommendedTopicsPromise}
+                      errorElement={<RecommendedTopicFallback />}
+                    >
+                      {({ data: topics }) => {
+                        return topics?.map(
+                          (item: {
+                            id: string;
+                            slug: string;
+                            name: string;
+                            total_contents: number;
+                          }) => (
+                            <Link
+                              to={`/tag/${item.slug}`}
+                              key={item.slug}
+                              className="btn btn-sm"
+                            >
+                              {item.name}
+                            </Link>
+                          )
+                        );
+                      }}
+                    </Await>
+                  </Suspense>
+                </div>
+                <div className="mt-2">
+                  <Link to="/cari/tag?q=" className="text-primary">
+                    Cari tag
+                  </Link>
+                </div>
               </div>
-              <div className="mt-2">
-                <Link to="/" className="text-primary">
-                  Lihat semua tag
-                </Link>
-              </div>
-            </div>
-          </>
-        }
-      />
+            </>
+          }
+        />
+      </Container>
     </SharedLayout>
   );
 }

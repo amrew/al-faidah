@@ -16,7 +16,7 @@ import { v4 as uuidv4 } from "uuid";
 import { SharedLayout } from "~/components/shared-layout";
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: "Settings Embed - Al Faidah" }];
+  return [{ title: "Settings Embed - Radio Islam" }];
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -132,9 +132,7 @@ export default function Radio() {
   const { radios, currentItem } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
 
-  const [theme, setTheme] = useState<ThemeName>(
-    currentItem?.theme || "cupcake"
-  );
+  const [theme, setTheme] = useState<ThemeName>(currentItem?.theme || "rii");
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>(
     currentItem?.items.reduce(
       (acc: string[], v: string) => ({

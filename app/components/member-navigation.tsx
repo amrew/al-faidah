@@ -19,12 +19,15 @@ export function MemberNavigation() {
 
   return user ? (
     <>
-      <Link to="/favorite/radio" className="btn btn-ghost btn-circle btn-sm">
+      <Link to="/favorite/radio" className="btn btn-circle btn-sm">
         <BsBookmark />
       </Link>
       <div className="dropdown dropdown-end">
-        <label tabIndex={0} className="btn btn-ghost avatar placeholder gap-2">
-          <div className="bg-neutral-focus text-neutral-content rounded-full w-8">
+        <label
+          tabIndex={0}
+          className="btn btn-ghost avatar placeholder gap-2 text-neutral-content"
+        >
+          <div className="bg-accent text-accent-content rounded-full w-8">
             <span className="text-xs">{initial}</span>
           </div>
           <div>{firstName}</div>

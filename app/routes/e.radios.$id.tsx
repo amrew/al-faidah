@@ -27,7 +27,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     getAllTracks(),
   ]);
 
-  const theme = radio?.theme || "cupcake";
+  const theme = radio?.theme || "rii";
   const ids = radio?.items || [];
 
   const mapIds: Record<string, boolean> = {};

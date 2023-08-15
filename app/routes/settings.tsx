@@ -16,7 +16,7 @@ import { useSupabase } from "~/hooks/useSupabase";
 import { isLoggedIn } from "~/utils/authUtils.server";
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: "Settings - Al Faidah" }];
+  return [{ title: "Settings - Radio Islam" }];
 };
 
 export const loader = async ({ request }: LoaderArgs) => {

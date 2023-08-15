@@ -50,7 +50,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 export const meta: V2_MetaFunction = ({ data }) => {
   const { normalizedKeyword } = data;
   return [
-    { title: `Pencarian '${normalizedKeyword}' - Al Faidah` },
+    { title: `Pencarian '${normalizedKeyword}' - Radio Islam` },
     {
       name: "description",
       content:

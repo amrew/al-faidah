@@ -20,7 +20,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export const meta: V2_MetaFunction = ({ data }) => {
   return [
-    { title: `Pencarian artikel - Al Faidah` },
+    { title: `Pencarian artikel - Radio Islam` },
     {
       name: "description",
       content:

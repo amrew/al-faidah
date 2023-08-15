@@ -92,7 +92,7 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: "Register - Al Faidah" }];
+  return [{ title: "Register - Radio Islam" }];
 };
 
 export default function AuthRegister() {

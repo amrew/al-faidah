@@ -87,7 +87,7 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: "Verifikasi - Al Faidah" }];
+  return [{ title: "Verifikasi - Radio Islam" }];
 };
 
 export default function AuthLogin() {

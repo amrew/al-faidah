@@ -32,7 +32,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: `Radio Favorite - Al Faidah` }];
+  return [{ title: `Radio Favorite - Radio Islam` }];
 };
 
 export default function FavoriteRadios() {

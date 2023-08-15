@@ -96,7 +96,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 export const meta: V2_MetaFunction = ({ data }) => {
   const { topic } = data;
   return [
-    { title: `${topic.name} - Al Faidah` },
+    { title: `${topic.name} - Radio Islam` },
     {
       name: "description",
       content: `Artikel yang berkaitan dengan ${topic.name}`,

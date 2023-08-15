@@ -98,7 +98,7 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: "Login - Al Faidah" }];
+  return [{ title: "Login - Radio Islam" }];
 };
 
 const messageMap: Record<string, string> = {

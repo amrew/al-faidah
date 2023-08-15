@@ -6,7 +6,7 @@ import { useQuery } from "react-query";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
-  const theme = url.searchParams.get("theme") || "cupcake";
+  const theme = url.searchParams.get("theme") || "rii";
   const mode = url.searchParams.get("mode") || "card";
 
   const id = params.id;
@@ -31,7 +31,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 export const meta: V2_MetaFunction = ({ data }) => {
   const { track } = data;
   return [
-    { title: `${track.name} - Al Faidah` },
+    { title: `${track.name} - Radio Islam` },
     {
       name: "description",
       content: `${track.name}`,

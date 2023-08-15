@@ -68,7 +68,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export const meta: V2_MetaFunction = ({ data }) => {
   return [
-    { title: `Artikel Favorite - Al Faidah` },
+    { title: `Artikel Favorite - Radio Islam` },
     {
       name: "description",
       content:

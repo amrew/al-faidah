@@ -14,7 +14,7 @@ export type TabProps = {
 
 export function Tab({ items, currentId }: TabProps) {
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto hide-scrollbar">
       <nav className="flex flex-row">
         {items
           .filter((item) => !item.hide)
