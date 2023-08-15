@@ -42,10 +42,10 @@ export type ArticleItemProps = {
     answer?: string;
     source?: string;
     link?: string;
-    gpt?: {
-      summary: string;
-      createdAt: string;
-    };
+  } | null;
+  gpt?: {
+    summary: string;
+    createdAt: string;
   } | null;
   link: string;
   toggleLikeLoading?: boolean;
@@ -420,7 +420,7 @@ export function ArticleDetail(
   const hasAudio = props.content.includes("<audio");
   const $ = cheerio.load(props.content);
 
-  const gpt = props.metadata?.gpt;
+  const gpt = props.gpt;
 
   const description = props.metadata?.answer ? (
     <div>

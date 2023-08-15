@@ -34,7 +34,7 @@ export function MemberNavigation() {
           className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 gap-2 z-50"
         >
           <li>
-            <Link to="/settings/app">Radio App</Link>
+            <Link to="/settings/radio">Radio App</Link>
           </li>
           <li>
             <button onClick={() => logout()}>Logout</button>

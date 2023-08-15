@@ -50,19 +50,13 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
         <div className="flex-none hidden sm:flex">
           <ul className="menu menu-sm menu-horizontal bg-base-200 rounded-box gap-2">
             <li>
-              <NavLink to="/">
-                <BiHome size={20} /> Beranda
-              </NavLink>
+              <NavLink to="/">Beranda</NavLink>
             </li>
             <li>
-              <NavLink to="/radio">
-                <BiRadio size={20} /> Radio
-              </NavLink>
+              <NavLink to="/radio">Radio</NavLink>
             </li>
             <li>
-              <NavLink to="/tag/audio-islami">
-                <BiMicrophone size={20} /> Audio
-              </NavLink>
+              <NavLink to="/tag/audio">Audio</NavLink>
             </li>
           </ul>
         </div>

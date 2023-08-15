@@ -44,12 +44,8 @@ export type ArticleType = {
     answer?: string;
     source?: string;
     link?: string;
-    gpt?: {
-      summary: string;
-      createdAt: string;
-    };
   } | null;
-  gpt: {
+  gpt?: {
     summary: string;
     createdAt: string;
   } | null;

@@ -17,7 +17,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       .select<any, ArticleType>(
         `id, title, slug, summary, description, link, image, created_at, 
         read_stats, terms, taxonomies( slug, name ), publishers!inner( title, logo_url, web_url, slug ),
-        author, metadata`
+        author, metadata, gpt`
       )
       .eq("slug", slug)
       .eq("publishers.slug", publisherSlug)
@@ -59,11 +59,7 @@ export default function Detail() {
   const { item } = useLoaderData<typeof loader>();
 
   return (
-    <SharedLayout
-      bottomNavShown={false}
-      hasBackButton={true}
-      contentClassName="max-w-2xl"
-    >
+    <SharedLayout bottomNavShown={false} hasBackButton={true}>
       <ArticleDetail
         key={item.slug}
         slug={item.slug}
@@ -83,6 +79,7 @@ export default function Detail() {
         sourceLink={item.link}
         metadata={item.metadata}
         link={item.link}
+        gpt={item.gpt}
       />
     </SharedLayout>
   );

@@ -25,7 +25,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     supabase
       .from("contents")
       .select<any, ArticleType>(
-        `id, description, metadata, publishers!inner( slug )`
+        `id, description, gpt, publishers!inner( slug )`
       )
       .eq("slug", slug)
       .eq("publishers.slug", publisherSlug)
@@ -81,18 +81,13 @@ export const loader = async ({ request }: LoaderArgs) => {
           summary += params.text;
 
           if (item && params.finish) {
-            const metadata = {
-              ...(item.metadata || {}),
-              gpt: {
-                summary,
-                createdAt: new Date().toISOString(),
-              },
+            const gpt = {
+              ...item.gpt,
+              summary,
+              createdAt: new Date().toISOString(),
             };
 
-            await supabase
-              .from("contents")
-              .update({ metadata })
-              .eq("id", item.id);
+            await supabase.from("contents").update({ gpt }).eq("id", item.id);
           }
 
           if (!streamingDone) {

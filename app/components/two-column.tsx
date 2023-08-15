@@ -6,12 +6,15 @@ export type TwoColumnProps = {
   right: React.ReactNode;
   rightClassName?: string;
   reversed?: boolean;
+  gap?: string;
 };
 
 export function TwoColumn(props: TwoColumnProps) {
   return (
     <div
-      className={`flex justify-end p-4 md:px-8 gap-4 lg:gap-16 ${
+      className={`flex justify-end p-4 md:px-8 ${
+        props.gap || "gap-4 lg:gap-16"
+      } ${
         props.reversed
           ? "flex-col-reverse md:flex-row-reverse"
           : "flex-col md:flex-row"
