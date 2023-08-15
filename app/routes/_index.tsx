@@ -118,7 +118,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export const meta: V2_MetaFunction = () => {
   return [
-    { title: "Radio Islam - Kajian Islam" },
+    { title: "Radio Islam Indonesia" },
     {
       name: "description",
       content:
