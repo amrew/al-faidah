@@ -16,7 +16,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       .from("contents")
       .select<any, ArticleType>(
         `id, title, slug, summary, description, link, image, created_at, 
-        read_stats, terms, taxonomies( slug, name ), publishers!inner( title, logo_url, web_url, slug ),
+        read_stats, terms, publishers!inner( title, logo_url, web_url, slug ),
         author, metadata, gpt`
       )
       .eq("slug", slug)

@@ -36,7 +36,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const getContents = async () => {
     let query = supabase.from("contents").select<any, ArticleType>(
       `id, title, slug, summary, image, created_at, link, 
-      read_stats, terms, taxonomies!inner( slug, name ), publishers!inner( title, slug, logo_url, web_url ), 
+      read_stats, terms, publishers!inner( title, slug, logo_url, web_url ), 
       author`
     );
 
@@ -53,10 +53,10 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const getContentCount = async () => {
     let query = supabase
       .from("contents")
-      .select(
-        "id, taxonomies!inner( slug ), publishers!inner( slug, status )",
-        { count: "exact", head: true }
-      );
+      .select("id, publishers!inner( slug, status )", {
+        count: "exact",
+        head: true,
+      });
 
     if (topicSlug) {
       query = query.contains("terms", [topicSlug]);

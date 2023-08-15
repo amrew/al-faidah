@@ -1,6 +1,6 @@
 import { Link } from "@remix-run/react";
 
-export type TaxonomiesResultProps = {
+export type TagsResultProps = {
   items: Array<{
     id: string;
     slug: string;
@@ -9,7 +9,7 @@ export type TaxonomiesResultProps = {
   keyword: string;
 };
 
-export function TaxonomiesResult(props: TaxonomiesResultProps) {
+export function TagsResult(props: TagsResultProps) {
   const { items, keyword } = props;
   return (
     <div className="flex flex-col gap-2">

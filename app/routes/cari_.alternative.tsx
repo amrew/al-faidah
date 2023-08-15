@@ -6,7 +6,7 @@ import { createServerSupabase } from "~/clients/createServerSupabase";
 import { SharedLayout } from "~/components/shared-layout";
 import { TwoColumn } from "~/components/two-column";
 import { Tab } from "~/components/tab";
-import { TaxonomiesResult } from "~/components/taxonomies-result";
+import { TagsResult } from "~/components/tags-result";
 import { ArticleList } from "~/components/article/article-list";
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -31,7 +31,7 @@ export const loader = async ({ request }: LoaderArgs) => {
         .from("contents")
         .select<any, ArticleType>(
           `id, title, slug, summary, image, created_at, read_stats, terms, link,
-          taxonomies( slug, name ), publishers( title, logo_url, web_url ), author`
+          publishers( title, logo_url, web_url ), author`
         )
         .textSearch("fts", `${searchParams}`)
         .range(offset, offset + itemsPerPage - 1)
@@ -141,7 +141,7 @@ export default function Articles() {
         }
         right={
           taxonomies && taxonomies.length > 0 ? (
-            <TaxonomiesResult items={taxonomies} keyword={keyword} />
+            <TagsResult items={taxonomies} keyword={keyword} />
           ) : null
         }
       />

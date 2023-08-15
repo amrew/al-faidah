@@ -30,7 +30,7 @@ export const loader = async ({ request }: LoaderArgs) => {
       .from("contents")
       .select<any, ArticleType>(
         `id, title, slug, summary, image, created_at, link, 
-        read_stats, taxonomies( slug, name ), publishers!inner( title, slug, logo_url, web_url ), 
+        read_stats, publishers!inner( title, slug, logo_url, web_url ), 
         author`
       )
       .range(offset, offset + itemsPerPage - 1)
