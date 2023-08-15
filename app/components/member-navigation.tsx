@@ -47,7 +47,7 @@ export function MemberNavigation() {
     </>
   ) : (
     <>
-      <Link to="/auth/login" className="btn-ghost btn normal-case btn-sm">
+      <Link to="/auth/login" className="btn normal-case btn-sm">
         Masuk
       </Link>
       <Link
