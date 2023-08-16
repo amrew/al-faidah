@@ -6,7 +6,7 @@ import {
   BiSkipPrevious,
   BiSkipNext,
 } from "react-icons/bi";
-import { BsBookmark, BsBookmarkFill, BsShare } from "react-icons/bs";
+import { BsBookmarkFill, BsShare } from "react-icons/bs";
 import { TbBookmarkPlus } from "react-icons/tb";
 import { ImEmbed2 } from "react-icons/im";
 import { RWebShare } from "react-web-share";
@@ -14,7 +14,7 @@ import type { TrackInfo } from "./radio-entity";
 import { useAudioContext } from "../audio/audio-context";
 import { APP_URL } from "../../utils/constant";
 import { PlayingAnimation } from "../playing-animation";
-import { useEffect, useRef, useState } from "react";
+import { type PropsWithChildren, useEffect, useRef, useState } from "react";
 import { Link } from "@remix-run/react";
 
 export type RadioItemProps = {
@@ -295,44 +295,66 @@ export function RadioItemPlayer({ item, embed }: RadioItemProps) {
   );
 }
 
+export function TextSkeleton(props: PropsWithChildren) {
+  return (
+    <span className="bg-base-300 animate-pulse">
+      <span className="opacity-0">{props.children}</span>
+    </span>
+  );
+}
+
 export function RadioItemLoading() {
   return (
     <div
-      className={`flex flex-1 flex-col border-base-300 rounded-md shadow-sm bg-base-100 border`}
+      className={`flex flex-1 flex-col border-base-300 rounded-md bg-base-100 shadow-sm border`}
     >
       <div className={`px-4 py-3 flex justify-between`}>
         <div className="flex flex-row gap-3">
-          <div className="w-10 h-10 rounded-md bg-base-300" />
+          <div className="w-10 h-10 rounded-md bg-base-300 animate-pulse" />
           <div>
-            <h2
-              className={`line-clamp-1 font-bold text-md w-32 sm:w-48 h-6 bg-base-300 animate-pulse`}
-            />
+            <h2 className={`line-clamp-1 font-bold text-md text-base-content`}>
+              <TextSkeleton>----------------</TextSkeleton>
+            </h2>
             <div className={`flex flex-row items-center gap-1`}>
-              <BiHeadphone size={16} className="text-gray-500" />{" "}
-              <span className="text-sm text-gray-500">-</span>
+              <BiHeadphone size={16} className="text-base-content opacity-70" />{" "}
+              <span className="text-sm text-base-content opacity-70">
+                <TextSkeleton>----</TextSkeleton>
+              </span>
             </div>
           </div>
         </div>
       </div>
       <div className="px-4 flex-1">
-        <p
-          className={`line-clamp-2 text-md text-base-content w-5/6 sm:w-48 h-12 bg-base-300  animate-pulse`}
-        />
+        <p className={`line-clamp-2 text-md text-base-content`}>
+          <TextSkeleton>------------------------------------</TextSkeleton>
+          <br />
+          <TextSkeleton>--------------------</TextSkeleton>
+        </p>
       </div>
       <div className={`px-4 py-3 flex justify-between`}>
         <div className="flex flex-row gap-2 items-center">
-          <button className={`btn btn-ghost btn-sm btn-circle`}>
-            <BsBookmark size={16} />
+          <button
+            type="button"
+            className={`btn btn-ghost btn-sm btn-circle`}
+            aria-label={"Simpan Radio"}
+          >
+            <TbBookmarkPlus size={16} />
           </button>
-          <label className={`btn btn-ghost btn-sm btn-circle`}>
+          <label
+            htmlFor="modal-embed"
+            className={`btn btn-ghost btn-sm btn-circle hidden md:flex`}
+          >
             <ImEmbed2 size={16} />
           </label>
-          <button className={`btn btn-ghost btn-sm btn-circle`}>
+          <button
+            className={`btn btn-ghost btn-sm btn-circle`}
+            aria-label="Share Radio"
+          >
             <BsShare size={16} />
           </button>
         </div>
         <div className="flex flex-row gap-2 items-center">
-          <button className={`btn btn-sm btn-primary`} disabled>
+          <button className={`btn btn-sm btn-primary`} aria-label="Putar Radio">
             <BiPlay size={24} color="white" />
           </button>
         </div>

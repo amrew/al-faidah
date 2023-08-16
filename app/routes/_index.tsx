@@ -17,6 +17,7 @@ import { Container } from "~/components/container";
 import { getTracks } from "~/components/radio/radio-service.server";
 import { RadioList } from "~/components/radio/radio-list";
 import { BiChevronRight } from "react-icons/bi";
+import { RadioItemLoading } from "~/components/radio/radio-item";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -95,6 +96,11 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const totalPage = count ? Math.ceil(count / itemsPerPage) : 0;
 
+  const getRadios = async () => {
+    const radios = await getTracks({ sortBy: "most" });
+    return radios.slice(0, 2);
+  };
+
   return defer(
     {
       publisher,
@@ -104,7 +110,7 @@ export const loader = async ({ request }: LoaderArgs) => {
       totalPage,
       editorPicks: getEditorPicks(),
       recommendedTopics: getRecommendedTopics(),
-      radios: (await getTracks({ sortBy: "most" })).slice(0, 2),
+      radios: getRadios(),
     },
     {
       headers: {
@@ -136,7 +142,7 @@ export default function Index() {
     totalPage,
     editorPicks: editorPicksPromise,
     recommendedTopics: recommendedTopicsPromise,
-    radios,
+    radios: radiosPromise,
   } = useLoaderData<typeof loader>();
 
   return (
@@ -171,10 +177,16 @@ export default function Index() {
             </div>
           </div>
           <div className="grid grid-cols-1 gap-4 w-full lg:w-80 overflow-y-auto hide-scrollbar">
-            <RadioList
-              items={radios}
-              getDetailUrl={(item) => `/radio/${item.alias}}`}
-            />
+            <Suspense fallback={<RadiosFallback />}>
+              <Await resolve={radiosPromise} errorElement={<RadiosFallback />}>
+                {(radios) => (
+                  <RadioList
+                    items={radios}
+                    getDetailUrl={(item) => `/radio/${item.alias}}`}
+                  />
+                )}
+              </Await>
+            </Suspense>
             <Link to="/radio" className="btn">
               Lihat Semua <BiChevronRight size={20} />
             </Link>
@@ -326,4 +338,8 @@ const RecommendedTopicFallback = () => {
     // eslint-disable-next-line jsx-a11y/anchor-has-content
     <button className="btn btn-sm" key={i}></button>
   ));
+};
+
+const RadiosFallback = () => {
+  return [...Array(2)].map((_, i) => <RadioItemLoading key={i} />);
 };

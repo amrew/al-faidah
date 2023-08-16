@@ -46,7 +46,7 @@ export function MemberNavigation() {
       </div>
     </>
   ) : (
-    <>
+    <div className="flex flex-row gap-2">
       <Link to="/auth/login" className="btn normal-case btn-sm">
         Masuk
       </Link>
@@ -56,6 +56,6 @@ export function MemberNavigation() {
       >
         Daftar
       </Link>
-    </>
+    </div>
   );
 }
