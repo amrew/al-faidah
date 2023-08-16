@@ -40,7 +40,7 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
       ) : (
         props.children
       )}
-      <header className="navbar gap-2 bg-neutral fixed top-0 left-0 right-0 z-10">
+      <header className="navbar gap-2 bg-primary-focus fixed top-0 left-0 right-0 z-10">
         {hasBackButton ? (
           <div className="sm:hidden">
             <BackButton withText={false} />
@@ -51,7 +51,7 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
         >
           <Link
             to="/"
-            className={`btn-ghost btn text-xl normal-case text-neutral-content`}
+            className={`btn-ghost btn text-xl normal-case text-primary-content`}
           >
             Radio Islam
           </Link>

@@ -184,7 +184,7 @@ export function ArticleItem(props: ArticleItemProps) {
         )}
         <Link
           to={props.detailUrl}
-          className="btn btn-primary btn-sm text-white"
+          className="btn btn-neutral btn-sm text-white"
         >
           Selengkapnya <FaShare />
         </Link>

@@ -127,7 +127,7 @@ export default function Radio() {
     <div className="flex flex-col p-4 md:p-8 gap-4">
       <div
         className="sticky right-0 mb-4 pt-2 pb-2 bg-base-100"
-        style={{ top: 65, zIndex: 1 }}
+        style={{ top: 64, zIndex: 1 }}
       >
         <Tab
           currentId={type == "syariah" ? "syariah" : "rii"}

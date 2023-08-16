@@ -45,9 +45,7 @@ export function Player() {
   );
 
   return track ? (
-    <div
-      className={`p-4 border-t border-t-secondary-focus bg-secondary relative`}
-    >
+    <div className={`p-4 border-t border-t-neutral-focus bg-neutral relative`}>
       {track.type === "audio" && duration ? (
         <input
           type="range"
