@@ -158,7 +158,7 @@ export function RadioItem({
           <button
             onClick={isActive ? onStop : onPlay}
             className={`btn btn-sm ${
-              isActive ? "btn-secondary" : "btn-primary"
+              isActive ? "btn-secondary" : "btn-neutral"
             }`}
             aria-label="Putar Radio"
           >

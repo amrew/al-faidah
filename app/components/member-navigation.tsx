@@ -18,14 +18,14 @@ export function MemberNavigation() {
   };
 
   return user ? (
-    <>
+    <div className="flex flex-row items-center gap-2 justify-end">
       <Link to="/favorite/radio" className="btn btn-circle btn-sm">
         <BsBookmark />
       </Link>
       <div className="dropdown dropdown-end">
         <label
           tabIndex={0}
-          className="btn btn-ghost avatar placeholder gap-2 text-neutral-content"
+          className="btn btn-ghost avatar placeholder gap-2 text-primary-content"
         >
           <div className="bg-accent text-accent-content rounded-full w-8">
             <span className="text-xs">{initial}</span>
@@ -44,9 +44,9 @@ export function MemberNavigation() {
           </li>
         </ul>
       </div>
-    </>
+    </div>
   ) : (
-    <div className="flex flex-row gap-2">
+    <div className="flex flex-row gap-2 justify-end">
       <Link
         to="/auth/login"
         className="btn btn-ghost text-primary-content normal-case btn-sm"

@@ -155,42 +155,51 @@ export default function Index() {
         }}
       >
         <div className="hero-overlay bg-opacity-60"></div>
-        <div className="hero-content text-neutral-content pt-16 pb-16 flex-col lg:flex-row gap-8">
-          <div className="max-w-lg">
-            <h1 className="mb-5 text-5xl font-bold">Radio Islam Indonesia</h1>
-            <p className="mb-2 text-xl">
-              Radionya Muslimin se-Nusantara telah hadir untuk Android dan Web.
-            </p>
-            <p className="mb-5">
-              Menebar dakwah Islam yang rahmatan 'lil 'alamin sesuai dengan
-              pemahaman dan jalan para salaf
-            </p>
-            <div className="flex flex-row gap-2">
-              <a href="https://play.google.com/store/apps/details?id=dev.oasemedia.radioislamindonesia&pli=1">
-                <img
-                  alt="Get it on Google Play"
-                  src="https://fmpdtfhmuqxfzmaxxsge.supabase.co/storage/v1/object/public/al-faidah/google-play-badge-1.png"
-                  width={240}
-                  height={92}
-                />
-              </a>
+        <div className="hero-content flex-col text-neutral-content pt-16">
+          <div className="flex flex-col items-center lg:flex-row gap-8">
+            <div className="w-full sm:max-w-lg">
+              <h1 className="mb-5 text-3xl sm:text-5xl font-bold">
+                Radio Islam Indonesia
+              </h1>
+              <p className="mb-2 text-xl">
+                Radionya Muslimin se-Nusantara telah hadir untuk Android dan
+                Web.
+              </p>
+              <p className="mb-5">
+                Menebar dakwah Islam yang rahmatan 'lil 'alamin sesuai dengan
+                pemahaman dan jalan para salaf
+              </p>
+              <div className="flex flex-row gap-2">
+                <a href="https://play.google.com/store/apps/details?id=dev.oasemedia.radioislamindonesia&pli=1">
+                  <img
+                    alt="Get it on Google Play"
+                    src="https://fmpdtfhmuqxfzmaxxsge.supabase.co/storage/v1/object/public/al-faidah/google-play-badge-1.png"
+                    width={160}
+                    height={60}
+                  />
+                </a>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 gap-4 w-full lg:w-80 overflow-y-auto hide-scrollbar">
+              <Suspense fallback={<RadiosFallback />}>
+                <Await
+                  resolve={radiosPromise}
+                  errorElement={<RadiosFallback />}
+                >
+                  {(radios) => (
+                    <RadioList
+                      items={radios}
+                      getDetailUrl={(item) => `/radio/${item.alias}}`}
+                    />
+                  )}
+                </Await>
+              </Suspense>
+              <Link to="/radio" className="btn">
+                Lihat Semua <BiChevronRight size={20} />
+              </Link>
             </div>
           </div>
-          <div className="grid grid-cols-1 gap-4 w-full lg:w-80 overflow-y-auto hide-scrollbar">
-            <Suspense fallback={<RadiosFallback />}>
-              <Await resolve={radiosPromise} errorElement={<RadiosFallback />}>
-                {(radios) => (
-                  <RadioList
-                    items={radios}
-                    getDetailUrl={(item) => `/radio/${item.alias}}`}
-                  />
-                )}
-              </Await>
-            </Suspense>
-            <Link to="/radio" className="btn">
-              Lihat Semua <BiChevronRight size={20} />
-            </Link>
-          </div>
+          <div className="h-8 w-full" id="content" />
         </div>
       </div>
       <Container className="mt-2 pb-36 sm:pb-20">
@@ -208,7 +217,7 @@ export default function Index() {
                     ...(publishers?.map((item) => ({
                       id: item.slug,
                       title: item.title,
-                      href: `/?publisher=${item.slug}`,
+                      href: `/?publisher=${item.slug}#content`,
                     })) || []),
                   ]}
                 />
@@ -228,7 +237,7 @@ export default function Index() {
                     params.page = String(page);
                   }
                   const searchParams = new URLSearchParams(params);
-                  return `/?${searchParams.toString()}`;
+                  return `/?${searchParams.toString()}#content`;
                 }}
               />
             </>

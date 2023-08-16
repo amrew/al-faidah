@@ -5,6 +5,7 @@ import { Link, NavLink } from "@remix-run/react";
 import { BiHome, BiMicrophone, BiRadio, BiSearch } from "react-icons/bi";
 import { BackButton } from "./back-button";
 import { twMerge } from "tailwind-merge";
+import { Container } from "./container";
 
 export type SharedLayoutProps = {
   footer?: ReactNode;
@@ -40,50 +41,57 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
       ) : (
         props.children
       )}
-      <header className="navbar gap-2 bg-primary-focus fixed top-0 left-0 right-0 z-10">
-        {hasBackButton ? (
-          <div className="sm:hidden">
-            <BackButton withText={false} />
-          </div>
-        ) : null}
-        <div
-          className={`flex-none ${hasSearchComponent ? "hidden sm:flex" : ""}`}
-        >
-          <Link
-            to="/"
-            className={`btn-ghost btn text-xl normal-case text-primary-content`}
+      <header className="navbar items-start gap-2 bg-primary border-b-primary-focus border-b fixed top-0 left-0 right-0 z-10">
+        <Container className="flex flex-1 gap-2">
+          {hasBackButton ? (
+            <div className="sm:hidden">
+              <BackButton withText={false} />
+            </div>
+          ) : null}
+          <div
+            className={`flex-none ${
+              hasSearchComponent ? "hidden sm:flex" : ""
+            }`}
           >
-            Radio Islam
-          </Link>
-        </div>
-        <div className="flex-none hidden sm:flex">
-          <ul className="menu menu-sm menu-horizontal bg-base-200 rounded-box gap-2">
-            <li>
-              <NavLink to="/">Beranda</NavLink>
-            </li>
-            <li>
-              <NavLink to="/radio">Radio</NavLink>
-            </li>
-            <li>
-              <NavLink to="/tag/audio">Audio</NavLink>
-            </li>
-          </ul>
-        </div>
-        {props.searchComponent}
-        <div
-          className={`flex-1 justify-end ${hasSearchComponent ? "hidden" : ""}`}
-        >
-          <Link to="/cari" className={`btn btn-circle btn-sm hidden sm:flex `}>
-            <BiSearch />
-          </Link>
-        </div>
-        <div
-          className={`flex-none gap-1 ${
-            hasSearchComponent ? "hidden md:block" : ""
-          }`}
-        >
-          <MemberNavigation />
-        </div>
+            <Link
+              to="/"
+              className={`btn-ghost btn text-xl normal-case text-primary-content`}
+            >
+              Radio Islam
+            </Link>
+          </div>
+          <div className="sm:flex-1 justify-center hidden sm:flex">
+            <ul className="menu menu-sm menu-horizontal bg-base-200 rounded-box gap-2">
+              <li>
+                <NavLink to="/">Beranda</NavLink>
+              </li>
+              <li>
+                <NavLink to="/radio">Radio</NavLink>
+              </li>
+              <li>
+                <NavLink to="/tag/audio">Audio</NavLink>
+              </li>
+            </ul>
+          </div>
+          {props.searchComponent}
+          <div
+            className={`flex justify-end ${hasSearchComponent ? "hidden" : ""}`}
+          >
+            <Link
+              to="/cari"
+              className={`btn btn-circle btn-sm hidden sm:flex `}
+            >
+              <BiSearch />
+            </Link>
+          </div>
+          <div
+            className={`flex-1 sm:flex-none justify-end ${
+              hasSearchComponent ? "hidden md:block" : ""
+            }`}
+          >
+            <MemberNavigation />
+          </div>
+        </Container>
       </header>
       <div className="fixed bottom-0 left-0 w-full z-10">
         {props.footer}
