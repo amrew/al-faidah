@@ -1,9 +1,10 @@
 import type { TrackInfo } from "../radio/radio-entity";
 import { RadioItem, RadioItemPlayer } from "../radio/radio-item";
-import { APP_URL, themes, type ThemeName } from "../../utils/constant";
+import { themes, type ThemeName } from "../../utils/constant";
 import { useState } from "react";
 import { BiCheck } from "react-icons/bi";
 import { createPortal } from "react-dom";
+import { useEnv } from "~/hooks/useEnv";
 
 function generateIFrameTemplate(
   src: string,
@@ -22,6 +23,7 @@ export type ModalEmbedProps = {
 };
 
 export function ModalEmbed({ track }: ModalEmbedProps) {
+  const env = useEnv();
   const [theme, setTheme] = useState<ThemeName>("rii");
   const [mode, setMode] = useState<"card" | "player">("card");
   return createPortal(
@@ -75,7 +77,7 @@ export function ModalEmbed({ track }: ModalEmbedProps) {
                 <code>
                   {track
                     ? generateIFrameTemplate(
-                        `${APP_URL}/e/radio/${track.alias}?theme=${theme}&mode=${mode}`,
+                        `${env.APP_URL}/e/radio/${track.alias}?theme=${theme}&mode=${mode}`,
                         mode === "player"
                           ? { width: "320", height: "480" }
                           : { width: "320", height: "220" }

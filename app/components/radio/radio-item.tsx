@@ -12,10 +12,10 @@ import { ImEmbed2 } from "react-icons/im";
 import { RWebShare } from "react-web-share";
 import type { TrackInfo } from "./radio-entity";
 import { useAudioContext } from "../audio/audio-context";
-import { APP_URL } from "../../utils/constant";
 import { PlayingAnimation } from "../playing-animation";
 import { type PropsWithChildren, useEffect, useRef, useState } from "react";
 import { Link } from "@remix-run/react";
+import { useEnv } from "~/hooks/useEnv";
 
 export type RadioItemProps = {
   item: TrackInfo;
@@ -44,11 +44,12 @@ export function RadioItem({
   onLikeClick,
   onUnlikeClick,
 }: RadioItemProps) {
+  const env = useEnv();
   const { track, play, stop, audioState } = useAudioContext();
   const isActive = track?.url === item.trackUrl;
   const isLive = item.status === "LIVE";
 
-  const shareLink = shareUrl || `${APP_URL}/radio/${item.alias}`;
+  const shareLink = shareUrl || `${env.APP_URL}/radio/${item.alias}`;
   const shareDescription = `Yuk simak kajian: ${item.trackTitle} di ${item.name}`;
 
   const onStop = () => stop();

@@ -31,6 +31,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     SUPABASE_URL: process.env.SUPABASE_URL!,
     SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY!,
     GA_ID: process.env.GA_ID!,
+    APP_URL: process.env.APP_URL || appConfig.url,
   };
 
   const { supabase, response } = createServerSupabase(request);

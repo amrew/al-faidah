@@ -6,7 +6,9 @@ import {
 } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { createServerSupabase } from "~/clients/createServerSupabase";
-import { APP_URL, QUOTA_CREATION } from "~/utils/constant";
+import { useEnv } from "~/hooks/useEnv";
+import { appConfig } from "~/utils/appConfig";
+import { QUOTA_CREATION } from "~/utils/constant";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: `Settings App - ${appConfig.title}` }];
@@ -69,6 +71,7 @@ function generateIFrameTemplate(
 }
 
 export default function SettingsApp() {
+  const env = useEnv();
   const { radios, roleId } = useLoaderData<typeof loader>();
   const radiosLength = radios?.length || 0;
 
@@ -102,10 +105,13 @@ export default function SettingsApp() {
               <div className="mockup-code w-full">
                 <pre>
                   <code>
-                    {generateIFrameTemplate(`${APP_URL}/e/radios/${item.id}`, {
-                      width: "320",
-                      height: "480",
-                    })}
+                    {generateIFrameTemplate(
+                      `${env.APP_URL}/e/radios/${item.id}`,
+                      {
+                        width: "320",
+                        height: "480",
+                      }
+                    )}
                   </code>
                 </pre>
               </div>
