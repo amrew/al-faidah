@@ -11,6 +11,7 @@ import { BackButton } from "~/components/back-button";
 import { v4 as uuidv4 } from "uuid";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { isLoggedIn } from "~/utils/authUtils.server";
+import { appConfig } from "~/utils/appConfig";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const loggedIn = await isLoggedIn(request);
@@ -87,7 +88,13 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: "Verifikasi - Al Faidah" }];
+  return [
+    { title: `Verifikasi - ${appConfig.title}` },
+    {
+      name: "description",
+      content: appConfig.metaDescription,
+    },
+  ];
 };
 
 export default function AuthLogin() {

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ModalEmbed } from "../modal/modal-embed";
+import { ModalEmbed } from "../modal/modal-embed.client";
 import type { TrackInfo } from "./radio-entity";
 import { RadioItem, RadioItemLoading, RadioItemPlayer } from "./radio-item";
 import { Link, useRevalidator } from "@remix-run/react";
@@ -118,7 +118,7 @@ export function RadioList(props: RadioListProps) {
         <RadioNotFound />
       )}
 
-      <ModalEmbed track={selectedTrack} />
+      {renderOnClient ? <ModalEmbed track={selectedTrack} /> : null}
     </>
   );
 }

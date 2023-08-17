@@ -10,10 +10,11 @@ import { useLoaderData } from "@remix-run/react";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { Tab } from "~/components/tab";
 import { useUser } from "~/hooks/useSupabase";
+import { appConfig } from "~/utils/appConfig";
 
 export const meta: V2_MetaFunction = () => {
   return [
-    { title: "Radio - Al Faidah" },
+    { title: `Radio - ${appConfig.title}` },
     {
       name: "description",
       content: "Berisi kajian Asatidzah Ahlus Sunnah Wal Jama'ah",
@@ -127,7 +128,7 @@ export default function Radio() {
     <div className="flex flex-col p-4 md:p-8 gap-4">
       <div
         className="sticky right-0 mb-4 pt-2 pb-2 bg-base-100"
-        style={{ top: 65, zIndex: 1 }}
+        style={{ top: 64, zIndex: 1 }}
       >
         <Tab
           currentId={type == "syariah" ? "syariah" : "rii"}

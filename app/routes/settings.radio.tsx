@@ -9,7 +9,7 @@ import { createServerSupabase } from "~/clients/createServerSupabase";
 import { APP_URL, QUOTA_CREATION } from "~/utils/constant";
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: "Settings App - Al Faidah" }];
+  return [{ title: `Settings App - ${appConfig.title}` }];
 };
 
 export const loader = async ({ request }: LoaderArgs) => {

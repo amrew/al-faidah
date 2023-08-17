@@ -8,6 +8,7 @@ import { TwoColumn } from "~/components/two-column";
 import { Tab } from "~/components/tab";
 import { TagsResult } from "~/components/tags-result";
 import { ArticleList } from "~/components/article/article-list";
+import { appConfig } from "~/utils/appConfig";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -69,11 +70,10 @@ export const loader = async ({ request }: LoaderArgs) => {
 export const meta: V2_MetaFunction = ({ data }) => {
   const { normalizedKeyword } = data;
   return [
-    { title: `Pencarian '${normalizedKeyword}' - Al Faidah` },
+    { title: `Pencarian '${normalizedKeyword}' - ${appConfig.title}` },
     {
       name: "description",
-      content:
-        "Media dakwah Ahlus Sunnah Wal Jama'ah yang berisi bermacam-macam artikel, kajian, radio dan audio islami",
+      content: appConfig.metaDescription,
     },
   ];
 };

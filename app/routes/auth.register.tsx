@@ -20,6 +20,7 @@ import {
 } from "@remix-run/node";
 import { isLoggedIn } from "~/utils/authUtils.server";
 import { createServerSupabase } from "~/clients/createServerSupabase";
+import { appConfig } from "~/utils/appConfig";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const loggedIn = await isLoggedIn(request);
@@ -92,7 +93,13 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: "Register - Al Faidah" }];
+  return [
+    { title: `Register - ${appConfig.title}` },
+    {
+      name: "description",
+      content: appConfig.metaDescription,
+    },
+  ];
 };
 
 export default function AuthRegister() {

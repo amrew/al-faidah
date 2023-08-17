@@ -14,9 +14,10 @@ import { RadioList } from "~/components/radio/radio-list";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { v4 as uuidv4 } from "uuid";
 import { SharedLayout } from "~/components/shared-layout";
+import { appConfig } from "~/utils/appConfig";
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: "Settings Embed - Al Faidah" }];
+  return [{ title: `Settings Embed - ${appConfig.title}` }];
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -132,9 +133,7 @@ export default function Radio() {
   const { radios, currentItem } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
 
-  const [theme, setTheme] = useState<ThemeName>(
-    currentItem?.theme || "cupcake"
-  );
+  const [theme, setTheme] = useState<ThemeName>(currentItem?.theme || "rii");
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>(
     currentItem?.items.reduce(
       (acc: string[], v: string) => ({

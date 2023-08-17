@@ -3,6 +3,7 @@ export const APP_URL = "https://al-faidah.com";
 export const QUOTA_CREATION = 2;
 
 export type ThemeName =
+  | "rii"
   | "light"
   | "cupcake"
   | "pastel"
@@ -12,6 +13,7 @@ export type ThemeName =
   | "autumn";
 
 export const themes: { name: ThemeName; color: string }[] = [
+  { name: "rii", color: "bg-red-400" },
   { name: "light", color: "bg-gray-300" },
   { name: "cupcake", color: "bg-teal-400" },
   { name: "pastel", color: "bg-purple-200" },

@@ -10,7 +10,11 @@ export function BackButton(props: Props) {
   const navigate = useNavigate();
   const goBack = () => navigate(-1);
   return (
-    <button type="button" className="btn-ghost btn" onClick={() => goBack()}>
+    <button
+      type="button"
+      className="btn-ghost btn text-neutral-content"
+      onClick={() => goBack()}
+    >
       <BiArrowBack size={20} /> {withText ? "Kembali" : ""}
     </button>
   );

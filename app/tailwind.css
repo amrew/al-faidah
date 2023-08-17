@@ -6,7 +6,7 @@ html, body {
   height: 100%;
 }
 
-body.navigate-loading main {
+body.navigate-loading main, body.navigate-loading .main-content {
   opacity: 0.6;
 }
 
@@ -67,4 +67,8 @@ body.navigate-loading main {
 
 .rti--container {
   border-color: hsl(var(--b2));
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }

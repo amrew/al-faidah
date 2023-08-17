@@ -4,6 +4,7 @@ import { type LoaderArgs, json, type V2_MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { SharedLayout } from "~/components/shared-layout";
 import { useQuery } from "react-query";
+import { appConfig } from "~/utils/appConfig";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const id = params.id;
@@ -27,7 +28,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 export const meta: V2_MetaFunction = ({ data }) => {
   const { track } = data;
   return [
-    { title: `${track.name} - Al Faidah` },
+    { title: `${track.name} - ${appConfig.title}` },
     {
       name: "description",
       content: track.name,

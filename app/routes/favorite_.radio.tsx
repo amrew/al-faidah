@@ -12,6 +12,7 @@ import { RefreshButton } from "~/components/refresh-button";
 import { Tab } from "~/components/tab";
 import { TwoColumn } from "~/components/two-column";
 import { isLoggedIn } from "~/utils/authUtils.server";
+import { appConfig } from "~/utils/appConfig";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const loggedIn = await isLoggedIn(request);
@@ -32,7 +33,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: `Radio Favorite - Al Faidah` }];
+  return [{ title: `Radio Favorite - ${appConfig.title}` }];
 };
 
 export default function FavoriteRadios() {

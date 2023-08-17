@@ -18,13 +18,16 @@ export function MemberNavigation() {
   };
 
   return user ? (
-    <>
-      <Link to="/favorite/radio" className="btn btn-ghost btn-circle btn-sm">
+    <div className="flex flex-row items-center gap-2 justify-end">
+      <Link to="/favorite/radio" className="btn btn-circle btn-sm">
         <BsBookmark />
       </Link>
       <div className="dropdown dropdown-end">
-        <label tabIndex={0} className="btn btn-ghost avatar placeholder gap-2">
-          <div className="bg-neutral-focus text-neutral-content rounded-full w-8">
+        <label
+          tabIndex={0}
+          className="btn btn-ghost avatar placeholder gap-2 text-primary-content"
+        >
+          <div className="bg-accent text-accent-content rounded-full w-8">
             <span className="text-xs">{initial}</span>
           </div>
           <div>{firstName}</div>
@@ -41,18 +44,18 @@ export function MemberNavigation() {
           </li>
         </ul>
       </div>
-    </>
+    </div>
   ) : (
-    <>
-      <Link to="/auth/login" className="btn-ghost btn normal-case btn-sm">
+    <div className="flex flex-row gap-2 justify-end">
+      <Link
+        to="/auth/login"
+        className="btn btn-ghost text-primary-content normal-case btn-sm"
+      >
         Masuk
       </Link>
-      <Link
-        to="/auth/register"
-        className="btn-primary btn normal-case text-white btn-sm"
-      >
+      <Link to="/auth/register" className="btn normal-case btn-sm">
         Daftar
       </Link>
-    </>
+    </div>
   );
 }

@@ -3,6 +3,7 @@ import { RadioItem, RadioItemPlayer } from "../radio/radio-item";
 import { APP_URL, themes, type ThemeName } from "../../utils/constant";
 import { useState } from "react";
 import { BiCheck } from "react-icons/bi";
+import { createPortal } from "react-dom";
 
 function generateIFrameTemplate(
   src: string,
@@ -21,12 +22,12 @@ export type ModalEmbedProps = {
 };
 
 export function ModalEmbed({ track }: ModalEmbedProps) {
-  const [theme, setTheme] = useState<ThemeName>("cupcake");
+  const [theme, setTheme] = useState<ThemeName>("rii");
   const [mode, setMode] = useState<"card" | "player">("card");
-  return (
-    <>
+  return createPortal(
+    <div>
       <input type="checkbox" id="modal-embed" className="modal-toggle" />
-      <div className="modal">
+      <div className="modal z-20">
         <div className="modal-box w-11/12 max-w-5xl bg-white flex flex-row gap-4">
           <div className="overflow-y-auto flex flex-col gap-4">
             <div>
@@ -109,6 +110,7 @@ export function ModalEmbed({ track }: ModalEmbedProps) {
           Close
         </label>
       </div>
-    </>
+    </div>,
+    document.body
   );
 }

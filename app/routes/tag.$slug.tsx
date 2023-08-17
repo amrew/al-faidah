@@ -6,6 +6,7 @@ import { Pagination } from "~/components/pagination";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { TwoColumn } from "~/components/two-column";
 import { ArticleList } from "~/components/article/article-list";
+import { appConfig } from "~/utils/appConfig";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const topicSlug = params.slug;
@@ -96,7 +97,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 export const meta: V2_MetaFunction = ({ data }) => {
   const { topic } = data;
   return [
-    { title: `${topic.name} - Al Faidah` },
+    { title: `${topic.name} - ${appConfig.title}` },
     {
       name: "description",
       content: `Artikel yang berkaitan dengan ${topic.name}`,
@@ -115,7 +116,7 @@ export default function Index() {
           <>
             <div
               className="sticky right-0 mb-4 pt-2 pb-2 bg-base-100"
-              style={{ top: 65, zIndex: 1 }}
+              style={{ top: 64, zIndex: 1 }}
             >
               <h1 className="text-2xl font-bold">{topic?.name}</h1>
             </div>
