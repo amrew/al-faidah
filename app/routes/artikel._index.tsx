@@ -4,14 +4,14 @@ import { useLoaderData } from "@remix-run/react";
 import { Pagination } from "~/components/pagination";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { ArticleList } from "~/components/article/article-list";
+import { appConfig } from "~/utils/appConfig";
 
 export const meta: V2_MetaFunction = () => {
   return [
-    { title: "Radio Islam - Kajian Islam" },
+    { title: "Kajian Islam" },
     {
       name: "description",
-      content:
-        "Media dakwah Ahlus Sunnah Wal Jama'ah yang berisi bermacam-macam artikel, kajian, radio dan audio islami",
+      content: appConfig.metaDescription,
     },
   ];
 };

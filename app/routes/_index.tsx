@@ -18,6 +18,7 @@ import { getTracks } from "~/components/radio/radio-service.server";
 import { RadioList } from "~/components/radio/radio-list";
 import { BiChevronRight } from "react-icons/bi";
 import { RadioItemLoading } from "~/components/radio/radio-item";
+import { appConfig } from "~/utils/appConfig";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -124,11 +125,10 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export const meta: V2_MetaFunction = () => {
   return [
-    { title: "Radio Islam Indonesia" },
+    { title: appConfig.title },
     {
       name: "description",
-      content:
-        "Media dakwah Ahlus Sunnah Wal Jama'ah yang berisi bermacam-macam artikel, kajian, radio dan audio islami",
+      content: appConfig.metaDescription,
     },
   ];
 };
@@ -150,8 +150,7 @@ export default function Index() {
       <div
         className="hero mt-16 main-content"
         style={{
-          backgroundImage:
-            "url(https://fmpdtfhmuqxfzmaxxsge.supabase.co/storage/v1/object/public/al-faidah/bg-rii-1.jpg)",
+          backgroundImage: `url("${appConfig.backgroundUrl}")`,
         }}
       >
         <div className="hero-overlay bg-opacity-60"></div>
@@ -159,25 +158,12 @@ export default function Index() {
           <div className="flex flex-col items-center lg:flex-row gap-8">
             <div className="w-full sm:max-w-lg">
               <h1 className="mb-5 text-3xl sm:text-5xl font-bold">
-                Radio Islam Indonesia
+                {appConfig.alias}
               </h1>
-              <p className="mb-2 text-xl">
-                Radionya Muslimin se-Nusantara telah hadir untuk Android dan
-                Web.
-              </p>
-              <p className="mb-5">
-                Menebar dakwah Islam yang rahmatan 'lil 'alamin sesuai dengan
-                pemahaman dan jalan para salaf
-              </p>
+              <p className="mb-2 text-xl">{appConfig.description}</p>
+              <p className="mb-5">{appConfig.subdescription}</p>
               <div className="flex flex-row gap-2">
-                <a href="https://play.google.com/store/apps/details?id=dev.oasemedia.radioislamindonesia&pli=1">
-                  <img
-                    alt="Get it on Google Play"
-                    src="https://fmpdtfhmuqxfzmaxxsge.supabase.co/storage/v1/object/public/al-faidah/google-play-badge-1.png"
-                    width={160}
-                    height={60}
-                  />
-                </a>
+                {appConfig.actionButton}
               </div>
             </div>
             <div className="grid grid-cols-1 gap-4 w-full lg:w-80 overflow-y-auto hide-scrollbar">
@@ -202,7 +188,7 @@ export default function Index() {
           <div className="h-8 w-full" id="content" />
         </div>
       </div>
-      <Container className="mt-2 pb-36 sm:pb-20">
+      <Container className="mt-2 pb-36 sm:pb-24">
         <TwoColumn
           left={
             <>

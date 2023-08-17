@@ -14,9 +14,10 @@ import { RadioList } from "~/components/radio/radio-list";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { v4 as uuidv4 } from "uuid";
 import { SharedLayout } from "~/components/shared-layout";
+import { appConfig } from "~/utils/appConfig";
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: "Settings Embed - Radio Islam" }];
+  return [{ title: `Settings Embed - ${appConfig.title}` }];
 };
 
 export const loader = async ({ request }: LoaderArgs) => {

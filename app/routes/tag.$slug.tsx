@@ -6,6 +6,7 @@ import { Pagination } from "~/components/pagination";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { TwoColumn } from "~/components/two-column";
 import { ArticleList } from "~/components/article/article-list";
+import { appConfig } from "~/utils/appConfig";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const topicSlug = params.slug;
@@ -96,7 +97,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 export const meta: V2_MetaFunction = ({ data }) => {
   const { topic } = data;
   return [
-    { title: `${topic.name} - Radio Islam` },
+    { title: `${topic.name} - ${appConfig.title}` },
     {
       name: "description",
       content: `Artikel yang berkaitan dengan ${topic.name}`,

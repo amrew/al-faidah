@@ -4,6 +4,7 @@ import type { ArticleType } from "~/components/article/article-entity";
 import { ArticleDetail } from "~/components/article/article-item";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { SharedLayout } from "~/components/shared-layout";
+import { appConfig } from "~/utils/appConfig";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const slug = params.slug;
@@ -42,7 +43,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 export const meta: V2_MetaFunction = ({ data }) => {
   const { item } = data;
   return [
-    { title: `${item.title} - Radio Islam` },
+    { title: `${item.title} - ${appConfig.title}` },
     {
       name: "description",
       content: item.summary,

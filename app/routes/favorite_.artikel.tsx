@@ -13,6 +13,7 @@ import { TwoColumn } from "~/components/two-column";
 import { Tab } from "~/components/tab";
 import { ArticleList } from "~/components/article/article-list";
 import { isLoggedIn } from "~/utils/authUtils.server";
+import { appConfig } from "~/utils/appConfig";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const loggedIn = await isLoggedIn(request);
@@ -67,14 +68,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export const meta: V2_MetaFunction = ({ data }) => {
-  return [
-    { title: `Artikel Favorite - Radio Islam` },
-    {
-      name: "description",
-      content:
-        "Media dakwah Ahlus Sunnah Wal Jama'ah yang berisi bermacam-macam artikel, kajian, radio dan audio islami",
-    },
-  ];
+  return [{ title: `Artikel Favorite - ${appConfig.title}` }];
 };
 
 export default function FavoriteArticles() {

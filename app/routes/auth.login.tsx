@@ -19,6 +19,7 @@ import {
 import { BackButton } from "~/components/back-button";
 import { isLoggedIn } from "~/utils/authUtils.server";
 import { createServerSupabase } from "~/clients/createServerSupabase";
+import { appConfig } from "~/utils/appConfig";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const loggedIn = await isLoggedIn(request);
@@ -98,7 +99,13 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: "Login - Radio Islam" }];
+  return [
+    { title: `Login - ${appConfig.title}` },
+    {
+      name: "description",
+      content: appConfig.metaDescription,
+    },
+  ];
 };
 
 const messageMap: Record<string, string> = {

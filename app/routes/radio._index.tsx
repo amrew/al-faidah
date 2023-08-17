@@ -10,10 +10,11 @@ import { useLoaderData } from "@remix-run/react";
 import { createServerSupabase } from "~/clients/createServerSupabase";
 import { Tab } from "~/components/tab";
 import { useUser } from "~/hooks/useSupabase";
+import { appConfig } from "~/utils/appConfig";
 
 export const meta: V2_MetaFunction = () => {
   return [
-    { title: "Radio - Radio Islam" },
+    { title: `Radio - ${appConfig.title}` },
     {
       name: "description",
       content: "Berisi kajian Asatidzah Ahlus Sunnah Wal Jama'ah",

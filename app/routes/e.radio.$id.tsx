@@ -3,6 +3,7 @@ import { RadioList } from "~/components/radio/radio-list";
 import { json, type V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useQuery } from "react-query";
+import { appConfig } from "~/utils/appConfig";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -31,7 +32,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 export const meta: V2_MetaFunction = ({ data }) => {
   const { track } = data;
   return [
-    { title: `${track.name} - Radio Islam` },
+    { title: `${track.name} - ${appConfig.title}` },
     {
       name: "description",
       content: `${track.name}`,

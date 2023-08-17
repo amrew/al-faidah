@@ -6,6 +6,7 @@ import { BiHome, BiMicrophone, BiRadio, BiSearch } from "react-icons/bi";
 import { BackButton } from "./back-button";
 import { twMerge } from "tailwind-merge";
 import { Container } from "./container";
+import { appConfig } from "~/utils/appConfig";
 
 export type SharedLayoutProps = {
   footer?: ReactNode;
@@ -57,7 +58,7 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
               to="/"
               className={`btn-ghost btn text-xl normal-case text-primary-content`}
             >
-              Radio Islam
+              {appConfig.title}
             </Link>
           </div>
           <div className="sm:flex-1 justify-center hidden sm:flex">

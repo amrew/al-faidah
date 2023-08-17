@@ -19,6 +19,7 @@ import { createBrowserClient } from "@supabase/auth-helpers-remix";
 import { Provider } from "./components/provider";
 import { createServerSupabase } from "./clients/createServerSupabase";
 import { BiChevronLeft } from "react-icons/bi";
+import { appConfig } from "./utils/appConfig";
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
@@ -81,7 +82,7 @@ export default function App() {
   }, [serverAccessToken, supabase, revalidate]);
 
   return (
-    <html lang="en" data-theme="rii">
+    <html lang="en" data-theme={appConfig.theme}>
       <head>
         <link
           rel="apple-touch-icon"
@@ -181,7 +182,7 @@ export function ErrorBoundary() {
           <div className="flex flex-col gap-2">
             <p className="font-light">
               Halaman ini tampaknya mengalami kesalahan. Anda bisa menghubungi
-              Admin Radio Islam jika memungkinkan.
+              Admin {appConfig.title} jika memungkinkan.
             </p>
             <p>Jazakumullah Khoiron</p>
           </div>
@@ -224,7 +225,7 @@ export function ErrorBoundary() {
         />
         <meta name="robots" content="noindex" />
         <title>
-          {isErrorRoute ? error.statusText : "Sistem Error"} - Radio Islam
+          {isErrorRoute ? error.statusText : "Sistem Error"} - {appConfig.title}
         </title>
         <Links />
       </head>
