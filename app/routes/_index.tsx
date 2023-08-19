@@ -26,7 +26,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const page = Number(url.searchParams.get("page") || 1);
   const publisher = url.searchParams.get("publisher") || "";
 
-  const itemsPerPage = 20;
+  const itemsPerPage = 15;
   const offset = (page - 1) * itemsPerPage;
 
   const { supabase, response } = createServerSupabase(request);
