@@ -119,6 +119,10 @@ export default function App() {
           href="/favicon-16x16.png"
         />
         <link rel="manifest" href="/site.webmanifest" />
+        <link
+          rel="preconnect"
+          href="https://fmpdtfhmuqxfzmaxxsge.supabase.co"
+        />
         <meta charSet="utf-8" />
         <meta
           name="viewport"
