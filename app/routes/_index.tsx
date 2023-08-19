@@ -150,7 +150,7 @@ export default function Index() {
       <div
         className="hero mt-16 main-content"
         style={{
-          backgroundImage: `url("${appConfig.backgroundUrl}")`,
+          backgroundImage: appConfig.backgroundUrl,
         }}
       >
         <div className="hero-overlay bg-opacity-60"></div>
