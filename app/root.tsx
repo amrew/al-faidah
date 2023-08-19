@@ -20,6 +20,7 @@ import { Provider } from "./components/provider";
 import { createServerSupabase } from "./clients/createServerSupabase";
 import { BiChevronLeft } from "react-icons/bi";
 import { appConfig } from "./utils/appConfig";
+import ReactGA from "react-ga4";
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
@@ -82,6 +83,21 @@ export default function App() {
     };
   }, [serverAccessToken, supabase, revalidate]);
 
+  useEffect(() => {
+    if (env.GA_ID) {
+      ReactGA.initialize(env.GA_ID);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (navigation.location) {
+      ReactGA.send({
+        hitType: "pageview",
+        page: navigation.location?.pathname + navigation.location?.search,
+      });
+    }
+  }, [navigation.location]);
+
   return (
     <html lang="en" data-theme={appConfig.theme}>
       <head>
@@ -120,25 +136,6 @@ export default function App() {
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
-        {env.GA_ID && (
-          <>
-            <script
-              async
-              src={`https://www.googletagmanager.com/gtag/js?id=${env.GA_ID}`}
-            />
-            <script
-              id="google-analytics"
-              dangerouslySetInnerHTML={{
-                __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${env.GA_ID}');
-            `,
-              }}
-            />
-          </>
-        )}
       </body>
     </html>
   );
