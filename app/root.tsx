@@ -123,6 +123,7 @@ export default function App() {
           rel="preconnect"
           href="https://fmpdtfhmuqxfzmaxxsge.supabase.co"
         />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
         <meta charSet="utf-8" />
         <meta
           name="viewport"
