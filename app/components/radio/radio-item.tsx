@@ -65,6 +65,7 @@ export function RadioItem({
   const headerNode = (
     <div className="flex flex-row gap-3">
       <img
+        loading="lazy"
         src={item.logoUrl}
         alt={item.name}
         className="w-10 h-10 rounded-md"
@@ -91,7 +92,7 @@ export function RadioItem({
   );
 
   const trackNode = (
-    <p className={`line-clamp-2 text-md text-base-content`}>
+    <p className={`line-clamp-2 text-md text-base-content min-h-12`}>
       {item.trackTitle}
     </p>
   );
@@ -250,6 +251,7 @@ export function RadioItemPlayer({ item, embed }: RadioItemProps) {
       </div>
       <div className="px-4 sm:px-8 flex justify-center items-center flex-1">
         <img
+          loading="lazy"
           src={item.logoUrl}
           className="rounded-md w-20 h-20 object-contain"
           alt={item.name}

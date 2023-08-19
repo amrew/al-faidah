@@ -66,6 +66,7 @@ export function ArticleItem(props: ArticleItemProps) {
 
   const imageNode = props.imageUrl ? (
     <img
+      loading="lazy"
       src={props.imageUrl}
       alt={props.title}
       className="w-24 h-16 sm:w-48 sm:h-36 object-cover"
@@ -77,6 +78,7 @@ export function ArticleItem(props: ArticleItemProps) {
     <div className="border-b border-b-base-300 mb-8 pb-8">
       <div className="flex flex-row gap-1 mb-2 items-center">
         <img
+          loading="lazy"
           src={props.publisher.logoUrl}
           alt={props.publisher.name}
           width={16}
@@ -247,6 +249,7 @@ export function ArticleItemSmall(
     <div className="border-b border-b-base-300 mb-2 pb-2">
       <div className="flex flex-row gap-1 mb-2 items-center">
         <img
+          loading="lazy"
           src={props.publisher.logoUrl}
           alt={props.publisher.name}
           width={16}
@@ -463,6 +466,7 @@ export function ArticleDetail(
   const imageNode = props.imageUrl ? (
     <div className="max-w-2xl">
       <img
+        loading="lazy"
         src={props.imageUrl}
         alt={props.title}
         className="w-full h-96 object-cover rounded-md"
@@ -561,6 +565,7 @@ export function ArticleDetail(
     <div className="p-4 md:px-8 mt-6">
       <div className="flex flex-row gap-2 mb-2 items-center">
         <img
+          loading="lazy"
           src={props.publisher.logoUrl}
           alt={props.publisher.name}
           width={24}

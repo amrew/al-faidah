@@ -63,6 +63,7 @@ export function Player() {
       ) : null}
       <div className="max-w-5xl mx-auto flex flex-1 flex-row gap-4 items-center">
         <img
+          loading="lazy"
           src={track.logoUrl}
           width={64}
           height={64}

@@ -182,6 +182,7 @@ export default function Radio() {
                         className="flex flex-row gap-3 items-center border-base-300 rounded-md bg-base-100 shadow-sm border p-2"
                       >
                         <img
+                          loading="lazy"
                           src={item.logoUrl}
                           alt={item.name}
                           className="w-10 h-10 rounded-md"

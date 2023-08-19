@@ -150,6 +150,7 @@ export default function Articles() {
                     <div className="avatar">
                       <div className="w-12 rounded-full bg-base-200 p-2">
                         <img
+                          loading="lazy"
                           src={publisher.logo_url}
                           alt={publisher.title}
                           width={48}

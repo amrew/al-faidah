@@ -27,7 +27,7 @@ export async function getTracks(params?: {
       alias: item.alias,
       serial: item.id_radet,
       name: item.nama,
-      logoUrl: item.logo,
+      logoUrl: item.logo?.replace("http://", "https://"),
       listenerCount: Number(item.pendengar),
       status: item.status,
       trackTitle: item.judul,
