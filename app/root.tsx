@@ -90,7 +90,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (navigation.location) {
+    if (env.GA_ID && navigation.location) {
       ReactGA.send({
         hitType: "pageview",
         page: navigation.location?.pathname + navigation.location?.search,
