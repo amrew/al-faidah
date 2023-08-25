@@ -70,7 +70,7 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
               {appConfig.title}
             </Link>
             <button
-              className="btn btn-circle btn-ghost btn-sm"
+              className="btn btn-circle btn-ghost btn-sm text-primary-content"
               type="button"
               onClick={toggleTheme}
             >
