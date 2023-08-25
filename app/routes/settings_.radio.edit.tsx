@@ -7,7 +7,8 @@ import {
   type ActionArgs,
 } from "@remix-run/node";
 import { Form, useLoaderData, useNavigation } from "@remix-run/react";
-import { type ThemeName, themes, QUOTA_CREATION } from "~/utils/constant";
+import { QUOTA_CREATION } from "~/utils/constant";
+import { type ThemeName, themes } from "~/utils/themeUtils";
 import { useState } from "react";
 import { BiCheck } from "react-icons/bi";
 import { RadioList } from "~/components/radio/radio-list";
@@ -233,7 +234,7 @@ export default function Radio() {
                     className={`btn btn-ghost btn-xs text-white carousel-item ${item.color}`}
                     onClick={() => setTheme(item.name)}
                   >
-                    {item.name === "dracula" ? "dark" : item.name}
+                    {item.name}
                     {item.name === theme ? <BiCheck size={20} /> : null}
                   </button>
                 ))}

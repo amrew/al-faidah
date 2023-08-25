@@ -2,11 +2,19 @@ import { type PropsWithChildren, type ReactNode } from "react";
 import { MemberNavigation } from "./member-navigation";
 import { Player } from "./player";
 import { Link, NavLink } from "@remix-run/react";
-import { BiHome, BiMicrophone, BiRadio, BiSearch } from "react-icons/bi";
+import {
+  BiHome,
+  BiMicrophone,
+  BiMoon,
+  BiRadio,
+  BiSearch,
+  BiSun,
+} from "react-icons/bi";
 import { BackButton } from "./back-button";
 import { twMerge } from "tailwind-merge";
 import { Container } from "./container";
 import { appConfig } from "~/utils/appConfig";
+import { useTheme } from "~/hooks/useTheme";
 
 export type SharedLayoutProps = {
   footer?: ReactNode;
@@ -27,6 +35,7 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
     disableContainer,
   } = props;
   const hasSearchComponent = !!props.searchComponent;
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <div className="h-full">
@@ -60,6 +69,13 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
             >
               {appConfig.title}
             </Link>
+            <button
+              className="btn btn-circle btn-ghost btn-sm"
+              type="button"
+              onClick={toggleTheme}
+            >
+              {theme === appConfig.themeDark ? <BiMoon /> : <BiSun />}
+            </button>
           </div>
           <div className="sm:flex-1 justify-center hidden sm:flex">
             <ul className="menu menu-sm menu-horizontal bg-base-200 rounded-box gap-2">

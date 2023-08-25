@@ -9,6 +9,7 @@ export const appConfig = {
   backgroundUrl:
     'url("https://fmpdtfhmuqxfzmaxxsge.supabase.co/storage/v1/object/public/al-faidah/edouard-tamba-Q8gsXy6C2g0-unsplash%20(1).jpg"), url("https://fmpdtfhmuqxfzmaxxsge.supabase.co/storage/v1/object/public/al-faidah/edouard-tamba-Q8gsXy6C2g0-unsplash%20(1)%20(1).jpg")',
   url: "https://al-faidah.com",
-  theme: "cupcake",
+  theme: "al-faidah",
+  themeDark: "al-faidah-dark",
   actionButton: null,
 };

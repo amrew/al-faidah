@@ -1,6 +1,6 @@
 import type { TrackInfo } from "../radio/radio-entity";
 import { RadioItem, RadioItemPlayer } from "../radio/radio-item";
-import { themes, type ThemeName } from "../../utils/constant";
+import { type ThemeName, themes } from "~/utils/themeUtils";
 import { useState } from "react";
 import { BiCheck } from "react-icons/bi";
 import { createPortal } from "react-dom";
@@ -38,10 +38,10 @@ export function ModalEmbed({ track }: ModalEmbedProps) {
                 {themes.map((item) => (
                   <button
                     key={item.name}
-                    className={`btn btn-ghost btn-xs text-white carousel-item ${item.color}`}
+                    className={`btn btn-ghost btn-xs carousel-item ${item.color}`}
                     onClick={() => setTheme(item.name)}
                   >
-                    {item.name === "dracula" ? "dark" : item.name}
+                    {item.name}
                     {item.name === theme ? <BiCheck size={20} /> : null}
                   </button>
                 ))}

@@ -21,6 +21,7 @@ import { createServerSupabase } from "./clients/createServerSupabase";
 import { BiChevronLeft } from "react-icons/bi";
 import { appConfig } from "./utils/appConfig";
 import ReactGA from "react-ga4";
+import { getTheme } from "./utils/themeUtils";
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
@@ -43,10 +44,13 @@ export const loader = async ({ request }: LoaderArgs) => {
     data: { session },
   } = sessionResult;
 
+  const theme = getTheme(request);
+
   return json(
     {
       env,
       session,
+      theme,
     },
     {
       headers: response.headers,
@@ -55,7 +59,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export default function App() {
-  const { env, session } = useLoaderData<typeof loader>();
+  const { env, session, theme } = useLoaderData<typeof loader>();
   const { revalidate } = useRevalidator();
 
   const navigation = useNavigation();
@@ -99,7 +103,7 @@ export default function App() {
   }, [navigation.location]);
 
   return (
-    <html lang="en" data-theme={appConfig.theme}>
+    <html lang="en" data-theme={theme}>
       <head>
         <link
           rel="apple-touch-icon"
@@ -136,7 +140,7 @@ export default function App() {
         className={navigation.state === "loading" ? "navigate-loading" : ""}
       >
         <Provider>
-          <Outlet context={{ env, supabase, user: session?.user }} />
+          <Outlet context={{ env, supabase, user: session?.user, theme }} />
         </Provider>
         <ScrollRestoration />
         <Scripts />

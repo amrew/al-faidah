@@ -40,7 +40,7 @@ export function Pagination(props: PaginationProps) {
         </button>
       ) : null}
       <button
-        className="join-item btn btn-active btn-neutral"
+        className="join-item btn btn-active btn-secondary"
         aria-label="Halaman saat ini"
       >
         {page}
