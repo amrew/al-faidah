@@ -71,10 +71,10 @@ export function Player() {
           alt={track.name}
         />
         <div className="flex-1">
-          <h1 className="font-bold sm:text-lg text-base-100 line-clamp-1">
+          <h1 className="font-bold sm:text-lg text-neutral-content line-clamp-1">
             {track.name}
           </h1>
-          <p className="line-clamp-1 text-sm sm:text-md text-base-100">
+          <p className="line-clamp-1 text-sm sm:text-md text-neutral-content">
             {track.trackTitle}
           </p>
         </div>
