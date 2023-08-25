@@ -115,19 +115,19 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
         {playerShown ? <Player /> : null}
         {bottomNavShown ? (
           <div className="btm-nav btm-nav-sm border-t border-t-base-200 sm:hidden relative">
-            <NavLink to="/" className="bg-white">
+            <NavLink to="/" className="bg-base-200">
               <BiHome />
               <span className="text-xs">Beranda</span>
             </NavLink>
-            <NavLink to="/radio" className="bg-white">
+            <NavLink to="/radio" className="bg-base-200">
               <BiRadio />
               <span className="text-xs">Radio</span>
             </NavLink>
-            <NavLink to="/tag/audio-islami" className="bg-white">
+            <NavLink to="/tag/audio-islami" className="bg-base-200">
               <BiMicrophone />
               <span className="text-xs">Audio</span>
             </NavLink>
-            <NavLink to="/cari" className="bg-white">
+            <NavLink to="/cari" className="bg-base-200">
               <BiSearch />
               <span className="text-xs">Cari</span>
             </NavLink>
