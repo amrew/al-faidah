@@ -476,36 +476,55 @@ export function ArticleDetail(
 
   const audios = useMemo(() => {
     if (hasAudio) {
-      let elements = $("audio source").length ? $("audio source") : $("audio");
+      const playlistJson = $(".wp-playlist-script");
+      const jsonText = playlistJson.text();
 
-      const items = elements.map((i, el) => {
-        return $(el);
-      });
+      if (jsonText) {
+        try {
+          const json = JSON.parse(jsonText);
+          return json.tracks.map((item: any) => ({
+            src: item.src,
+            title: item.title,
+            trackTitle: item.description,
+            logoUrl: item.image.src,
+          }));
+        } catch (err) {
+          return [];
+        }
+      } else {
+        let elements = $("audio source").length
+          ? $("audio source")
+          : $("audio");
 
-      return items
-        ?.map((i, el) => {
-          const src = $(el).attr("src");
-          const audioTag = $(el).parent();
-          const brTag = $(audioTag).prev();
-          const trackTitleDefault = `${props.title} ${
-            items.length > 1 ? i + 1 : ""
-          }`;
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          const text = brTag[0]?.prev?.data
-            ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              brTag[0]?.prev?.data.replace(/\n/, "").trim() ||
-              `${trackTitleDefault}`
-            : `${trackTitleDefault}`;
-          return {
-            src: src || "",
-            title: props.title,
-            trackTitle: text,
-            logoUrl: props.publisher.logoUrl,
-          };
-        })
-        .toArray();
+        const items = elements.map((i, el) => {
+          return $(el);
+        });
+
+        return items
+          ?.map((i, el) => {
+            const src = $(el).attr("src");
+            const audioTag = $(el).parent();
+            const brTag = $(audioTag).prev();
+            const trackTitleDefault = `${props.title} ${
+              items.length > 1 ? i + 1 : ""
+            }`;
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            const text = brTag[0]?.prev?.data
+              ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                brTag[0]?.prev?.data.replace(/\n/, "").trim() ||
+                `${trackTitleDefault}`
+              : `${trackTitleDefault}`;
+            return {
+              src: src || "",
+              title: props.title,
+              trackTitle: text,
+              logoUrl: props.publisher.logoUrl,
+            };
+          })
+          .toArray();
+      }
     }
     return undefined;
   }, [$, hasAudio, props.publisher.logoUrl, props.title]);

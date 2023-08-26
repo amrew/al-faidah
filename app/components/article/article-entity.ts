@@ -1,7 +1,7 @@
 type ImageProps = {
   url: string;
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
 };
 
 export type ImageType = {
@@ -20,13 +20,16 @@ export type ArticleType = {
   original_id: string;
   slug: string;
   title: string;
-  type_id: string;
+  type_id: number;
+  category_id: string | null;
   summary: string;
   description: string;
   recommended: number;
   image: ImageType | null;
   read_stats: {
     minutes: number;
+    time: number;
+    words: number;
   };
   terms: string[];
   publishers: {
@@ -36,6 +39,7 @@ export type ArticleType = {
     slug: string;
   };
   author: {
+    id: number;
     slug: string;
     name: string;
   } | null;
