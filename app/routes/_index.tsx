@@ -34,7 +34,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const getContents = async () => {
     let query = supabase.from("contents").select<any, ArticleType>(
       `id, title, slug, summary, image, created_at, link, 
-      read_stats, terms, publishers!inner( title, slug, logo_url, status ), 
+      read_stats, terms, publishers!inner( title, slug, logo_url, status_id ), 
       author`
     );
 
@@ -43,7 +43,8 @@ export const loader = async ({ request }: LoaderArgs) => {
     }
 
     return query
-      .eq("publishers.status", "active")
+      .eq("publishers.status_id", 1)
+      .eq("status_id", 1)
       .range(offset, offset + itemsPerPage - 1)
       .order("created_at", { ascending: false });
   };
@@ -51,7 +52,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const getContentCount = async () => {
     let query = supabase
       .from("contents")
-      .select("id, publishers!inner( slug, status )", {
+      .select("id, publishers!inner( slug, status_id )", {
         count: "exact",
         head: true,
       });
@@ -60,16 +61,18 @@ export const loader = async ({ request }: LoaderArgs) => {
       query = query.eq("publishers.slug", publisher);
     }
 
-    return query.eq("publishers.status", "active");
+    return query.eq("publishers.status_id", 1).eq("status_id", 1);
   };
 
   const getEditorPicks = async () => {
     return supabase
       .from("contents")
       .select<any, ArticleType>(
-        `id, title, slug, read_stats, publishers!inner( title, slug, logo_url )`
+        `id, title, slug, read_stats, publishers!inner( title, slug, logo_url, status_id )`
       )
       .eq("recommended", 1)
+      .eq("status_id", 1)
+      .eq("publishers.status_id", 1)
       .range(0, 2)
       .order("created_at", { ascending: false });
   };
@@ -81,7 +84,7 @@ export const loader = async ({ request }: LoaderArgs) => {
         any,
         { id: number; title: string; slug: string; logo_url: string }
       >("id, title, slug, logo_url")
-      .eq("status", "active");
+      .eq("status_id", 1);
   };
 
   const getRecommendedTopics = async () => {

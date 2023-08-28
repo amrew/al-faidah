@@ -37,7 +37,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const getContents = async () => {
     let query = supabase.from("contents").select<any, ArticleType>(
       `id, title, slug, summary, image, created_at, link, 
-      read_stats, terms, publishers!inner( title, slug, logo_url, web_url ), 
+      read_stats, terms, publishers!inner( title, slug, logo_url, web_url, status_id ), 
       author`
     );
 
@@ -46,7 +46,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     }
 
     return query
-      .eq("publishers.status", "active")
+      .eq("publishers.status_id", 1)
+      .eq("status_id", 1)
       .range(offset, offset + itemsPerPage - 1)
       .order("created_at", { ascending: false });
   };
@@ -54,7 +55,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const getContentCount = async () => {
     let query = supabase
       .from("contents")
-      .select("id, publishers!inner( slug, status )", {
+      .select("id, publishers!inner( slug, status_id )", {
         count: "exact",
         head: true,
       });
@@ -63,7 +64,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       query = query.contains("terms", [topicSlug]);
     }
 
-    return query.eq("publishers.status", "active");
+    return query.eq("publishers.status_id", 1).eq("status_id", 1);
   };
 
   const [

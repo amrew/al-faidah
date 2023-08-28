@@ -36,7 +36,7 @@ export type ArticleType = {
     logo_url: string;
     web_url: string;
     slug: string;
-    status: string;
+    status_id: string;
   };
   author: {
     id: number;

@@ -58,7 +58,8 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const { data: publishers } = await supabase
     .from("publishers")
-    .select("id, title, logo_url, slug");
+    .select("id, title, logo_url, slug")
+    .eq("status_id", 1);
 
   return json(
     {

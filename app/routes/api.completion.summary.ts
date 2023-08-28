@@ -25,10 +25,12 @@ export const loader = async ({ request }: LoaderArgs) => {
     supabase
       .from("contents")
       .select<any, ArticleType>(
-        `id, description, gpt, publishers!inner( slug )`
+        `id, description, gpt, publishers!inner( slug, status_id )`
       )
       .eq("slug", slug)
+      .eq("status_id", 1)
       .eq("publishers.slug", publisherSlug)
+      .eq("publishers.status_id", 1)
       .single(),
   ]);
 

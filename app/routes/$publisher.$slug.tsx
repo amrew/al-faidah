@@ -17,11 +17,13 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       .from("contents")
       .select<any, ArticleType>(
         `id, title, slug, summary, description, link, image, created_at, 
-        read_stats, terms, publishers!inner( title, logo_url, web_url, slug ),
+        read_stats, terms, publishers!inner( title, logo_url, web_url, slug, status_id ),
         author, metadata, gpt`
       )
       .eq("slug", slug)
+      .eq("status_id", 1)
       .eq("publishers.slug", publisherSlug)
+      .eq("publishers.status_id", 1)
       .single(),
   ]);
 

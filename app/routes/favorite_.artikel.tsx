@@ -44,15 +44,19 @@ export const loader = async ({ request }: LoaderArgs) => {
       .from("contents")
       .select<any, ArticleType>(
         `id, title, slug, summary, image, created_at, read_stats, terms, link,
-         publishers( title, logo_url, web_url ), author`
+         publishers!inner( title, logo_url, web_url ), author`
       )
       .in("id", contentIds)
+      .eq("status_id", 1)
+      .eq("publishers.status_id", 1)
       .range(offset, offset + itemsPerPage - 1)
       .order("created_at", { ascending: false }),
     supabase
       .from("contents")
       .select("id", { count: "exact", head: true })
-      .in("id", contentIds),
+      .in("id", contentIds)
+      .eq("status_id", 1)
+      .eq("publishers.status_id", 1),
   ]);
 
   const totalPage = count ? Math.ceil(count / itemsPerPage) : 0;

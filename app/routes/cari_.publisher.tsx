@@ -42,12 +42,14 @@ export const loader = async ({ request, params }: LoaderArgs) => {
         }
       >("id, slug, title, logo_url, web_url, description")
       .textSearch("title", `${searchParams}`)
+      .eq("status_id", 1)
       .range(offset, offset + itemsPerPage - 1)
       .order("created_at", { ascending: false }),
     supabase
       .from("publishers")
       .select("id", { count: "exact", head: true })
-      .textSearch("title", `${searchParams}`),
+      .textSearch("title", `${searchParams}`)
+      .eq("status_id", 1),
   ]);
 
   const totalPage = count ? Math.ceil(count / itemsPerPage) : 0;
