@@ -17,6 +17,7 @@ export type ArticleType = {
   created_at: string;
   updated_at: string;
   user_id: string;
+  status_id: number;
   slug: string;
   title: string;
   type_id: number;
