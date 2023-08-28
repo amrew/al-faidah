@@ -9,3 +9,8 @@ node_modules
 /public/build
 /api/index.js
 /api/index.js.map
+/app/routes/api.telegram.ts
+/app/routes/api.scrape.ts
+/app/routes/api.import.ts
+/app/routes/api.blogger.ts
+/app/routes/api.meili.index.ts

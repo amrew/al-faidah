@@ -90,16 +90,20 @@ export async function loader({ request }: LoaderArgs) {
           .then((data) => {
             for (const item of data) {
               const readStats = readingTime(item.content.rendered);
+              let summary = striptags(item.excerpt.rendered);
+              if (publisher.id == 14 && summary.length === 6) {
+                summary = "";
+              }
+              const itemId = `${publisher_id}-${item.id}`;
               const content: Omit<ArticleType, "publishers"> = {
-                id: item.slug,
+                id: itemId,
                 created_at: item.date,
                 updated_at: item.modified,
-                original_id: item.id,
                 link: item.link,
                 slug: item.slug,
                 title: item.title.rendered,
                 description: item.content.rendered,
-                summary: item.excerpt.rendered,
+                summary: summary,
                 status: item.status,
                 read_stats: {
                   minutes: readStats.minutes,
@@ -227,7 +231,7 @@ export async function loader({ request }: LoaderArgs) {
                     : item.description;
 
                   const content: Record<any, any> = {
-                    id: `${publisher.slug}-${item.slug}`,
+                    id: item.id,
                     title: item.title,
                     slug: item.slug,
                     image: item.image,
@@ -243,7 +247,7 @@ export async function loader({ request }: LoaderArgs) {
                       status: publisher.status,
                     },
                     author: item.author,
-                    summary: striptags(item.summary),
+                    summary: item.summary,
                     description: striptags(description),
                   };
 

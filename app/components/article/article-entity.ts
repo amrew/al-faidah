@@ -17,7 +17,6 @@ export type ArticleType = {
   created_at: string;
   updated_at: string;
   user_id: string;
-  original_id: string;
   slug: string;
   title: string;
   type_id: number;
@@ -37,6 +36,7 @@ export type ArticleType = {
     logo_url: string;
     web_url: string;
     slug: string;
+    status: string;
   };
   author: {
     id: number;

@@ -22,7 +22,7 @@
     "howler": "^2.2.3",
     "input": "^1.0.1",
     "isbot": "^3.6.8",
-    "meilisearch": "^0.34.1",
+    "meilisearch": "0.32.1",
     "minisearch": "^6.1.0",
     "openai": "^3.3.0",
     "react": "^18.2.0",
