@@ -45,9 +45,6 @@ export async function sync({
 
   const wp = new WPAPI({ endpoint: `${endpoint}/wp-json` });
 
-  const termMap: Record<string, Term> = {};
-  const contents: Omit<ArticleType, "publishers">[] = [];
-
   const run = (page: number, perPage: number) => {
     let q = wp.posts().embed().perPage(perPage).page(page);
 
@@ -58,7 +55,11 @@ export async function sync({
     return q
       .get()
       .then((data) => {
+        const termMap: Record<string, Term> = {};
+        const contents: Omit<ArticleType, "publishers">[] = [];
+
         for (const item of data) {
+          console.log(item.id, item.title.rendered);
           const readStats = readingTime(item.content.rendered);
 
           let summary = striptags(item.excerpt.rendered);
@@ -186,31 +187,43 @@ export async function sync({
       .then(async ({ contents, termMap }) => {
         const taxonomies: Term[] = Object.values(termMap);
         const taxResult = await supabase.from("taxonomies").upsert(taxonomies);
+        console.log("insert taxonomies", taxResult);
         const contentResult = await supabase.from("contents").upsert(contents);
+        console.log("insert contents", contentResult);
 
         await Promise.all(
           contents.map(async (item) => {
-            return await supabase
+            const { count } = await supabase
               .from("term_contents")
-              .delete()
+              .select("*", { count: "exact", head: true })
               .eq("content_id", item.id);
+
+            if (count && count > 0) {
+              console.log("delete term_contents", item.id);
+              return await supabase
+                .from("term_contents")
+                .delete()
+                .eq("content_id", item.id);
+            }
           })
         );
+        console.log("delete term_contents");
 
         await Promise.all(
           contents.map(async (item) => {
-            return await supabase.from("term_contents").insert(
-              item.terms.map((term) => {
-                return {
-                  term_id: term,
-                  content_id: item.id,
-                };
-              })
-            );
+            const termsContents = item.terms.map((term) => {
+              return {
+                term_id: term,
+                content_id: item.id,
+              };
+            });
+            return await supabase.from("term_contents").insert(termsContents);
           })
         );
+        console.log("insert term_contents");
 
         const saveObjects = async () => {
+          console.log("save objects");
           if (contents.length > 0) {
             const objects = [];
 
