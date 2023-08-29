@@ -178,7 +178,7 @@ export default function Index() {
                   {(radios) => (
                     <RadioList
                       items={radios}
-                      getDetailUrl={(item) => `/radio/${item.alias}}`}
+                      getDetailUrl={(item) => `/radio/${item.alias}`}
                     />
                   )}
                 </Await>
