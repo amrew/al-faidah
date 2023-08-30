@@ -149,7 +149,7 @@ export default function Index() {
                     key={topic.slug}
                     className="btn btn-sm"
                   >
-                    {topic.name.replace(/&amp;/g, "&")}
+                    {topic.slug}
                   </Link>
                 ))}
               </div>

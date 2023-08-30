@@ -131,7 +131,7 @@ export default function Articles() {
                       key={item.id}
                       className="btn btn-sm"
                     >
-                      {item.name}
+                      {item.slug}
                     </Link>
                   ))}
                 </div>

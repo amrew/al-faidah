@@ -88,11 +88,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 
   const getRecommendedTopics = async () => {
-    return supabase
-      .rpc("fetch_taxonomies_total_contents")
-      .eq("type", "category")
-      .order("total_contents", { ascending: false })
-      .range(0, 5);
+    return supabase.rpc("get_top_taxonomies").range(0, 5);
   };
 
   const [{ data: contents }, { count }, { data: publishers }] =
@@ -298,14 +294,14 @@ export default function Index() {
                             id: string;
                             slug: string;
                             name: string;
-                            total_contents: number;
+                            total_items: number;
                           }) => (
                             <Link
                               to={`/tag/${item.slug}`}
                               key={item.slug}
                               className="btn btn-sm"
                             >
-                              {item.name}
+                              {item.slug}
                             </Link>
                           )
                         );

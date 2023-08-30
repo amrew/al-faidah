@@ -59,7 +59,7 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
             </div>
           ) : null}
           <div
-            className={`flex-none ${
+            className={`flex-none items-center ${
               hasSearchComponent ? "hidden sm:flex" : ""
             }`}
           >
@@ -123,7 +123,7 @@ export function SharedLayout(props: PropsWithChildren<SharedLayoutProps>) {
               <BiRadio />
               <span className="text-xs">Radio</span>
             </NavLink>
-            <NavLink to="/tag/audio-islami" className="bg-base-200">
+            <NavLink to="/tag/audio" className="bg-base-200">
               <BiMicrophone />
               <span className="text-xs">Audio</span>
             </NavLink>
