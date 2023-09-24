@@ -175,6 +175,7 @@ export default function Index() {
                     <RadioList
                       items={radios}
                       getDetailUrl={(item) => `/radio/${item.alias}`}
+                      disabledRefreshInterval
                     />
                   )}
                 </Await>
