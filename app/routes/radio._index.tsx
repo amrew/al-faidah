@@ -11,6 +11,7 @@ import { createServerSupabase } from "~/clients/createServerSupabase";
 import { Tab } from "~/components/tab";
 import { useUser } from "~/hooks/useSupabase";
 import { appConfig } from "~/utils/appConfig";
+import { type TrackInfo } from "~/components/radio/radio-entity";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -107,8 +108,11 @@ export const loader = async ({ request }: LoaderArgs) => {
       return redirect("/auth/verify", { headers: response.headers });
     }
   }
+  let radios: TrackInfo[] = [];
 
-  const radios = await getTracks({ type });
+  try {
+    radios = await getTracks({ type });
+  } catch (err) {}
 
   return json(
     {

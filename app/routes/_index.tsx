@@ -97,8 +97,12 @@ export const loader = async ({ request }: LoaderArgs) => {
   const totalPage = count ? Math.ceil(count / itemsPerPage) : 0;
 
   const getRadios = async () => {
-    const radios = await getTracks({ sortBy: "most" });
-    return radios.slice(0, 2);
+    try {
+      const radios = await getTracks({ sortBy: "most" });
+      return radios.slice(0, 2);
+    } catch (err) {
+      return [];
+    }
   };
 
   return defer(
