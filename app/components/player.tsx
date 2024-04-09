@@ -13,6 +13,7 @@ import { CountDownView } from "./countdown";
 import { TimerModal } from "./modal/modal-timer";
 import { useState } from "react";
 import { useDebounce } from "react-use";
+import { Link } from "@remix-run/react";
 
 export function Player() {
   const {
@@ -70,14 +71,16 @@ export function Player() {
           className="w-8 h-8 sm:w-12 sm:h-12 rounded-md"
           alt={track.name}
         />
-        <div className="flex-1">
-          <h1 className="font-bold sm:text-lg text-neutral-content line-clamp-1">
-            {track.name}
-          </h1>
-          <p className="line-clamp-1 text-sm sm:text-md text-neutral-content">
-            {track.trackTitle}
-          </p>
-        </div>
+        <Link to={track.detailUrl || "#"} className="flex-1">
+          <div className="flex-1">
+            <h1 className="font-bold sm:text-lg text-neutral-content line-clamp-1">
+              {track.name}
+            </h1>
+            <p className="line-clamp-1 text-sm sm:text-md text-neutral-content">
+              {track.trackTitle}
+            </p>
+          </div>
+        </Link>
         {track.type === "streaming" ? (
           hasTimer ? (
             <label htmlFor="timer-modal" className="btn btn-ghost btn-xs">

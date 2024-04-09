@@ -15,28 +15,33 @@ export async function getTracks(params?: {
       ? `${SYARIAH_URL}/rsy/list/v2jsyariah.php?listradio=syariah`
       : `${RII_URL}/radio/lrii.php?model=lima`;
 
-  const result = await fetch(url);
-  const data = await result.json();
+  try {
+    const result = await fetch(url);
+    const data = await result.json();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const tracks: TrackInfo[] = data.map((item: any) => {
-    const parsed = item.url.split("//");
-    const [ip, port] = parsed[1].split(":");
-    return {
-      id: item.uid_rad,
-      alias: item.alias,
-      serial: item.id_radet,
-      name: item.nama,
-      logoUrl: item.logo?.replace("http://", "https://"),
-      listenerCount: Number(item.pendengar),
-      status: item.status,
-      trackTitle: item.judul,
-      trackUrl: `${RADIO_PROXY_URL}/stations/${ip}/${port}/radio.mp3?sid=1`,
-      statsUrl: `${RADIO_PROXY_URL}/stations/${ip}/${port}/stats?sid=1&json=1`,
-    };
-  });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const tracks: TrackInfo[] = data.map((item: any) => {
+      const parsed = item.url.split("//");
+      const [ip, port] = parsed[1].split(":");
+      return {
+        id: item.uid_rad,
+        alias: item.alias,
+        serial: item.id_radet,
+        name: item.nama,
+        logoUrl: item.logo?.replace("http://", "https://"),
+        listenerCount: Number(item.pendengar),
+        status: item.status,
+        trackTitle: item.judul,
+        trackUrl: `${RADIO_PROXY_URL}/stations/${ip}/${port}/radio.mp3?sid=1`,
+        statsUrl: `${RADIO_PROXY_URL}/stations/${ip}/${port}/stats?sid=1&json=1`,
+      };
+    });
 
-  return sortRadios(tracks, sortBy);
+    return sortRadios(tracks, sortBy);
+  } catch (error) {
+    console.error("Error fetching radio tracks", error);
+    return [];
+  }
 }
 
 export async function getAllTracks() {

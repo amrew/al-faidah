@@ -60,6 +60,7 @@ export function RadioItem({
       trackTitle: item.trackTitle,
       logoUrl: item.logoUrl,
       type: "streaming",
+      detailUrl: detailUrl,
     });
 
   const headerNode = (
@@ -178,7 +179,7 @@ export function RadioItem({
   );
 }
 
-export function RadioItemPlayer({ item, embed }: RadioItemProps) {
+export function RadioItemPlayer({ item, embed, detailUrl }: RadioItemProps) {
   const { track, play, stop, audioState } = useAudioContext();
   const isActive = track?.url === item.trackUrl;
   const isLive = item.status === "LIVE";
@@ -192,6 +193,7 @@ export function RadioItemPlayer({ item, embed }: RadioItemProps) {
       trackTitle: item.trackTitle,
       logoUrl: item.logoUrl,
       type: "streaming",
+      detailUrl: detailUrl,
     });
 
   const [fakeProgress, setFakeProgress] = useState(0);

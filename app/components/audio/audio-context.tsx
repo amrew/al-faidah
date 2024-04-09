@@ -9,9 +9,10 @@ type AudioTrack = {
   trackTitle: string;
   url: string;
   logoUrl: string;
+  detailUrl?: string;
 };
 
-type AudioState = "stopped" | "loading" | "playing" | "paused";
+type AudioState = "stopped" | "loading" | "loaded" | "playing" | "paused";
 
 export const AudioContext = createContext<{
   track: AudioTrack | undefined;
@@ -60,6 +61,8 @@ export const AudioProvider = (props: PropsWithChildren) => {
 
   const prevTrack = usePrevious(track);
   const soundRef = useRef<Howl>();
+  const attemptRef = useRef(0);
+  const soundStateRef = useRef<"idle" | "loaded" | "error">("idle");
 
   useEffect(() => {
     if (track?.url && track.url !== prevTrack?.url) {
@@ -69,6 +72,12 @@ export const AudioProvider = (props: PropsWithChildren) => {
         src: [trackUrl],
         html5: true,
         onload: () => {
+          console.log("audio loaded");
+          if (soundStateRef.current === "error") {
+            soundRef.current?.play();
+          }
+          soundStateRef.current = "loaded";
+
           if (track.type === "audio" && soundRef.current) {
             setMetadata({
               maxDuration: soundRef.current.duration(),
@@ -77,7 +86,25 @@ export const AudioProvider = (props: PropsWithChildren) => {
           }
           setAudioState("playing");
         },
-        onend: () => {
+        onplayerror: (err) => {
+          console.log("play error", err);
+          soundRef.current?.play();
+        },
+        onloaderror: (err) => {
+          console.log("load error", err);
+          soundRef.current?.unload();
+          if (attemptRef.current < 3) {
+            attemptRef.current++;
+            setTimeout(() => {
+              soundStateRef.current = "error";
+              soundRef.current?.load();
+            }, 5000);
+          } else {
+            setTrack(undefined);
+          }
+        },
+        onend: (err) => {
+          console.log("end", err);
           if (trackList) {
             const currentTrackIndex = trackList.findIndex(
               (item) => item.url === trackUrl
