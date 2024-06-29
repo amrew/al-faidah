@@ -286,22 +286,26 @@ export async function sync({
     q = q.param("after", last.created_at);
   }
 
-  await q.get().then(async (data) => {
-    if (!data._paging) {
-      console.log(`${publisher.title}: empty paging`);
-      return;
-    }
+  try {
+    await q.get().then(async (data) => {
+      if (!data._paging) {
+        console.log(`${publisher.title}: empty paging`);
+        return;
+      }
 
-    const totalItem = data._paging.total;
-    const totalPerItem = 10;
-    const totalPage = Math.ceil(totalItem / totalPerItem);
+      const totalItem = data._paging.total;
+      const totalPerItem = 10;
+      const totalPage = Math.ceil(totalItem / totalPerItem);
 
-    console.log("totalPage", totalPage);
-    for (let page = initialPage; page <= totalPage; page++) {
-      console.log("page", page);
-      await run(page, totalPerItem);
-    }
-  });
+      console.log("totalPage", totalPage);
+      for (let page = initialPage; page <= totalPage; page++) {
+        console.log("page", page);
+        await run(page, totalPerItem);
+      }
+    });
+  } catch (error) {
+    console.log("error", error);
+  }
 }
 
 export async function loader({ request }: LoaderArgs) {
