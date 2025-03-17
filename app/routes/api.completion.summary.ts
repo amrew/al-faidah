@@ -51,17 +51,19 @@ export const loader = async ({ request }: LoaderArgs) => {
   const messages = [
     {
       role: "system" as const,
-      content: `Buat rangkuman dari artikel, ambil point-pointnya maksimal 5 kalimat dengan kalimat yang singkat tapi jelas. Format HTML. contoh: <ul><li>point 1</li><li>point 2</li></ul>`,
+      content: `Can you provide a comprehensive summary of the given text? The summary should cover all the key points, while also condensing the information into a concise and easy-to-understand format. The length of the summary should be short, but providing a clear and accurate overview without omitting any important information. If the content is an image, tell me that you can't read it (in Indonesian). The result should be in pure HTML format. No markdown needed. Example: <div><ul><li>point 1</li><li>point 2</li></ul></div>`,
     },
     {
       role: "user" as const,
-      content: striptags(description),
+      content: striptags(description, {
+        allowedTags: new Set(["img"]),
+      }),
     },
   ];
 
   const result = await openai.createChatCompletion(
     {
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
       messages: messages,
       temperature: 0,
       max_tokens: 2048,
